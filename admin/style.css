@@ -1,4 +1,5 @@
 .slide {
+    cursor: pointer;
     float: left;
     margin: 10px;
 }
