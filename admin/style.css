@@ -1,5 +1,27 @@
+body {
+    background-color: #ddd;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 20pt;
+}
+
 .slide {
     cursor: pointer;
     float: left;
     margin: 10px;
+}
+
+.box {
+    background-color: #fff;
+    box-sizing: border-box;
+    border-radius: 8pt;
+    border: 2pt solid #ccc;
+    padding: 8pt;
+    margin: 5pt;
+}
+
+.end {
+    clear: both;
 }
