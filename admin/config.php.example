@@ -4,6 +4,13 @@ $allowed_users = array(
     'user@shib.domain',
 );
 
+// mysql database credentials
+$db_name = 'name';
+$db_user = 'user';
+$db_pass = 'pass';
+$db_host = 'host.net.tld';
+$db_port = 3306;
+
 $screen_width = 1920;
 $screen_height = 1080;
 
