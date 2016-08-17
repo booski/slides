@@ -1,7 +1,13 @@
 <?php
-require_once('./auth.php');
+require_once('./auth.php'); // also provides all vars from config.php
 
 header('Content-Type: text/html; charset=UTF-8');
+
+$db = new mysqli($db_host, $db_user, $db_pass, $db_name);
+if($db->connect_errno) {
+    echo 'Failed to connect to db. The error was: '.$db->connect_error;
+    exit(0);
+}
 
 $htmlfile = './admin.html';
 
