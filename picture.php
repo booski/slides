@@ -1,4 +1,5 @@
 <?php
+require_once('./admin/config.php'); //provides $screen_*
 
 $dir = 'images/';
 $filelist = scandir($dir);
@@ -13,7 +14,7 @@ if(sizeof($filelist) < 3) {
 $mime = getimagesize($randfile)['mime'];
 
 $im = new Imagick($randfile);
-$im->scaleImage(1920, 1080, true);
+$im->scaleImage($screen_width, $screen_height, true);
 
 header('Content-type:', $mime);
 echo $im;
