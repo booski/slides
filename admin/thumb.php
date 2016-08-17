@@ -13,7 +13,7 @@ if($slidearg && file_exists($dir.$slidearg)) {
 $mime = getimagesize($slide)['mime'];
 
 $im = new Imagick($slide);
-$im->scaleImage(0, 120);
+$im->scaleImage(192, 108, true);
 
 header('Content-type:', $mime);
 echo $im;
