@@ -1,5 +1,5 @@
 <?php
-require_once('./auth.php'); // provides $db, $imgdir, $thumbdir
+require_once('./auth.php'); // provides $db, $uldir, $thumb_*
 
 header('Content-Type: text/html; charset=UTF-8');
 
@@ -13,7 +13,7 @@ if(isset($_GET['delete'])) {
     
     $file = $_GET['delete'];
     
-    if(!file_exists($imgdir.$file)) {
+    if(!file_exists($uldir.$file)) {
         echo "File doesn't exist.";
         exit(1);
     }
@@ -24,8 +24,8 @@ if(isset($_GET['delete'])) {
         $db->close();
         exit(1);
     }
-    unlink($imgdir.$file);
-    unlink($thumbdir.$file);
+    unlink($uldir.$file);
+    unlink($uldir.'thumb_'.$file);
     $db->commit();
     
 } else if(isset($_FILES['uploadfile'])) {
@@ -55,9 +55,9 @@ if(isset($_GET['delete'])) {
         exit(1);
     }
     
-    $im->writeImage($imgdir.$filename);
+    $im->writeImage($uldir.$filename);
     $im->scaleImage($thumb_width, $thumb_height, true);
-    $im->writeImage($thumbdir.$filename);
+    $im->writeImage($uldir.'thumb_'.$filename);
 
     $db->commit();
 }

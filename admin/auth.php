@@ -1,6 +1,6 @@
 <?php
 
-require_once('./config.php'); //provides $allowed_users
+require_once('../config.php'); //provides $allowed_users
 
 $user = $_SERVER['REMOTE_USER'];
 
@@ -18,7 +18,6 @@ if($db->connect_errno) {
     exit(1);
 }
 
-$imgdir = '../images/';
-$thumbdir = '../thumbs/';
+$uldir = "../uploads/";
 
 ?>
