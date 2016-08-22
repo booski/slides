@@ -1,10 +1,7 @@
 <?php
-require_once('./auth.php');
+require_once('./auth.php'); // provides $db, $imgdir, $thumbdir
 
 header('Content-Type: text/html; charset=UTF-8');
-
-$imgdir = '../images/';
-$thumbdir = '../thumbs/';
 
 $exts = array(
     'image/gif' => 'gif',
@@ -21,31 +18,48 @@ if(isset($_GET['delete'])) {
         exit(1);
     }
 
+    $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
+    if(!$db->query('delete from slide where `name`="'.$db->escape_string($file).'"')) {
+        echo 'Error: '.$db->error;
+        $db->close();
+        exit(1);
+    }
     unlink($imgdir.$file);
     unlink($thumbdir.$file);
+    $db->commit();
     
 } else if(isset($_FILES['uploadfile'])) {
-    
+
     $file = $_FILES['uploadfile'];
-    $im = new Imagick($file['tmp_name']);
-    $mime = $im->getImageMimeType();
 
     if($file['error'] != 0) {
         echo 'The file could not be uploaded. (error code '.$file['error'].')';
         exit(1);
 
-    } else if(!array_key_exists($mime, $exts)) {
+    }    
+    
+    $im = new Imagick($file['tmp_name']);
+    $mime = $im->getImageMimeType();
+    
+    if(!array_key_exists($mime, $exts)) {
         echo 'Invalid format ('.$mime.'). Allowed formats are gif, jpg and png.';
         exit(1);
         
     }
 
     $filename = date('ymd-His').'.'.$exts[$mime];
-    $im->writeImage($imgdir.$filename);
+    $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
+    if(! $db->query('insert into slide set `name`="'.$db->escape_string($filename).'"')) {
+        echo 'Error: '.$db->error;
+        $db->close();
+        exit(1);
+    }
     
+    $im->writeImage($imgdir.$filename);
     $im->scaleImage($thumb_width, $thumb_height, true);
     $im->writeImage($thumbdir.$filename);
 
+    $db->commit();
 }
 
 header('Location: '.$_SERVER['HTTP_REFERER']);
