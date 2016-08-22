@@ -17,6 +17,10 @@ body {
     border: 1px solid #000;
 }
 
+.slide a {
+    display: block;
+}
+
 .picture {
     display: block;
     margin-left: auto;
