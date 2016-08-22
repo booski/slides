@@ -11,6 +11,8 @@ $db_pass = 'pass';
 $db_host = 'host.net.tld';
 $db_port = 3306;
 
+$uldir = '../uploads/';
+
 $screen_width = 1920;
 $screen_height = 1080;
 

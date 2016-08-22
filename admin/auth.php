@@ -1,6 +1,6 @@
 <?php
 
-require_once('../config.php'); //provides $allowed_users
+require_once('./config.php'); //provides $allowed_users
 
 $user = $_SERVER['REMOTE_USER'];
 
@@ -17,7 +17,5 @@ if($db->connect_errno) {
     echo 'Failed to connect to db. The error was: '.$db->connect_error;
     exit(1);
 }
-
-$uldir = "../uploads/";
 
 ?>
