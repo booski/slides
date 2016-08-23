@@ -19,7 +19,8 @@ if(isset($_GET['delete'])) {
     }
 
     $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
-    if(!$db->query('delete from slide where `name`="'.$db->escape_string($file).'"')) {
+    $esc_file = $db->escape_string($file);
+    if(!$db->query("delete from slide where `name`='$esc_file'")) {
         echo 'Error: '.$db->error;
         $db->close();
         exit(1);
@@ -42,14 +43,15 @@ if(isset($_GET['delete'])) {
     $mime = $im->getImageMimeType();
     
     if(!array_key_exists($mime, $exts)) {
-        echo 'Invalid format ('.$mime.'). Allowed formats are gif, jpg and png.';
+        echo "Invalid format ($mime). Allowed formats are gif, jpg and png.";
         exit(1);
         
     }
 
     $filename = date('ymd-His').'.'.$exts[$mime];
     $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
-    if(! $db->query('insert into slide set `name`="'.$db->escape_string($filename).'"')) {
+    $esc_filename = $db->escape_string($filename);
+    if(! $db->query("insert into slide set `name`='$esc_filename'")) {
         echo 'Error: '.$db->error;
         $db->close();
         exit(1);
