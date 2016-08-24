@@ -7,24 +7,29 @@
     <title>Slides (admin)</title>
   </head>
   <body>
-    <script type="text/javascript" src="script.js">
-    </script>
-    <div class="box">
-      <div class="title">
-	Ladda upp ny bild
+    <script type="text/javascript" src="script.js"></script>
+    <div>
+      <div id="upload" class="box">
+	<div class="title">
+	  Ladda upp ny bild
+	</div>
+	<form name="upload"
+	      action="./action.php"
+	      method="post"
+	      enctype="multipart/form-data">
+	  <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
+	  <input name="uploadfile" type="file">
+	  <button>Ladda upp</button>
+	</form>
       </div>
-      <form name="upload"
-	    action="./action.php"
-	    method="post"
-	    enctype="multipart/form-data">
-	<input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
-	<input name="uploadfile" type="file">
-	<button>Ladda upp</button>
-      </form>
+      <div id="delete" class="box">
+	<img class="center block" src="../images/delete.svg">
+      </div>
+      <div class="end"></div>
     </div>
     <div class="box">
       <div class="title">
-	Existerande bilder (klicka för att ta bort)
+	Existerande bilder
       </div>
       <div class="slides">
 	¤slides
@@ -37,18 +42,36 @@
       </div>
       <div class="shows">
 	¤shows
+	<div class="show box" id="new">
+	  <form name="new_show"
+		action="./action.php"
+		method="post"
+		enctype="multipart/form-data">
+	    <input name="new_show" type="hidden" />
+	    <input class="center block" name="name" type="text" placeholder="Ange ett namn..." />
+	    <button class="block center fade">
+	      <img src="../images/add.svg">
+	    </button>
+	  </form>
+	</div>
+	<div class="end"></div>
       </div>
     </div>
   </body>
 </html>
 ¤¤
-<div class="slide">
-  <a href="./action.php?delete=¤slide" onclick="return make_sure('¤slide')">
-    <img class="picture" src="../uploads/thumb_¤slide">
-  </a>
+<div class="slide"
+     id="¤slide"
+     draggable="true"
+     ondragstart="dragstart_handler(event)"
+     ondragend="dragend_handler(event)">
+  <img class="block center" src="../uploads/thumb_¤slide" draggable="false">
 </div>
 ¤¤
-<div class="show">
+<div class="show box"
+     id="¤showid"
+     ondragover="return false"
+     ondrop="drop(event)">
   <div class="title">
     ¤name
   </div>

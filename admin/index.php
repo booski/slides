@@ -10,40 +10,59 @@ $html_body = $html[0];
 $html_slide = $html[1];
 $html_show = $html[2];
 
-$db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
-$slideresult = $db->query('select `name` from `slide`');
-$db->commit();
-
-$slides = '';
-while($slide = $slideresult->fetch_assoc()) {
+function build_slidelist() {
+    global $db, $html_slide;
     
-    $slides .= str_replace('¤slide', $slide['name'], $html_slide);
-}
-
-$db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
-$showresult = $db->query('select `id`,`name` from `show`');
-$db->commit();
-
-$shows = '';
-while($show = $showresult->fetch_assoc()) {
-
-    $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
-    $id = $show['id'];
-    $slideresult = $db->query("select `image` from `show_image` where `show`='$id'");
-    $db->commit();
-
+    $slideresult = $db->query('select `name` from `slide`');
+    
     $slides = '';
     while($slide = $slideresult->fetch_assoc()) {
-        $slides .= str_replace('¤slide', $slide['image'], $html_slide);
+        
+        $keys = array('¤slide', '¤group');
+        $values = array($slide['name'], 'slides');
+        $slides .= str_replace($keys, $values, $html_slide);
+    }
+    
+    return $slides;
+}
+
+function build_showlist() {
+    global $db, $html_show;
+
+    $showresult = $db->query('select `id`,`name` from `show`');
+
+    $shows = '';
+    while($show = $showresult->fetch_assoc()) {
+        $id = $show['id'];
+        
+        $keys = array('¤showid', '¤name', '¤slides');
+        $values = array($id, $show['name'], build_show($id));
+        
+        $shows .= str_replace($keys, $values, $html_show);
     }
 
-    $keys = array('¤name', '¤slides');
-    $values = array($show['name'], $slides);
-    $shows .= str_replace('¤name', $show['name'], $html_show);
+    return $shows;
+}
+
+function build_show($id) {
+    global $db, $html_slide;
+
+    $slideresult = $db->query("select `image` from `show_image` where `show`='$id'");
+    
+    $show_slides = '';
+    while($show_slide = $slideresult->fetch_assoc()) {
+
+        $keys = array('¤slide', '¤group');
+        $values = array($show_slide['image'], $id);
+
+        $show_slides .= str_replace($keys, $values, $html_slide);
+    }
+
+    return $show_slides;
 }
 
 $keys = array('¤slides', '¤shows');
-$values = array($slides, $shows);
+$values = array(build_slidelist(), build_showlist());
 
 print str_replace($keys, $values, $html_body);
 

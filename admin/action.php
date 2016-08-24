@@ -29,6 +29,11 @@ if(isset($_GET['delete'])) {
     unlink($uldir.'thumb_'.$file);
     $db->commit();
     
+} else if(isset($_POST['new_show']) && $_POST['name']) {
+
+    $esc_name = $db->escape_string($_POST['name']);
+    $db->query("insert into `show` set `name`='$esc_name'");
+
 } else if(isset($_FILES['uploadfile'])) {
 
     $file = $_FILES['uploadfile'];
@@ -51,7 +56,7 @@ if(isset($_GET['delete'])) {
     $filename = date('ymd-His').'.'.$exts[$mime];
     $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
     $esc_filename = $db->escape_string($filename);
-    if(! $db->query("insert into slide set `name`='$esc_filename'")) {
+    if(! $db->query("insert into `slide` set `name`='$esc_filename'")) {
         echo 'Error: '.$db->error;
         $db->close();
         exit(1);
