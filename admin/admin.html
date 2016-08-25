@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <link rel="stylesheet" type="text/css" href="style.css" />
     <title>Slides (admin)</title>
   </head>
@@ -18,13 +18,24 @@
 	      method="post"
 	      enctype="multipart/form-data">
 	  <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
-	  <input name="uploadfile" type="file">
+	  <input name="uploadfile" type="file" />
 	  <button>Ladda upp</button>
 	</form>
       </div>
-      <div id="delete" class="box">
-	<img class="center block" src="../images/delete.svg">
-      </div>
+      <form name="delete"
+	    id="delete"
+	    class="box"
+	    
+	    action="./action.php"
+	    method="post"
+	    enctype="multipart/form-data"
+
+	    ondragover="return false"
+	    ondrop="drop(event)">
+	<img class="center block" src="../images/delete.svg" />
+	<input type="hidden" name="delete" />
+	<input type="hidden" name="from" />
+      </form>
       <div class="end"></div>
     </div>
     <div class="box">
@@ -42,18 +53,22 @@
       </div>
       <div class="shows">
 	¤shows
-	<div class="show box" id="new">
-	  <form name="new_show"
-		action="./action.php"
-		method="post"
-		enctype="multipart/form-data">
-	    <input name="new_show" type="hidden" />
-	    <input class="center block" name="name" type="text" placeholder="Ange ett namn..." />
-	    <button class="block center fade">
-	      <img src="../images/add.svg">
-	    </button>
-	  </form>
-	</div>
+	<form name="new_show"
+	      id="new_show"
+	      class="show box"
+
+	      action="./action.php"
+	      method="post"
+	      enctype="multipart/form-data">
+	  <input name="new_show" type="hidden" />
+	  <input name="name"
+		 class="center block"
+		 type="text"
+		 placeholder="Ange ett namn..." />
+	  <button class="block center fade">
+	    <img src="../images/add.svg" />
+	  </button>
+	</form>
 	<div class="end"></div>
       </div>
     </div>
@@ -62,18 +77,32 @@
 ¤¤
 <div class="slide"
      id="¤slide"
+     
      draggable="true"
-     ondragstart="dragstart_handler(event)"
-     ondragend="dragend_handler(event)">
-  <img class="block center" src="../uploads/thumb_¤slide" draggable="false">
+     ondragstart="dragstart(event)"
+     ondragend="dragend(event)">
+  <img class="block center" src="../uploads/thumb_¤slide" draggable="false" />
 </div>
 ¤¤
-<div class="show box"
-     id="¤showid"
-     ondragover="return false"
-     ondrop="drop(event)">
+<form name="show_¤showid"
+      id="show_¤showid"
+      class="show box"
+
+      action="./action.php"
+      method="post"
+      enctype="multipart/form-data"
+
+      ondragover="return false"
+      ondrop="drop(event)"
+
+      draggable="true"
+      ondragstart="dragstart(event)"
+      ondragend="dragend(event)">
+
+  <input type="hidden" name="add" />
+  <input type="hidden" name="to" value="show_¤showid" />
   <div class="title">
     ¤name
   </div>
   ¤slides
-</div>
+</form>
