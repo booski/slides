@@ -15,26 +15,26 @@ if(isset($_POST['new_show']) && $_POST['name']) {
     $from = $_POST['from'];
 
     if($from === 'slides') {
-        delete_slide($item);
+        $error = delete_slide($item);
         
     } else if($from === 'shows') {
-        delete_show(explode('_', $item)[1]);
+        $error = delete_show(explode('_', $item)[1]);
         
     } else if(explode('_', $from)[0] === 'show') {
-        delete_from_show(explode('_', $from)[1], $item);
+        $error = delete_from_show(explode('_', $from)[1], $item);
     }
 
 } else if(isset($_FILES['uploadfile'])) {
 
-    save_upload($_FILES['uploadfile']);
+    $error = save_upload($_FILES['uploadfile']);
 
 } else if(isset($_POST['add'])) {
 
-    add_slide_to_show($_POST['add'], explode('_', $_POST['to'])[1]);
+    $error = add_slide_to_show($_POST['add'], explode('_', $_POST['to'])[1]);
     
 }
 
-header('Location: '.$_SERVER['HTTP_REFERER']);
+header('Location: '.$_SERVER['HTTP_REFERER']."?error=$error");
 
 
 
@@ -46,8 +46,7 @@ function delete_slide($slide) {
     $error = '';
     
     if(!file_exists($uldir.$slide)) {
-        echo "File '$slide' doesn't exist.";
-        exit(1);
+        return "Filen '$slide' finns inte.";
     }
 
     $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
@@ -59,9 +58,9 @@ function delete_slide($slide) {
         
         if(!$db->query("delete from slide where `name`='$esc_slide'")) {
             
-            echo 'Error: '.$db->error;
+            $error = $db->error;
             $db->close();
-            exit(1);
+            return 'Databasfel: '.$error;
         }
         
         unlink($uldir.$slide);
@@ -69,11 +68,11 @@ function delete_slide($slide) {
 
     } else {
         $i = $result->num_rows;
-        echo "The image is in use $i times.";
-        exit(1);
+        return "Bilden används $i gånger.";
     }
 
     $db->commit();
+    return '';
 }
 
 function delete_show($show) {
@@ -85,6 +84,7 @@ function delete_show($show) {
     $db->query("delete from `show` where `id`=$esc_show");
     $db->query("delete from `show_image` where `show`=$esc_show");
     $db->commit();
+    return '';
 }
 
 function delete_from_show($show, $slide) {
@@ -93,6 +93,7 @@ function delete_from_show($show, $slide) {
     $esc_show = $db->escape_string($show);
     $esc_slide = $db->escape_String($slide);
     $db->query("delete from `show_image` where `show`=$esc_show and `image`='$esc_slide'");
+    return '';
 }
 
 function save_upload($file) {
@@ -105,8 +106,7 @@ function save_upload($file) {
     );
     
     if($file['error'] != 0) {
-        echo 'The file could not be uploaded. (error code '.$file['error'].')';
-        exit(1);
+        return 'Filen kunde inte laddas upp. (Felkod: '.$file['error'].')';
 
     }    
     
@@ -114,8 +114,7 @@ function save_upload($file) {
     $mime = $im->getImageMimeType();
     
     if(!array_key_exists($mime, $exts)) {
-        echo "Invalid format ($mime). Allowed formats are gif, jpg and png.";
-        exit(1);
+        return "Ogiltigt format ($mime). Tillåtna format är gif, jpg och png.";
         
     }
 
@@ -123,9 +122,9 @@ function save_upload($file) {
     $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
     $esc_filename = $db->escape_string($filename);
     if(! $db->query("insert into `slide` set `name`='$esc_filename'")) {
-        echo 'Error: '.$db->error;
+        $error = 'Databasfel: '.$db->error;
         $db->close();
-        exit(1);
+        return $error;
     }
     
     $im->writeImage($uldir.$filename);
@@ -133,6 +132,7 @@ function save_upload($file) {
     $im->writeImage($uldir.'thumb_'.$filename);
 
     $db->commit();
+    return '';
 }
 
 function add_slide_to_show($slide, $show) {
@@ -141,6 +141,7 @@ function add_slide_to_show($slide, $show) {
     $esc_slide = $db->escape_string($slide);
     $esc_show = $db->escape_string($show);
     $db->query("insert into `show_image` set `image`='$esc_slide',`show`=$esc_show");
+    return '';
 }
 
 ?>

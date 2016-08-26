@@ -61,8 +61,8 @@ function build_show($id) {
     return $show_slides;
 }
 
-$keys = array('¤slides', '¤shows');
-$values = array(build_slidelist(), build_showlist());
+$keys = array('¤slides', '¤shows', '¤error');
+$values = array(build_slidelist(), build_showlist(), $_GET['error']);
 
 print str_replace($keys, $values, $html_body);
 
