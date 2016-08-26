@@ -47,7 +47,7 @@ function build_showlist() {
 function build_show($id) {
     global $db, $html_slide;
 
-    $slideresult = $db->query("select `image` from `show_image` where `show`='$id'");
+    $slideresult = $db->query("select `image` from `show_image` where `show`='$id' order by `seq`");
     
     $show_slides = '';
     while($show_slide = $slideresult->fetch_assoc()) {

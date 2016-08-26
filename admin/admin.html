@@ -8,67 +8,64 @@
   </head>
   <body>
     <script type="text/javascript" src="script.js"></script>
-    <div>
-      <div id="upload" class="box">
-	<div class="title">
-	  Ladda upp ny bild
-	</div>
-	<form name="upload"
-	      action="./action.php"
-	      method="post"
-	      enctype="multipart/form-data">
-	  <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
-	  <input name="uploadfile" type="file" />
-	  <button>Ladda upp</button>
-	</form>
+    <form name="remove"
+	  id="remove"
+	  class="box right"
+	  
+	  action="./action.php"
+	  method="post"
+	  enctype="multipart/form-data"
+	  
+	  ondragover="return false"
+	  ondrop="remove_drop(event)">
+      <img class="center block" src="../images/delete.svg" />
+      <input type="hidden" name="remove" />
+      <input type="hidden" name="from" />
+    </form>
+    <div class="box">
+      <div class="title left">
+	Tillgängliga bilder
       </div>
-      <form name="delete"
-	    id="delete"
-	    class="box"
-	    
+      <form name="upload"
+	    class="box right"
 	    action="./action.php"
 	    method="post"
-	    enctype="multipart/form-data"
-
-	    ondragover="return false"
-	    ondrop="drop(event)">
-	<img class="center block" src="../images/delete.svg" />
-	<input type="hidden" name="delete" />
-	<input type="hidden" name="from" />
+	    enctype="multipart/form-data">
+	<input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
+	Ladda upp ny bild:
+	<input name="uploadfile" type="file" />
+	<button>Ladda upp</button>
       </form>
       <div class="end"></div>
-    </div>
-    <div class="box">
-      <div class="title">
-	Existerande bilder
-      </div>
-      <div class="slides">
+      <div class="slides" id="slides">
 	¤slides
 	<div class="end"></div>
       </div>
     </div>
     <div class="box">
-      <div class="title">
+      <div class="title left">
 	Visningsytor
       </div>
-      <div class="shows">
+      <form name="new_show"
+	    id="new_show"
+	    class="box right"
+	    
+	    action="./action.php"
+	    method="post"
+	    enctype="multipart/form-data">
+	<input name="new_show" type="hidden" />
+	Lägg till ny yta:
+	<input name="name"
+	       class="inline"
+	       type="text"
+	       placeholder="Ange ett namn..." />
+	<button class="inline">
+	  Lägg till
+	</button>
+      </form>
+      <div class="end"></div>
+      <div class="shows" id="shows">
 	¤shows
-	<form name="new_show"
-	      id="new_show"
-	      class="show box"
-
-	      action="./action.php"
-	      method="post"
-	      enctype="multipart/form-data">
-	  <input name="new_show" type="hidden" />
-	  <input name="name"
-		 class="center block"
-		 type="text"
-		 placeholder="Ange ett namn..." />
-	  <button class="block center fade">
-	    <img src="../images/add.svg" />
-	  </button>
-	</form>
 	<div class="end"></div>
       </div>
     </div>
@@ -93,7 +90,7 @@
       enctype="multipart/form-data"
 
       ondragover="return false"
-      ondrop="drop(event)"
+      ondrop="add_drop(event)"
 
       draggable="true"
       ondragstart="dragstart(event)"
@@ -102,7 +99,7 @@
   <input type="hidden" name="add" />
   <input type="hidden" name="to" value="show_¤showid" />
   <div class="title">
-    ¤name
+    ¤name (id: ¤showid)
   </div>
   ¤slides
 </form>

@@ -1,43 +1,109 @@
 <?php
 require_once('./auth.php'); // provides $db, $uldir, $thumb_*
+$uldir = '.'.$uldir;
 
 header('Content-Type: text/html; charset=UTF-8');
 
-$exts = array(
-    'image/gif' => 'gif',
-    'image/jpeg' => 'jpg',
-    'image/png' => 'png',
-);
-
-if(isset($_GET['delete'])) {
-    
-    $file = $_GET['delete'];
-    
-    if(!file_exists($uldir.$file)) {
-        echo "File doesn't exist.";
-        exit(1);
-    }
-
-    $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
-    $esc_file = $db->escape_string($file);
-    if(!$db->query("delete from slide where `name`='$esc_file'")) {
-        echo 'Error: '.$db->error;
-        $db->close();
-        exit(1);
-    }
-    unlink($uldir.$file);
-    unlink($uldir.'thumb_'.$file);
-    $db->commit();
-    
-} else if(isset($_POST['new_show']) && $_POST['name']) {
+if(isset($_POST['new_show']) && $_POST['name']) {
 
     $esc_name = $db->escape_string($_POST['name']);
     $db->query("insert into `show` set `name`='$esc_name'");
 
+} else if(isset($_POST['remove'])) {
+    
+    $item = $_POST['remove'];
+    $from = $_POST['from'];
+
+    if($from === 'slides') {
+        delete_slide($item);
+        
+    } else if($from === 'shows') {
+        delete_show(explode('_', $item)[1]);
+        
+    } else if(explode('_', $from)[0] === 'show') {
+        delete_from_show(explode('_', $from)[1], $item);
+    }
+
 } else if(isset($_FILES['uploadfile'])) {
 
-    $file = $_FILES['uploadfile'];
+    save_upload($_FILES['uploadfile']);
 
+} else if(isset($_POST['add'])) {
+
+    add_slide_to_show($_POST['add'], explode('_', $_POST['to'])[1]);
+    
+}
+
+header('Location: '.$_SERVER['HTTP_REFERER']);
+
+
+
+####### FUNCTIONS #######
+
+function delete_slide($slide) {
+    global $uldir, $db;
+    
+    $error = '';
+    
+    if(!file_exists($uldir.$slide)) {
+        echo "File '$slide' doesn't exist.";
+        exit(1);
+    }
+
+    $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
+    $esc_slide = $db->escape_string($slide);
+
+    $result = $db->query("select `image`,`show` from `show_image` where `image`='$esc_slide'");
+
+    if($result->num_rows == 0) {
+        
+        if(!$db->query("delete from slide where `name`='$esc_slide'")) {
+            
+            echo 'Error: '.$db->error;
+            $db->close();
+            exit(1);
+        }
+        
+        unlink($uldir.$slide);
+        unlink($uldir.'thumb_'.$slide);
+
+    } else {
+        $i = $result->num_rows;
+        echo "The image is in use $i times.";
+        exit(1);
+    }
+
+    $db->commit();
+}
+
+function delete_show($show) {
+    global $db;
+
+    $esc_show = $db->escape_string($show);
+
+    $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
+    $db->query("delete from `show` where `id`=$esc_show");
+    $db->query("delete from `show_image` where `show`=$esc_show");
+    $db->commit();
+}
+
+function delete_from_show($show, $slide) {
+    global $db;
+
+    $esc_show = $db->escape_string($show);
+    $esc_slide = $db->escape_String($slide);
+    $db->query("delete from `show_image` where `show`=$esc_show and `image`='$esc_slide'");
+}
+
+function save_upload($file) {
+    global $db, $uldir, $thumb_width, $thumb_height;
+
+    $exts = array(
+        'image/gif' => 'gif',
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+    );
+    
     if($file['error'] != 0) {
         echo 'The file could not be uploaded. (error code '.$file['error'].')';
         exit(1);
@@ -69,6 +135,12 @@ if(isset($_GET['delete'])) {
     $db->commit();
 }
 
-header('Location: '.$_SERVER['HTTP_REFERER']);
+function add_slide_to_show($slide, $show) {
+    global $db;
+
+    $esc_slide = $db->escape_string($slide);
+    $esc_show = $db->escape_string($show);
+    $db->query("insert into `show_image` set `image`='$esc_slide',`show`=$esc_show");
+}
 
 ?>

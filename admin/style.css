@@ -5,6 +5,8 @@ body {
 .title {
     font-weight: bold;
     font-size: 20pt;
+    padding: 8pt;
+    margin: 5pt;
 }
 
 .slide {
@@ -22,8 +24,9 @@ body {
 }
 
 .show {
-    width: 220px;
+    width: 240px;
     float: left;
+    z-index: 10;
 }
 
 .center {
@@ -48,10 +51,22 @@ body {
     clear: both;
 }
 
-#upload {
+.left {
     float: left;
 }
 
-#delete {
+.right {
     float: right;
+}
+
+.inline {
+    display: inline;
+}
+
+#remove {
+    position: fixed;
+    bottom: 8px;
+    right: 8px;
+    background-color: #d00;
+    z-index: 100;
 }
