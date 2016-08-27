@@ -37,6 +37,8 @@ if($lines == 0) {
 
 setcookie('index', $index+1);
 
-echo str_replace('¤picture', $picture, $html);
+$keys = array('¤picture', '¤timeout');
+$values = array($picture, $timeout);
+echo str_replace($keys, $values, $html);
 
 ?>

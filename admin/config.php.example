@@ -25,4 +25,7 @@ $screen_height = 1080;
 $thumb_width = 192;
 $thumb_height = 108;
 
+// time between switching images
+$timeout = 300;
+
 ?>
