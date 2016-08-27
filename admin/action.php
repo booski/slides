@@ -1,6 +1,6 @@
 <?php
 require_once('./auth.php'); // provides $db, $uldir, $thumb_*
-$uldir = '.'.$uldir;
+$uldir = '../'.$uldir.'/';
 
 header('Content-Type: text/html; charset=UTF-8');
 

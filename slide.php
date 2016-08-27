@@ -11,7 +11,7 @@ if(!$_GET['name']) {
     
 } else {
 
-    $file = $uldir.$_GET['name'];
+    $file = './'.$uldir.'/'.$_GET['name'];
     if(file_exists($file)) {
         
         $im = new Imagick($file);

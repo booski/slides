@@ -1,5 +1,7 @@
 <?php
 
+// users allowed to use the admin interface
+// checked vs the $_SERVER['REMOTE_USER'] variable
 $allowed_users = array(
     'user@shib.domain',
 );
@@ -11,11 +13,15 @@ $db_pass = 'pass';
 $db_host = 'host.net.tld';
 $db_port = 3306;
 
-$uldir = '../uploads/';
+// directory for uploaded images
+// must be located in the site's root directory
+$uldir = 'uploads';
 
+// height and width to scale the slideshow images to
 $screen_width = 1920;
 $screen_height = 1080;
 
+// height and width to scale the admin page thumbnails to
 $thumb_width = 192;
 $thumb_height = 108;
 

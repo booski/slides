@@ -1,8 +1,11 @@
 <?php
 
-require_once('./config.php'); //provides $allowed_users
+require_once('./config.php'); //provides $allowed_users, $db_*
 
-$user = $_SERVER['REMOTE_USER'];
+$user = '';
+if(isset($_SERVER['REMOTE_USER'])) {
+    $user = $_SERVER['REMOTE_USER'];
+}
 
 if(!in_array($user, $allowed_users)) {
     echo 'Permission denied.';
