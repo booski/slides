@@ -12,11 +12,14 @@ body {
 .slide {
     width: 194px;
     height: 110px;
-    cursor: pointer;
     float: left;
     margin: 10px;
     box-sizing: border-box;
     border: 1px solid #000;
+}
+
+.slide:hover {
+    background-color: #EEE;
 }
 
 .block {
@@ -27,6 +30,10 @@ body {
     width: 240px;
     float: left;
     z-index: 10;
+}
+
+.show:hover {
+    background-color: #EEE;
 }
 
 .center {
@@ -43,6 +50,7 @@ body {
     box-sizing: border-box;
     border-radius: 8pt;
     border: 2pt solid #ccc;
+    box-shadow: 0px 1pt 3pt rgba(0, 0, 0, 0.1);
     padding: 8pt;
     margin: 5pt;
 }
@@ -74,7 +82,17 @@ body {
 .error {
     position: fixed;
     top: 8px;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #99EE99;
+    width: 100%;
+    margin: 0;
+    text-align: center;
+}
+
+.error div {
+    background-color: #EE9999;
+    display: inline-block;
+    border: 2px solid #CC4444;
+}
+
+.hidden {
+    visibility: hidden;
 }

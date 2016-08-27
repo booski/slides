@@ -15,26 +15,26 @@ if(isset($_POST['new_show']) && $_POST['name']) {
     $from = $_POST['from'];
 
     if($from === 'slides') {
-        $error = delete_slide($item);
+        delete_slide($item);
         
     } else if($from === 'shows') {
-        $error = delete_show(explode('_', $item)[1]);
+        delete_show(explode('_', $item)[1]);
         
     } else if(explode('_', $from)[0] === 'show') {
-        $error = delete_from_show(explode('_', $from)[1], $item);
+        delete_from_show(explode('_', $from)[1], $item);
     }
 
 } else if(isset($_FILES['uploadfile'])) {
 
-    $error = save_upload($_FILES['uploadfile']);
+    save_upload($_FILES['uploadfile']);
 
 } else if(isset($_POST['add'])) {
 
-    $error = add_slide_to_show($_POST['add'], explode('_', $_POST['to'])[1]);
+    add_slide_to_show($_POST['add'], explode('_', $_POST['to'])[1]);
     
 }
 
-header('Location: '.$_SERVER['HTTP_REFERER']."?error=$error");
+header('Location: '.$_SERVER['HTTP_REFERER']);
 
 
 
@@ -43,10 +43,9 @@ header('Location: '.$_SERVER['HTTP_REFERER']."?error=$error");
 function delete_slide($slide) {
     global $uldir, $db;
     
-    $error = '';
-    
     if(!file_exists($uldir.$slide)) {
-        return "Filen '$slide' finns inte.";
+        error("Filen '$slide' finns inte.");
+        return;
     }
 
     $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
@@ -60,7 +59,8 @@ function delete_slide($slide) {
             
             $error = $db->error;
             $db->close();
-            return 'Databasfel: '.$error;
+            error('Databasfel: '.$error);
+            return;
         }
         
         unlink($uldir.$slide);
@@ -68,11 +68,11 @@ function delete_slide($slide) {
 
     } else {
         $i = $result->num_rows;
-        return "Bilden används $i gånger.";
+        error("Bilden används på en eller flera ytor.");
+        return;
     }
 
     $db->commit();
-    return '';
 }
 
 function delete_show($show) {
@@ -84,7 +84,6 @@ function delete_show($show) {
     $db->query("delete from `show` where `id`=$esc_show");
     $db->query("delete from `show_image` where `show`=$esc_show");
     $db->commit();
-    return '';
 }
 
 function delete_from_show($show, $slide) {
@@ -93,7 +92,6 @@ function delete_from_show($show, $slide) {
     $esc_show = $db->escape_string($show);
     $esc_slide = $db->escape_String($slide);
     $db->query("delete from `show_image` where `show`=$esc_show and `image`='$esc_slide'");
-    return '';
 }
 
 function save_upload($file) {
@@ -106,25 +104,25 @@ function save_upload($file) {
     );
     
     if($file['error'] != 0) {
-        return 'Filen kunde inte laddas upp. (Felkod: '.$file['error'].')';
-
+        error('Filen kunde inte laddas upp. (Felkod: '.$file['error'].')');
+        return;
     }    
     
     $im = new Imagick($file['tmp_name']);
     $mime = $im->getImageMimeType();
     
     if(!array_key_exists($mime, $exts)) {
-        return "Ogiltigt format ($mime). Tillåtna format är gif, jpg och png.";
-        
+        error("Ogiltigt format ($mime). Tillåtna format är gif, jpg och png.");
+        return;
     }
 
     $filename = date('ymd-His').'.'.$exts[$mime];
     $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
     $esc_filename = $db->escape_string($filename);
     if(! $db->query("insert into `slide` set `name`='$esc_filename'")) {
-        $error = 'Databasfel: '.$db->error;
+        error('Databasfel: '.$db->error);
         $db->close();
-        return $error;
+        return;
     }
     
     $im->writeImage($uldir.$filename);
@@ -132,7 +130,6 @@ function save_upload($file) {
     $im->writeImage($uldir.'thumb_'.$filename);
 
     $db->commit();
-    return '';
 }
 
 function add_slide_to_show($slide, $show) {
@@ -141,7 +138,10 @@ function add_slide_to_show($slide, $show) {
     $esc_slide = $db->escape_string($slide);
     $esc_show = $db->escape_string($show);
     $db->query("insert into `show_image` set `image`='$esc_slide',`show`=$esc_show");
-    return '';
+}
+
+function error($message) {
+    setcookie('error', $message);
 }
 
 ?>
