@@ -5,8 +5,8 @@ $html = file_get_contents('./picture.html');
 
 $db = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
-$show = $_GET['id'];
-$index = $_COOKIE['index'];
+$show = isset($_GET['id']) ? $_GET['id'] : '';
+$index = isset($_COOKIE['index']) ? $_COOKIE['index'] : '';
 
 if(!$show) {
     echo "No show specified.";
