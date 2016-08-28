@@ -1,6 +1,6 @@
 body {
     background-color: #ddd;
-    padding-left: 70px;
+    padding-right: 70px;
 }
 
 .title {
@@ -78,7 +78,7 @@ body {
 
 #settings {
     background-color: #00d;
-    visibility: hidden;
+    display: none;
 }
 
 .error {
@@ -88,16 +88,17 @@ body {
     border: 2px solid #CC4444;
     left: 50%;
     transform: translate(-50%);
+    z-index: 100;
 }
 
 .hidden {
-    visibility: hidden;
+    display: none;
 }
 
 .sidebar {
     position: fixed;
     bottom: 0px;
-    left: 0px;
+    right: 0px;
     z-index: 100;
 }
 
