@@ -1,22 +1,16 @@
-function make_sure(image) {
-    return window.confirm("Är du säker på att du vill ta bort "+image+"?")
+function upload(event) {
+    //event.preventDefault()
+    console.log("hek")
+    var form = document.getElementById(event.currentTarget.parentNode.id)
+    form.submit()
+}
+function dragstart(event) {
+    event.dataTransfer.setData("draggedId", event.target.id)
+    event.dataTransfer.setData("fromId", event.target.parentNode.id)
 }
 
-function dragstart(ev) {
-    ev.dataTransfer.setData("draggedId", ev.target.id)
-    ev.dataTransfer.setData("fromId", ev.target.parentNode.id)
-}
-
-function dragend(ev) {
-    ev.dataTransfer.clearData()
-}
-
-function drop(ev) {
-    ev.preventDefault()
-    var droppedId = ev.dataTransfer.getData("draggedId")
-    var copy = document.getElementById(droppedId).cloneNode(true)
-    copy.id = ev.target.id + "_" + copy.id
-    ev.target.appendChild(copy)
+function dragend(event) {
+    event.dataTransfer.clearData()
 }
 
 function remove_drop(event) {

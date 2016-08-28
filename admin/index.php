@@ -10,6 +10,22 @@ $html_body = $html[0];
 $html_slide = $html[1];
 $html_show = $html[2];
 
+$visibility = 'hidden';
+$error = $_COOKIE['error'];
+
+if($error) {
+    $visibility = 'visible';
+    setcookie('error', '', time() - 3600);
+}
+
+$keys = array('¤slides', '¤shows', '¤error', '¤visibility');
+$values = array(build_slidelist(), build_showlist(), $error, $visibility);
+
+print str_replace($keys, $values, $html_body);
+
+
+##### FUNCTIONS #####
+
 function build_slidelist() {
     global $db, $html_slide;
     
@@ -60,18 +76,5 @@ function build_show($id) {
 
     return $show_slides;
 }
-
-$visibility = 'hidden';
-$error = $_COOKIE['error'];
-
-if($error) {
-    $visibility = 'visible';
-    setcookie('error', '', time() - 3600);
-}
-
-$keys = array('¤slides', '¤shows', '¤error', '¤visibility');
-$values = array(build_slidelist(), build_showlist(), $error, $visibility);
-
-print str_replace($keys, $values, $html_body);
 
 ?>

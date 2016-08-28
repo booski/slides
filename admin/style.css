@@ -72,27 +72,37 @@ body {
 }
 
 #remove {
-    position: fixed;
-    bottom: 8px;
-    right: 8px;
     background-color: #d00;
-    z-index: 100;
+}
+
+#settings {
+    background-color: #00d;
 }
 
 .error {
     position: fixed;
     top: 8px;
-    width: 100%;
-    margin: 0;
-    text-align: center;
+    background-color: #EE9999;
+    border: 2px solid #CC4444;
+    left: 50%;
+    transform: translate(-50%);
 }
 
 .error div {
-    background-color: #EE9999;
-    display: inline-block;
-    border: 2px solid #CC4444;
+
 }
 
 .hidden {
     visibility: hidden;
+}
+
+.sidebar {
+    position: fixed;
+    bottom: 8px;
+    right: 8px;
+    z-index: 100;
+}
+
+.button {
+    height: 30px;
 }

@@ -8,24 +8,29 @@
   </head>
   <body>
     <script type="text/javascript" src="script.js"></script>
-    <form name="remove"
-	  id="remove"
-	  class="box right"
-	  
-	  action="./action.php"
-	  method="post"
-	  enctype="multipart/form-data"
-	  
-	  ondragover="return false"
-	  ondrop="remove_drop(event)">
-      <img class="center block" src="../images/delete.svg" />
-      <input type="hidden" name="remove" />
-      <input type="hidden" name="from" />
-    </form>
-    <div class="error ¤visibility">
-      <div class="box">
-	¤error
+    <div class="sidebar">
+      <!--
+      <div class="box" id="settings">
+	<img class="center block" src="../images/settings.svg" />
       </div>
+      -->
+      <form name="remove"
+	    id="remove"
+	    class="box"
+	    
+	    action="./action.php"
+	    method="post"
+	    enctype="multipart/form-data"
+	    
+	    ondragover="return false"
+	    ondrop="remove_drop(event)">
+	<img class="center block" src="../images/delete.svg" />
+	<input type="hidden" name="remove" />
+	<input type="hidden" name="from" />
+      </form>
+    </div>
+    <div class="error box ¤visibility">
+      ¤error
     </div>
     <div class="box">
       <div class="title left">

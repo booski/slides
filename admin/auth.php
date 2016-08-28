@@ -7,7 +7,7 @@ if(isset($_SERVER['REMOTE_USER'])) {
     $user = $_SERVER['REMOTE_USER'];
 }
 
-if(!in_array($user, $allowed_users)) {
+if(!empty($allowed_users) && !in_array($user, $allowed_users)) {
     echo 'Permission denied.';
     if($user) {
         echo " ($user)";
