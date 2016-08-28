@@ -8,6 +8,9 @@
   </head>
   <body>
     <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript">
+      window.onload = restore_scroll
+    </script>
     <div class="sidebar">
       <!--
       <div class="box" id="settings">
@@ -44,7 +47,9 @@
 	<input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
 	Ladda upp ny bild:
 	<input name="uploadfile" type="file" />
-	<button>Ladda upp</button>
+	<button onclick="submit_form(event)">
+	  Ladda upp
+	</button>
       </form>
       <div class="end"></div>
       <div class="slides" id="slides">
@@ -69,7 +74,7 @@
 	       class="inline"
 	       type="text"
 	       placeholder="Ange ett namn..." />
-	<button class="inline">
+	<button onclick="submit_form(event)">
 	  Lägg till
 	</button>
       </form>

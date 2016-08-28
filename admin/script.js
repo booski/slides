@@ -1,7 +1,20 @@
-function upload(event) {
-    //event.preventDefault()
-    console.log("hek")
-    var form = document.getElementById(event.currentTarget.parentNode.id)
+function save_scroll() {
+    var scroll = window.pageYOffset
+    localStorage.setItem("scroll", scroll)
+}
+
+function restore_scroll() {
+    var scroll = localStorage.getItem("scroll")
+    if(scroll) {
+	window.scroll(0, scroll)
+	localStorage.setItem("scroll", "")
+    }
+}
+
+function submit_form(event) {
+    event.preventDefault()
+    var form = event.currentTarget.parentNode
+    save_scroll()
     form.submit()
 }
 function dragstart(event) {
@@ -22,6 +35,7 @@ function remove_drop(event) {
     form.remove.value = item
     form.from.value = origin
 
+    save_scroll()
     form.submit()
 }
 
@@ -36,5 +50,6 @@ function add_drop(event) {
 
     var form = document.getElementById(event.currentTarget.id)
     form.add.value = item
+    save_scroll()
     form.submit()
 }
