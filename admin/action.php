@@ -62,9 +62,9 @@ function delete_slide($slide) {
             error('Databasfel: '.$error);
             return;
         }
-        
+
         unlink($uldir.$slide);
-        unlink($uldir.'thumb_'.$slide);
+        array_map('unlink', glob($uldir.'*_'.$slide));
 
     } else {
         $i = $result->num_rows;
