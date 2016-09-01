@@ -31,6 +31,10 @@ function remove_drop(event) {
     var item = event.dataTransfer.getData("draggedId")
     var origin = event.dataTransfer.getData("fromId")
 
+    if(!confirm_removal(item, origin)) {
+	return;
+    }
+    
     var form = document.getElementById(event.currentTarget.id)
     form.remove.value = item
     form.from.value = origin
@@ -52,4 +56,21 @@ function add_drop(event) {
     form.add.value = item
     save_scroll()
     form.submit()
+}
+
+function confirm_removal(itemid, originid) {
+
+    var itemparts = itemid.split('_')
+    if(itemparts[0] == "show") {
+	
+	return window.confirm("Är du säker på att du vill ta bort den här visningsytan (id: "+itemparts[1]+")?")
+	
+    } else if(originid == "slides") {
+
+	return window.confirm("Är du säker på att du vill ta bort den här bilden?")
+	
+    } else {
+	
+	return true
+    }
 }
