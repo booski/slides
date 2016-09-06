@@ -14,11 +14,11 @@ if(!$_GET['name']) {
 } else {
 
     $file = $_GET['name'];
-}
 
-if(!file_exists($uldir.$file)) {
-    $file = './images/error.png';
-    $special = true;
+    if(!file_exists($uldir.$file)) {
+        $file = './images/error.png';
+        $special = true;
+    }
 }
 
 $im = '';
