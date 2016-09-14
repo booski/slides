@@ -11,8 +11,7 @@ body {
 }
 
 .slide {
-    width: 194px;
-    height: 110px;
+    padding: 8px;
     float: left;
     margin: 10px;
     box-sizing: border-box;
