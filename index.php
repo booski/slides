@@ -1,17 +1,34 @@
 <?php
 require_once('./admin/config.php'); //provides $screen_*
 
-$html = file_get_contents('./picture.html');
-
 $db = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
 $show = isset($_GET['id']) ? $_GET['id'] : '';
-$index = isset($_COOKIE['index']) ? $_COOKIE['index'] : '';
 
 if(!$show) {
-    echo "No show specified.";
+
+    $html = explode('¤¤', file_get_contents('./list.html'));
+    $html_body = $html[0];
+    $html_show = $html[1];
+
+    $showresult = $db->query('select `id`,`name` from `show`');
+
+    $shows = '';
+    while($show = $showresult->fetch_assoc()) {
+        $id = $show['id'];
+        
+        $keys = array('¤showid', '¤name');
+        $values = array($id, $show['name']);
+        
+        $shows .= str_replace($keys, $values, $html_show);
+    }
+
+    echo str_replace('¤shows', $shows, $html_body);
     exit(0);
 }
+
+$html = file_get_contents('./picture.html');
+$index = isset($_COOKIE['index']) ? $_COOKIE['index'] : '';
 
 if(!$index) {
     $index = 0;
