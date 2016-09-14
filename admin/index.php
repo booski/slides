@@ -1,5 +1,5 @@
 <?php
-require_once('./auth.php'); // provides $db
+require_once('./auth.php'); // provides $db, $title
 
 header('Content-Type: text/html; charset=UTF-8');
 
@@ -18,8 +18,8 @@ if($error) {
     setcookie('error', '', time() - 3600);
 }
 
-$keys = array('¤slides', '¤shows', '¤error', '¤visibility');
-$values = array(build_slidelist(), build_showlist(), $error, $visibility);
+$keys = array('¤title', '¤slides', '¤shows', '¤error', '¤visibility');
+$values = array($title, build_slidelist(), build_showlist(), $error, $visibility);
 
 print str_replace($keys, $values, $html_body);
 

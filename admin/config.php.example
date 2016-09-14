@@ -1,5 +1,8 @@
 <?php
 
+// site name
+$title = 'Slides';
+
 // users allowed to use the admin interface
 // checked vs the $_SERVER['REMOTE_USER'] variable
 $allowed_users = array(

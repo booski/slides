@@ -1,5 +1,5 @@
 <?php
-require_once('./admin/config.php'); //provides $screen_*
+require_once('./admin/config.php'); //provides $screen_*, $title
 
 $db = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
@@ -23,7 +23,9 @@ if(!$show) {
         $shows .= str_replace($keys, $values, $html_show);
     }
 
-    echo str_replace('¤shows', $shows, $html_body);
+    $keys = array('¤title', '¤shows');
+    $values = array($title, $shows);
+    echo str_replace($keys, $values, $html_body);
     exit(0);
 }
 
