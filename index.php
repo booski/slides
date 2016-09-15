@@ -1,5 +1,5 @@
 <?php
-require_once('./admin/config.php'); //provides $screen_*, $title
+require_once('./admin/config.php'); //provides $screen_*, $title, $timeout
 
 $db = new mysqli($db_host, $db_user, $db_pass, $db_name);
 

@@ -1,5 +1,5 @@
 <?php
-require_once('./admin/config.php'); //provides $screen_*
+require_once('./admin/config.php'); //provides $screen_*, $thumb_*
 
 $uldir = './'.$uldir.'/';
 
@@ -7,23 +7,34 @@ $db = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
 $file = $_GET['name'];
 
+if(isset($_GET['thumb'])) {
+
+    $width = $thumb_width;
+    $height = $thumb_height;
+
+} else {
+
+    $width = $screen_width;
+    $height = $screen_height;
+}
+
 $im = '';
 if(!$file) {
     
-    $im = create_image($screen_width, $screen_height, 'black', 'gray', $screen_width.' x '.$screen_height);
+    $im = create_image($width, $height, 'black', 'gray', $width.' x '.$height);
     
 } else if(!file_exists($uldir.$file)) {
 
-    $im = create_image($screen_width, $screen_height, 'darkred', 'white', ":(\nNot found");
+    $im = create_image($width, $height, 'darkred', 'white', ":(\nNot found");
     
 } else {
 
-    $file_scaled = $uldir.$screen_width.'_'.$screen_height.'_'.$file;
+    $file_scaled = $uldir.$width.'_'.$height.'_'.$file;
 
     if(!file_exists($file_scaled)) {
     
         $im = new Imagick($uldir.$file);
-        $im->scaleImage($screen_width, $screen_height, true);
+        $im->scaleImage($width, $height, true);
         $im->writeImage($file_scaled);
     
     } else {

@@ -126,9 +126,6 @@ function save_upload($file) {
     }
     
     $im->writeImage($uldir.$filename);
-    $im->scaleImage($thumb_width, $thumb_height, true);
-    $im->writeImage($uldir.'thumb_'.$filename);
-
     $db->commit();
 }
 
