@@ -14,7 +14,7 @@ if(!$file) {
     
 } else if(!file_exists($uldir.$file)) {
 
-    $im = create_image($screen_width, $screen_height, 'red', 'white', ":(\nI'm broken");
+    $im = create_image($screen_width, $screen_height, 'darkred', 'white', ":(\nNot found");
     
 } else {
 
