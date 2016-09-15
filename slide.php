@@ -3,17 +3,17 @@ require_once('./admin/config.php'); //provides $screen_*, $thumb_*
 
 $uldir = './'.$uldir.'/';
 
-$file = $_GET['name'];
+$file = '';
+if(isset($_GET['name'])) {
+    $file = $_GET['name'];
+}
 
+$width = $screen_width;
+$height = $screen_height;
 if(isset($_GET['thumb'])) {
 
     $width = $thumb_width;
     $height = $thumb_height;
-
-} else {
-
-    $width = $screen_width;
-    $height = $screen_height;
 }
 
 $im = '';
