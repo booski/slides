@@ -1,5 +1,5 @@
 <?php
-require_once('./auth.php'); // provides $db, $title
+require_once('./auth.php'); // provides $db, $title, $thumb_width
 
 header('Content-Type: text/html; charset=UTF-8');
 
@@ -43,7 +43,7 @@ function build_slidelist() {
 }
 
 function build_showlist() {
-    global $db, $html_show;
+    global $db, $html_show, $thumb_width;
 
     $showresult = $db->query('select `id`,`name` from `show`');
 
@@ -51,8 +51,8 @@ function build_showlist() {
     while($show = $showresult->fetch_assoc()) {
         $id = $show['id'];
         
-        $keys = array('¤showid', '¤name', '¤slides');
-        $values = array($id, $show['name'], build_show($id));
+        $keys = array('¤showid', '¤name', '¤slides', '¤width');
+        $values = array($id, $show['name'], build_show($id), $thumb_width+64);
         
         $shows .= str_replace($keys, $values, $html_show);
     }
