@@ -5,42 +5,52 @@ $uldir = './'.$uldir.'/';
 
 $db = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
-$special = false;
-if(!$_GET['name']) {
-    
-    $file = './images/placeholder.png';
-    $special = true;
-    
-} else {
-
-    $file = $_GET['name'];
-
-    if(!file_exists($uldir.$file)) {
-        $file = './images/error.png';
-        $special = true;
-    }
-}
+$file = $_GET['name'];
 
 $im = '';
-$file_scaled = $uldir.$screen_width.'_'.$screen_height.'_'.$file;
-
-if($special) {
-
-    $im = new Imagick($file);
-    $im->scaleImage($screen_width, $screen_height, true);
-
-} else if(!file_exists($file_scaled)) {
+if(!$file) {
     
-    $im = new Imagick($uldir.$file);
-    $im->scaleImage($screen_width, $screen_height, true);
-    $im->writeImage($file_scaled);
+    $im = create_image($screen_width, $screen_height, 'black', 'gray', $screen_width.' x '.$screen_height);
+    
+} else if(!file_exists($uldir.$file)) {
+
+    $im = create_image($screen_width, $screen_height, 'red', 'white', ":(\nI'm broken");
     
 } else {
 
-    $im = new Imagick($file_scaled);
+    $file_scaled = $uldir.$screen_width.'_'.$screen_height.'_'.$file;
+
+    if(!file_exists($file_scaled)) {
+    
+        $im = new Imagick($uldir.$file);
+        $im->scaleImage($screen_width, $screen_height, true);
+        $im->writeImage($file_scaled);
+    
+    } else {
+        
+        $im = new Imagick($file_scaled);
+    }
 }
 
 header('Content-type:', $im->getImageMimeType());
 echo $im;
+return 0;
+
+######## FUNCTIONS ########
+
+function create_image($width, $height, $bgcolor, $textcolor, $text) {
+
+    $draw = new ImagickDraw();
+    $draw->setFontSize(min($width, $height)/5);
+    $draw->setFillColor(new ImagickPixel($textcolor));
+    $draw->setTextAntialias(true);
+    $draw->setGravity(Imagick::GRAVITY_CENTER);
+    
+    $im = new Imagick();
+    $im->newImage($width, $height, $bgcolor, 'png');
+    $im->annotateImage($draw, 0, 0, 0, $text);
+
+    return $im;
+}
 
 ?>
