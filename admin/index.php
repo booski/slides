@@ -10,9 +10,12 @@ $html_body = $html[0];
 $html_slide = $html[1];
 $html_show = $html[2];
 
-$visibility = 'hidden';
-$error = $_COOKIE['error'];
+$error = '';
+if(isset($_COOKIE['error'])) {
+    $error = $_COOKIE['error'];
+}
 
+$visibility = 'hidden';
 if($error) {
     $visibility = 'visible';
     setcookie('error', '', time() - 3600);
