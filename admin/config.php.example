@@ -5,8 +5,10 @@ $title = 'Slides';
 
 // users allowed to use the admin interface
 // checked vs the $_SERVER['REMOTE_USER'] variable
+// if empty, anyone will be allowed
 $allowed_users = array(
-    'user@shib.domain',
+    'user1',
+    'user2',
 );
 
 // mysql database credentials
