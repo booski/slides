@@ -3,8 +3,6 @@ require_once('./admin/config.php'); //provides $screen_*, $thumb_*
 
 $uldir = './'.$uldir.'/';
 
-$db = new mysqli($db_host, $db_user, $db_pass, $db_name);
-
 $file = $_GET['name'];
 
 if(isset($_GET['thumb'])) {
