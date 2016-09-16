@@ -19,4 +19,5 @@ Drop a slide on a show to add it, drop a slide or a show on the trash icon to re
 1. Change settings in `config.php` to fit your needs
 1. Create (or symlink) a directory in the root of the project matching the value of `$uldir` in `config.php`
 1. Make sure the web server can write to that directory
+1. Make sure the web server accepts image uploads of the size you want
 1. Done!
