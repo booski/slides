@@ -8,31 +8,30 @@ if(isset($_GET['name'])) {
     $file = $_GET['name'];
 }
 
-$width = $screen_width;
-$height = $screen_height;
-if(isset($_GET['thumb'])) {
-
-    $width = $thumb_width;
-    $height = $thumb_height;
+$show = '';
+if(isset($_GET['show'])) {
+    $show = $_GET['show'];
 }
+
+$dim = get_dimensions($show);
 
 $im = '';
 if(!$file) {
     
-    $im = create_image($width, $height, 'black', 'gray', $width.' x '.$height);
+    $im = create_image($dim['x'], $dim['y'], 'black', 'gray', $dim['x'].' x '.$dim['y']);
     
 } else if(!file_exists($uldir.$file)) {
 
-    $im = create_image($width, $height, 'darkred', 'white', ":(\nNot found");
+    $im = create_image($dim['x'], $dim['y'], 'darkred', 'white', ":(\nNot found");
     
 } else {
 
-    $file_scaled = $uldir.$width.'_'.$height.'_'.$file;
+    $file_scaled = $uldir.$dim['x'].'_'.$dim['y'].'_'.$file;
 
     if(!file_exists($file_scaled)) {
     
         $im = new Imagick($uldir.$file);
-        $im->scaleImage($width, $height, true);
+        $im->scaleImage($dim['x'], $dim['y'], true);
         $im->writeImage($file_scaled);
     
     } else {
@@ -46,6 +45,44 @@ echo $im;
 return 0;
 
 ######## FUNCTIONS ########
+
+function get_dimensions($show) {
+
+    global $screen_width, $screen_height;
+    $dim = array(
+        'x' => $screen_width,
+        'y' => $screen_height
+    );
+    
+    if($show == 'thumb') {
+
+        global $thumb_width, $thumb_height;
+        
+        $dim['x'] = $thumb_width;
+        $dim['y'] = $thumb_height;
+
+        return $dim;
+    }
+
+    global $db_host, $db_user, $db_pass, $db_name;
+    $db = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+    $esc_show = $db->escape_string($show);
+    $result = $db->query("select `width`, `height` from `slide` where `id`='$esc_show'");
+
+    if($result->num_rows == 1) {
+
+        $show_dim = $result->fetch_assoc();
+
+        if ($show_dim['width'] && $show_dim['height']) {
+            
+            $dim['x'] = $show_dim['width'];
+            $dim['y'] = $show_dim['height'];
+        }
+    }
+    
+    return $dim;
+}
 
 function create_image($width, $height, $bgcolor, $textcolor, $text) {
 

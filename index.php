@@ -3,7 +3,10 @@ require_once('./admin/config.php'); //provides $screen_*, $title, $timeout
 
 $db = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
-$show = isset($_GET['id']) ? $_GET['id'] : '';
+$show = '';
+if (isset($_GET['id'])) {
+    $show = $_GET['id'];
+}
 
 if(!$show) {
 
@@ -30,15 +33,15 @@ if(!$show) {
 }
 
 $html = file_get_contents('./picture.html');
-$index = isset($_COOKIE['index']) ? $_COOKIE['index'] : '';
 
-if(!$index) {
-    $index = 0;
+$index = 0;
+if(isset($_COOKIE['index'])) {
+    $index = $_COOKIE['index'];
 }
 
 $esc_show = $db->escape_string($show);
 $result = $db->query("select `image` from `show_image` where `show`=$esc_show order by `seq`");
-    
+
 $lines = $result->num_rows;
 if($lines == 0) {
     
@@ -56,8 +59,8 @@ if($lines == 0) {
 
 setcookie('index', $index+1);
 
-$keys = array('¤picture', '¤timeout');
-$values = array($picture, $timeout);
+$keys = array('¤show', '¤picture', '¤timeout');
+$values = array($show, $picture, $timeout);
 echo str_replace($keys, $values, $html);
 
 ?>
