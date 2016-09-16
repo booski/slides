@@ -17,6 +17,7 @@ function submit_form(event) {
     save_scroll()
     form.submit()
 }
+
 function dragstart(event) {
     event.dataTransfer.setData("draggedId", event.target.id)
     event.dataTransfer.setData("fromId", event.target.parentNode.id)
@@ -35,7 +36,7 @@ function remove_drop(event) {
 	return;
     }
     
-    var form = document.getElementById(event.currentTarget.id)
+    var form = event.currentTarget
     form.remove.value = item
     form.from.value = origin
 
@@ -52,7 +53,7 @@ function add_drop(event) {
 	return false;
     }
 
-    var form = document.getElementById(event.currentTarget.id)
+    var form = event.currentTarget
     form.add.value = item
     save_scroll()
     form.submit()
