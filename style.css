@@ -111,6 +111,7 @@ body {
 .smallbutton {
     vertical-align: middle;
     height: 22px;
+    cursor: pointer;
 }
 
 .divider {

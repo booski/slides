@@ -87,6 +87,7 @@
 ¤¤
 <div class="slide"
      id="¤slide"
+     title="Dra i mig!"
      
      draggable="true"
      ondragstart="dragstart(event)"
@@ -96,6 +97,7 @@
 ¤¤
 <div id="¤showid"
      class="show box"
+     title="Dra i mig!"
 
      ondragover="return false"
      ondrop="add_drop(event)"
@@ -131,15 +133,23 @@
 	     type="text"
 	     name="width"
 	     placeholder="¤owidth"
-	     value="¤swidth" />
+	     value="¤swidth"
+	     title="Bredd" />
       x
       <input class="inline sizebox"
 	     type="text"
 	     name="height"
 	     placeholder="¤oheight"
-	     value="¤sheight" />
-      <img class="smallbutton inline" src="../images/revert.svg" onclick="revert(event)" />
-      <img class="smallbutton inline" src="../images/commit.svg" onclick="submit_form(event)" />
+	     value="¤sheight"
+	     title="Höjd" />
+      <img class="smallbutton inline"
+	   src="../images/revert.svg"
+	   onclick="revert(event)"
+	   title="Avbryt" />
+      <img class="smallbutton inline"
+	   src="../images/commit.svg"
+	   onclick="submit_form(event)"
+	   title="Spara" />
     </form>
   </div>
   <div class="divider">
