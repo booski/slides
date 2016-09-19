@@ -94,29 +94,51 @@
   <img class="block center" src="../slide.php?show=thumb&name=¤slide" draggable="false" />
 </div>
 ¤¤
-<form name="show_¤showid"
-      id="show_¤showid"
-      class="show box"
+<div id="¤showid"
+     class="show box"
 
-      action="./action.php"
-      method="post"
-      enctype="multipart/form-data"
-
-      ondragover="return false"
-      ondrop="add_drop(event)"
-
-      draggable="true"
-      ondragstart="dragstart(event)"
-      ondragend="dragend(event)"
-
-      style="width: ¤widthpx;">
-
-  <input type="hidden" name="add" />
-  <input type="hidden" name="to" value="show_¤showid" />
+     ondragover="return false"
+     ondrop="add_drop(event)"
+     
+     draggable="true"
+     ondragstart="dragstart(event)"
+     ondragend="dragend(event)"
+     
+     style="width: ¤bwidthpx;">
+  
+  <form name="add"
+	action="./action.php"
+	method="post"
+	enctype="multipart/form-data">
+    
+    <input type="hidden" name="add" />
+    <input type="hidden" name="to" value="¤showid" />
+  </form>
   <div class="title">
-    <a href="../?id=¤showid">¤name</a>
-    <br />
-    id: ¤showid
+    <a href="../?id=¤showid">¤name</a><br />
+    id: ¤showid<br/>
+  </div>
+  <div>
+    <form name="size"
+	  action="./action.php"
+	  method="post"
+	  enctype="multipart/form-data">
+      <input type="hidden" name="size" />
+      <input type="hidden" name="id" value="¤showid" />
+      <input class="inline sizebox"
+	     type="text"
+	     name="width"
+	     placeholder="¤owidth"
+	     value="¤swidth" />
+      x
+      <input class="inline sizebox"
+	     type="text"
+	     name="height"
+	     placeholder="¤oheight"
+	     value="¤sheight" />
+      <img class="smallbutton inline" src="../images/reset.svg" onclick="" />
+      <img class="smallbutton inline" src="../images/commit.svg" onclick="submit_form(event)" />
+    </form>
   </div>
   ¤slides
-</form>
+</div>

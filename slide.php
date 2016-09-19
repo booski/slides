@@ -68,7 +68,7 @@ function get_dimensions($show) {
     $db = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
     $esc_show = $db->escape_string($show);
-    $result = $db->query("select `width`, `height` from `slide` where `id`='$esc_show'");
+    $result = $db->query("select `width`, `height` from `show` where `id`=$esc_show");
 
     if($result->num_rows == 1) {
 

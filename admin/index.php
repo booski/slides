@@ -21,10 +21,15 @@ if($error) {
     setcookie('error', '', time() - 3600);
 }
 
-$keys = array('¤title', '¤slides', '¤shows', '¤error', '¤visibility');
-$values = array($title, build_slidelist(), build_showlist(), $error, $visibility);
+$replacements = array(
+    '¤title' => $title,
+    '¤slides' => build_slidelist(),
+    '¤shows' => build_showlist(),
+    '¤error' => $error,
+    '¤visibility' => $visibility
+);
 
-print str_replace($keys, $values, $html_body);
+print replace($replacements, $html_body);
 
 
 ##### FUNCTIONS #####
@@ -37,27 +42,38 @@ function build_slidelist() {
     $slides = '';
     while($slide = $slideresult->fetch_assoc()) {
         
-        $keys = array('¤slide', '¤group');
-        $values = array($slide['name'], 'slides');
-        $slides .= str_replace($keys, $values, $html_slide);
+        $replacements = array(
+            '¤slide' => $slide['name'],
+            '¤group' => 'slides'
+        );
+
+        $slides .= replace($replacements, $html_slide);
     }
     
     return $slides;
 }
 
 function build_showlist() {
-    global $db, $html_show, $thumb_width;
+    global $db, $html_show, $thumb_width, $screen_width, $screen_height;
 
-    $showresult = $db->query('select `id`,`name` from `show`');
+    $showresult = $db->query('select `id`,`name`,`width`,`height` from `show`');
 
     $shows = '';
     while($show = $showresult->fetch_assoc()) {
         $id = $show['id'];
+
+        $replacements = array(
+            '¤showid' => $id,
+            '¤name' => $show['name'],
+            '¤slides' => build_show($id),
+            '¤bwidth' => $thumb_width + 64,
+            '¤owidth' => $screen_width,
+            '¤oheight' => $screen_height,
+            '¤swidth' => $show['width'],
+            '¤sheight' => $show['height']
+        );
         
-        $keys = array('¤showid', '¤name', '¤slides', '¤width');
-        $values = array($id, $show['name'], build_show($id), $thumb_width+64);
-        
-        $shows .= str_replace($keys, $values, $html_show);
+        $shows .= replace($replacements, $html_show);
     }
 
     return $shows;
@@ -72,13 +88,27 @@ function build_show($id) {
     $show_slides = '';
     while($show_slide = $slideresult->fetch_assoc()) {
 
-        $keys = array('¤slide', '¤group');
-        $values = array($show_slide['image'], $id);
+        $replacements = array(
+            '¤slide' => $show_slide['image'],
+            '¤group' => $id
+        );
 
-        $show_slides .= str_replace($keys, $values, $html_slide);
+        $show_slides .= replace($replacements, $html_slide);
     }
 
     return $show_slides;
+}
+
+function replace($assoc_arr, $subject) {
+    $keys = array();
+    $values = array();
+
+    foreach($assoc_arr as $key => $value) {
+        $keys[] = $key;
+        $values[] = $value;
+    }
+
+    return str_replace($keys, $values, $subject);
 }
 
 ?>

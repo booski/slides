@@ -102,3 +102,13 @@ body {
 .button {
     height: 30px;
 }
+
+.sizebox {
+    vertical-align: middle;
+    width: 20%;
+}
+
+.smallbutton {
+    vertical-align: middle;
+    height: 22px;
+}

@@ -35,7 +35,7 @@ function remove_drop(event) {
     if(!confirm_removal(item, origin)) {
 	return;
     }
-    
+
     var form = event.currentTarget
     form.remove.value = item
     form.from.value = origin
@@ -53,7 +53,7 @@ function add_drop(event) {
 	return false;
     }
 
-    var form = event.currentTarget
+    var form = event.currentTarget.children.add
     form.add.value = item
     save_scroll()
     form.submit()
@@ -61,10 +61,9 @@ function add_drop(event) {
 
 function confirm_removal(itemid, originid) {
 
-    var itemparts = itemid.split('_')
-    if(itemparts[0] == "show") {
+    if(originid == "shows") {
 	
-	return window.confirm("Är du säker på att du vill ta bort den här visningsytan (id: "+itemparts[1]+")?")
+	return window.confirm("Är du säker på att du vill ta bort den här visningsytan (id: "+itemid+")?")
 	
     } else if(originid == "slides") {
 

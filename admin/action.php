@@ -9,6 +9,10 @@ if(isset($_POST['new_show']) && $_POST['name']) {
     $esc_name = $db->escape_string($_POST['name']);
     $db->query("insert into `show` set `name`='$esc_name'");
 
+} else if(isset($_POST['size'])) {
+
+    set_size($_POST['id'], $_POST['width'], $_POST['height']);
+    
 } else if(isset($_POST['remove'])) {
     
     $item = $_POST['remove'];
@@ -18,10 +22,10 @@ if(isset($_POST['new_show']) && $_POST['name']) {
         delete_slide($item);
         
     } else if($from === 'shows') {
-        delete_show(explode('_', $item)[1]);
+        delete_show($item);
         
-    } else if(explode('_', $from)[0] === 'show') {
-        delete_from_show(explode('_', $from)[1], $item);
+    } else {
+        delete_from_show($from, $item);
     }
 
 } else if(isset($_FILES['uploadfile'])) {
@@ -30,7 +34,7 @@ if(isset($_POST['new_show']) && $_POST['name']) {
 
 } else if(isset($_POST['add'])) {
 
-    add_slide_to_show($_POST['add'], explode('_', $_POST['to'])[1]);
+    add_slide_to_show($_POST['add'], $_POST['to']);
     
 }
 
@@ -39,6 +43,41 @@ header('Location: '.$_SERVER['HTTP_REFERER']);
 
 
 ####### FUNCTIONS #######
+
+function set_size($show, $width, $height) {
+    global $db;
+
+    $esc_show = $db->escape_string($show);
+    if($width xor $height) {
+        error('Både bredd och höjd måste anges');
+        return;
+    }
+
+    $width = ltrim($width, '0');
+    $height = ltrim($height, '0');
+        
+    $esc_width = null;
+    $esc_height = null;
+    if($width && $height) {
+
+        if(!ctype_digit($width)) {
+            error('Ogiltig bredd.');
+            return;
+        }
+        
+        if(!ctype_digit($height)) {
+            error('Ogiltig höjd.');
+            return;
+        }
+
+        $esc_width = $db->escape_string($width);
+        $esc_height = $db->escape_string($height);
+        $db->query("update `show` set `width`=$esc_width, `height`=$esc_height where `id`=$esc_show");
+
+    } else {
+        $db->query("update `show` set `width`=NULL, `height`=NULL where `id`=$esc_show");
+    }
+}
 
 function delete_slide($slide) {
     global $uldir, $db;
