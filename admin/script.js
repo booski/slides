@@ -74,3 +74,9 @@ function confirm_removal(itemid, originid) {
 	return true
     }
 }
+
+function revert(event) {
+    var form = event.currentTarget.parentNode
+    form.width.value = form.start_width.value
+    form.height.value = form.start_height.value
+}

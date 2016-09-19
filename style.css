@@ -112,3 +112,11 @@ body {
     vertical-align: middle;
     height: 22px;
 }
+
+.divider {
+    background-color: #ccc;
+    height: 1px;
+    width: 100%;
+    margin:10px 0 0 0;
+    padding: 0px;
+}

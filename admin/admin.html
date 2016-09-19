@@ -125,6 +125,8 @@
 	  enctype="multipart/form-data">
       <input type="hidden" name="size" />
       <input type="hidden" name="id" value="¤showid" />
+      <input type="hidden" name="start_width" value="¤swidth" />
+      <input type="hidden" name="start_height" value="¤sheight" />
       <input class="inline sizebox"
 	     type="text"
 	     name="width"
@@ -136,9 +138,11 @@
 	     name="height"
 	     placeholder="¤oheight"
 	     value="¤sheight" />
-      <img class="smallbutton inline" src="../images/reset.svg" onclick="" />
+      <img class="smallbutton inline" src="../images/revert.svg" onclick="revert(event)" />
       <img class="smallbutton inline" src="../images/commit.svg" onclick="submit_form(event)" />
     </form>
+  </div>
+  <div class="divider">
   </div>
   ¤slides
 </div>
