@@ -1,5 +1,5 @@
 <?php
-require_once('./admin/config.php'); //provides $screen_*, $title, $timeout
+require_once('./admin/config.php'); //provides $db_*, $screen_*, $title, $timeout
 
 $db = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
@@ -34,30 +34,42 @@ if(!$show) {
 
 $html = file_get_contents('./picture.html');
 
-$index = 0;
-if(isset($_COOKIE['index'])) {
-    $index = $_COOKIE['index'];
-}
-
 $esc_show = $db->escape_string($show);
-$result = $db->query("select `image` from `show_image` where `show`=$esc_show order by `seq`");
 
-$lines = $result->num_rows;
-if($lines == 0) {
+$result = $db->query("select `id`from `show` where `id`=$esc_show");
+
+if($result->num_rows != 1) {
     
-    $picture = '';
-    
+    $picture = 'invalid';
+
 } else {
 
-    if($index >= $lines) {
-        $index = 0;
+    $index = 0;
+    if(isset($_COOKIE['index'])) {
+        $index = $_COOKIE['index'];
     }
-    $result->data_seek($index);
-    $picture = $result->fetch_assoc()['image'];
     
-}
+    $result = $db->query("select `image` from `show_image` where `show`=$esc_show order by `seq`");
 
-setcookie('index', $index+1);
+    $lines = $result->num_rows;
+    if($lines == 0) {
+        
+        $picture = '';
+        
+    } else {
+        
+        if($index >= $lines) {
+            $index = 0;
+        }
+        
+        $result->data_seek($index);
+        $picture = $result->fetch_assoc()['image'];
+        
+    }
+
+    setcookie('index', $index+1);
+
+}
 
 $keys = array('¤show', '¤picture', '¤timeout');
 $values = array($show, $picture, $timeout);
