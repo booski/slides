@@ -66,7 +66,7 @@ function build_showlist() {
             '¤showid' => $id,
             '¤name' => $show['name'],
             '¤slides' => build_show($id),
-            '¤bwidth' => $thumb_width + 64,
+            '¤bwidth' => max($thumb_width + 64, 192),
             '¤owidth' => $screen_width,
             '¤oheight' => $screen_height,
             '¤swidth' => $show['width'],
