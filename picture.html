@@ -1,9 +1,12 @@
 <html>
   <body style="background-color: #000000; padding: 0px; margin: 0px; overflow: hidden;">
     <script type="text/javascript">
-      window.setTimeout(function sleep() {
-        window.location.reload(true);
-      }, ¤timeout*1000);
+      var timeout = ¤timeout
+      if(timeout) {
+        window.setTimeout(function sleep() {
+          window.location.reload(true);
+        }, ¤timeout*1000);
+      }
     </script>
     <center>
       <img src="./slide.php?show=¤show&name=¤picture" style="margin: 0px; padding: 0px">
