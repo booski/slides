@@ -80,3 +80,8 @@ function revert(event) {
     form.width.value = form.start_width.value
     form.height.value = form.start_height.value
 }
+
+function hide_error(event) {
+    var errordiv = event.currentTarget
+    errordiv.style.display = "none"
+}

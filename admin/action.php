@@ -146,8 +146,16 @@ function save_upload($file) {
         error('Filen kunde inte laddas upp. (Felkod: '.$file['error'].')');
         return;
     }    
+
+    try {
+        $im = new Imagick($file['tmp_name']);
+        
+    } catch(Exception $e) {
+        
+        error('Filen kunde inte läsas. Är det en bild? (Felmeddelande: '.$e->getMessage().')');
+        return;
+    }
     
-    $im = new Imagick($file['tmp_name']);
     $mime = $im->getImageMimeType();
     
     if(!array_key_exists($mime, $exts)) {

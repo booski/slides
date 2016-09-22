@@ -32,11 +32,8 @@ if(!$show) {
     exit(0);
 }
 
-$html = file_get_contents('./picture.html');
-
 $esc_show = $db->escape_string($show);
-
-$result = $db->query("select `id`from `show` where `id`=$esc_show");
+$result = $db->query("select `id` from `show` where `id`=$esc_show");
 
 if($result->num_rows != 1) {
     
@@ -61,18 +58,17 @@ if($result->num_rows != 1) {
         if($index >= $lines) {
             $index = 0;
         }
+
+        setcookie('index', $index+1);
         
         $result->data_seek($index);
         $picture = $result->fetch_assoc()['image'];
-        
+        $html = './picture.html';
     }
-
-    setcookie('index', $index+1);
-
 }
 
 $keys = array('¤show', '¤picture', '¤timeout');
 $values = array($show, $picture, $timeout);
-echo str_replace($keys, $values, $html);
+echo str_replace($keys, $values, file_get_contents($html));;
 
 ?>
