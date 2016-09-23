@@ -75,10 +75,15 @@ function confirm_removal(itemid, originid) {
     }
 }
 
-function revert(event) {
+function revert_size(event) {
     var form = event.currentTarget.parentNode
     form.width.value = form.start_width.value
     form.height.value = form.start_height.value
+}
+
+function revert_time(event) {
+    var form = event.currentTarget.parentNode
+    form.timeout.value = form.start_timeout.value
 }
 
 function hide_error(event) {
