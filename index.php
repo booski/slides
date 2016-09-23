@@ -33,7 +33,7 @@ if(!$show) {
 }
 
 $esc_show = $db->escape_string($show);
-$result = $db->query("select `id` from `show` where `id`=$esc_show");
+$result = $db->query("select `id`,`timeout` from `show` where `id`=$esc_show");
 
 if($result->num_rows != 1) {
     
@@ -44,6 +44,11 @@ if($result->num_rows != 1) {
     $index = 0;
     if(isset($_COOKIE['index'])) {
         $index = $_COOKIE['index'];
+    }
+
+    $timeout_temp = $result->fetch_assoc()['timeout'];
+    if($timeout_temp) {
+        $timeout = $timeout_temp;
     }
     
     $result = $db->query("select `image` from `show_image` where `show`=$esc_show order by `seq`");
