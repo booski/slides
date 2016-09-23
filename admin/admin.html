@@ -120,40 +120,71 @@
     <a href="../?id=¤showid">¤name</a><br />
     id: ¤showid<br/>
   </div>
-  <div>
-    <form name="size"
-	  action="./action.php"
-	  method="post"
-	  enctype="multipart/form-data">
-      <input type="hidden" name="size" />
-      <input type="hidden" name="id" value="¤showid" />
-      <input type="hidden" name="start_width" value="¤swidth" />
-      <input type="hidden" name="start_height" value="¤sheight" />
-      <input class="inline sizebox"
-	     type="text"
-	     name="width"
-	     placeholder="¤owidth"
-	     value="¤swidth"
-	     title="Bredd" />
-      x
-      <input class="inline sizebox"
-	     type="text"
-	     name="height"
-	     placeholder="¤oheight"
-	     value="¤sheight"
-	     title="Höjd" />
-      <img class="smallbutton inline"
-	   src="../images/revert.svg"
-	   onclick="revert(event)"
-	   draggable="false"
-	   title="Avbryt" />
-      <img class="smallbutton inline"
-	   src="../images/commit.svg"
-	   onclick="submit_form(event)"
-	   draggable="false"
-	   title="Spara" />
-    </form>
+  <div class="divider">
   </div>
+  <form name="size"
+	action="./action.php"
+	method="post"
+	enctype="multipart/form-data">
+    <input type="hidden" name="size" />
+    <input type="hidden" name="id" value="¤showid" />
+    <input type="hidden" name="start_width" value="¤swidth" />
+    <input type="hidden" name="start_height" value="¤sheight" />
+    <p>
+      Upplösning:
+    </p>
+    <input class="inline smallbox"
+	   type="text"
+	   name="width"
+	   placeholder="¤owidth"
+	   value="¤swidth"
+	   title="Bredd" />
+    x
+    <input class="inline smallbox"
+	   type="text"
+	   name="height"
+	   placeholder="¤oheight"
+	   value="¤sheight"
+	   title="Höjd" />
+    <img class="smallbutton inline"
+	 src="../images/revert.svg"
+	 onclick="revert(event)"
+	 draggable="false"
+	 title="Avbryt" />
+    <img class="smallbutton inline"
+	 src="../images/commit.svg"
+	 onclick="submit_form(event)"
+	 draggable="false"
+	 title="Spara" />
+  </form>
+  <div class="divider">
+  </div>
+  <form name="timeout"
+	action="./action.php"
+	method="post"
+	enctype="multipart/form-data">
+    <input type="hidden" name="id" value="¤showid" />
+    <input type="hidden" name="start_timeout" value="¤stime" />
+    <p>
+      Tid per bild (sekunder):
+    </p>
+    <input class="inline smallbox"
+	   type="text"
+	   name="timeout"
+	   placeholder="¤otime"
+	   value="¤stime"
+	   title="Väntetid innan nästa bild automatiskt visas. Är värdet 0 eller mindre byts inte bilden automatiskt alls." />
+    <img class="smallbutton inline"
+	 src="../images/revert.svg"
+	 onclick="revert(event)"
+	 draggable="false"
+	 title="Avbryt" />
+    <img class="smallbutton inline"
+	 src="../images/commit.svg"
+	 onclick="submit_form(event)"
+	 draggable="false"
+	 title="Spara" />
+  </form>
   <div class="divider">
   </div>
   ¤slides

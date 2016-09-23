@@ -36,6 +36,10 @@ if(isset($_POST['new_show']) && $_POST['name']) {
 
     add_slide_to_show($_POST['add'], $_POST['to']);
     
+} else if(isset($_POST['timeout'])) {
+
+    set_timeout($_POST['id'], $_POST['timeout']);
+    
 }
 
 header('Location: '.$_SERVER['HTTP_REFERER']);
@@ -76,6 +80,26 @@ function set_size($show, $width, $height) {
 
     } else {
         $db->query("update `show` set `width`=NULL, `height`=NULL where `id`=$esc_show");
+    }
+}
+
+function set_timeout($show, $timeout) {
+    global $db;
+
+    $esc_show = $db->escape_string($show);
+    
+    if($timeout === '') {
+        $db->query("update `show` set `timeout`=NULL where `id`=$esc_show");
+
+    } else {
+
+        if(!ctype_digit($timeout)) {
+            error('Ogiltig tid.');
+            return;
+        }
+        
+        $esc_timeout = $db->escape_string($timeout);
+        $db->query("update `show` set `timeout`=$esc_timeout where `id`=$esc_show");
     }
 }
 

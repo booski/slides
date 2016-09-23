@@ -54,9 +54,9 @@ function build_slidelist() {
 }
 
 function build_showlist() {
-    global $db, $html_show, $thumb_width, $screen_width, $screen_height;
+    global $db, $html_show, $thumb_width, $screen_width, $screen_height, $timeout;
 
-    $showresult = $db->query('select `id`,`name`,`width`,`height` from `show`');
+    $showresult = $db->query('select `id`,`name`,`width`,`height`,`timeout` from `show`');
 
     $shows = '';
     while($show = $showresult->fetch_assoc()) {
@@ -70,7 +70,9 @@ function build_showlist() {
             '¤owidth' => $screen_width,
             '¤oheight' => $screen_height,
             '¤swidth' => $show['width'],
-            '¤sheight' => $show['height']
+            '¤sheight' => $show['height'],
+            '¤otime' => $timeout,
+            '¤stime' => $show['timeout']
         );
         
         $shows .= replace($replacements, $html_show);
