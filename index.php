@@ -41,6 +41,8 @@ if($result->num_rows != 1) {
 
 } else {
 
+    $html = './picture.html';
+
     $index = 0;
     if(isset($_COOKIE['index'])) {
         $index = $_COOKIE['index'];
@@ -68,7 +70,6 @@ if($result->num_rows != 1) {
         
         $result->data_seek($index);
         $picture = $result->fetch_assoc()['image'];
-        $html = './picture.html';
     }
 }
 
