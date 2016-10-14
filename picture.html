@@ -1,5 +1,31 @@
 <html>
-  <body style="background-color: #000000; padding: 0px; margin: 0px; overflow: hidden;">
+  <head>
+    <style type="text/css">
+      body {
+      background-color: #000000;
+      padding: 0px;
+      margin: 0px;
+      overflow: hidden;
+      font-size: 0;
+      }
+      .container {
+      height: 100%;
+      text-align: center;
+      white-space: nowrap;
+      }
+      .container:before {
+      content: '';
+      display: inline-block;
+      vertical-align: middle;
+      height: 100%;
+      }
+      img {
+      display: inline-block;
+      vertical-align: middle;
+      }
+    </style>
+  </head>
+  <body>
     <script type="text/javascript">
       var timeout = ¤timeout
       if(timeout > 0) {
@@ -8,8 +34,8 @@
         }, ¤timeout*1000);
       }
     </script>
-    <center>
-      <img src="./slide.php?show=¤show&name=¤picture" style="margin: 0px; padding: 0px">
-    </center>
+    <div class="container">
+      <img src="./slide.php?show=¤show&name=¤picture">
+    </div>
   </body>
 </html>
