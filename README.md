@@ -8,7 +8,8 @@ Drop a slide on a show to add it, drop a slide or a show on the trash icon to re
 ## Requirements
 
 * A webserver running PHP with imagemagick  
-* You also probably want to protect the `admin` directory with some sort of authentication
+* You also probably want to protect the `admin` directory with some sort of authentication  
+  The application will check users against the `$_SERVER['REMOTE_USER']` variable, so any authentication that populates that field should work. Authentication won't be enforced until the application knows of at least one authorized user.
 
 ## Installation
 
