@@ -27,6 +27,21 @@ function dragend(event) {
     event.dataTransfer.clearData()
 }
 
+function add_drop(event) {
+    event.preventDefault()
+    var item = event.dataTransfer.getData("draggedId")
+    var origin = event.dataTransfer.getData("fromId")
+
+    if(origin != "slides") {
+	return false;
+    }
+
+    var form = event.currentTarget.children.add
+    form.add.value = item
+    save_scroll()
+    form.submit()
+}
+
 function remove_drop(event) {
     event.preventDefault()
     var item = event.dataTransfer.getData("draggedId")
@@ -44,34 +59,25 @@ function remove_drop(event) {
     form.submit()
 }
 
-function add_drop(event) {
-    event.preventDefault()
-    var item = event.dataTransfer.getData("draggedId")
-    var origin = event.dataTransfer.getData("fromId")
-
-    if(origin != "slides") {
-	return false;
-    }
-
-    var form = event.currentTarget.children.add
-    form.add.value = item
-    save_scroll()
-    form.submit()
-}
-
 function confirm_removal(itemid, originid) {
 
     if(originid == "shows") {
-	
 	return window.confirm("Är du säker på att du vill ta bort den här visningsytan (id: "+itemid+")?")
 	
     } else if(originid == "slides") {
-
 	return window.confirm("Är du säker på att du vill ta bort den här bilden?")
 	
     } else {
-	
 	return true
+    }
+}
+
+function toggle_settings(event) {
+    var form = event.currentTarget.parentNode.querySelector('form')
+    if(form.classList.contains('hidden')) {
+	form.classList.remove('hidden')
+    } else {
+	revert_endform(form)
     }
 }
 
@@ -84,6 +90,16 @@ function revert_size(event) {
 function revert_time(event) {
     var form = event.currentTarget.parentNode
     form.timeout.value = form.start_timeout.value
+}
+
+function revert_endtime(event) {
+    var form = event.currentTarget.parentNode
+    revert_endform(form)
+}
+
+function revert_endform(form) {
+    form.endtime.value = form.start_endtime.value
+    form.classList.add('hidden');
 }
 
 function hide_error(event) {

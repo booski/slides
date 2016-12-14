@@ -52,8 +52,12 @@ if($result->num_rows != 1) {
     if($timeout_temp) {
         $timeout = $timeout_temp;
     }
-    
-    $result = $db->query("select `image` from `show_image` where `show`=$esc_show order by `seq`");
+
+    $time = time();
+    $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
+    $db->query("delete from `show_image` where `endtime`< $time");
+    $result = $db->query("select `image`,`endtime` from `show_image` where `show`=$esc_show order by `seq`");
+    $db->commit();
 
     $lines = $result->num_rows;
     if($lines == 0) {
@@ -75,6 +79,6 @@ if($result->num_rows != 1) {
 
 $keys = array('¤show', '¤picture', '¤timeout');
 $values = array($show, $picture, $timeout);
-echo str_replace($keys, $values, file_get_contents($html));;
+echo str_replace($keys, $values, file_get_contents($html));
 
 ?>

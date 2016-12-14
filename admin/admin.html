@@ -85,20 +85,60 @@
   </body>
 </html>
 ¤¤
-<div class="slide"
+<div class="slide left"
      id="¤slide"
-     title="Dra i mig!"
      
      draggable="true"
      ondragstart="dragstart(event)"
      ondragend="dragend(event)">
-  <img class="block center" src="../slide.php?show=thumb&name=¤slide" draggable="false" />
+  
+  <div class="relative">
+    <img class="slideimg relative center block"
+	 src="../slide.php?show=thumb&name=¤slide"
+	 draggable="false" />
+    
+    <img class="schedule tinybox smallbutton"
+	 src="../images/settings.svg"
+	 draggable="false"
+	 onclick="toggle_settings(event)"/>
+
+    <form name="endtime"
+	  class="scheduleform box hidden"
+	  action="./action.php"
+	  method="post"
+	  enctype="multipart/form-data">
+      <input type="hidden" name="id" value="¤showid" />
+      <input type="hidden" name="slide" value="¤slide" />
+      <p>
+	Sista visningsdag:
+	<input class="inline w75"
+	       type="text"
+	       name="endtime"
+	       placeholder="¤oendtime"
+	       value="¤sendtime"
+	       title="Sista dagen innan bilden automatiskt tas bort från den här visningsytan. Är fältet tomt så tas den inte bort automatiskt." />
+	<input type="hidden" name="start_endtime" value="¤sendtime" />
+      </p>
+
+      <img class="smallbutton right"
+	   style="vertical-align:bottom;"
+	   src="../images/commit.svg"
+	   onclick="submit_form(event)"
+	   draggable="false"
+	   title="Spara" />
+      <img class="smallbutton right"
+	   style="vertical-align:bottom;"
+	   src="../images/revert.svg"
+	   onclick="revert_endtime(event)"
+	   draggable="false"
+	   title="Avbryt" />
+    </form>
+  </div>
 </div>
 ¤¤
 <div id="¤showid"
      class="show box"
-     title="Dra i mig!"
-
+     
      ondragover="return false"
      ondrop="add_drop(event)"
      
@@ -120,8 +160,7 @@
     <a href="../?id=¤showid">¤name</a><br />
     id: ¤showid<br/>
   </div>
-  <div class="divider">
-  </div>
+  <div class="divider"></div>
   <form name="size"
 	action="./action.php"
 	method="post"
@@ -133,32 +172,31 @@
     <p>
       Upplösning:
     </p>
-    <input class="inline smallbox"
+    <input class="inline w30"
 	   type="text"
 	   name="width"
 	   placeholder="¤owidth"
 	   value="¤swidth"
 	   title="Bredd" />
     x
-    <input class="inline smallbox"
+    <input class="inline w30"
 	   type="text"
 	   name="height"
 	   placeholder="¤oheight"
 	   value="¤sheight"
 	   title="Höjd" />
-    <img class="smallbutton inline"
-	 src="../images/revert.svg"
-	 onclick="revert_size(event)"
-	 draggable="false"
-	 title="Avbryt" />
-    <img class="smallbutton inline"
+    <img class="smallbutton inline right"
 	 src="../images/commit.svg"
 	 onclick="submit_form(event)"
 	 draggable="false"
 	 title="Spara" />
+    <img class="smallbutton inline right"
+	 src="../images/revert.svg"
+	 onclick="revert_size(event)"
+	 draggable="false"
+	 title="Avbryt" />
   </form>
-  <div class="divider">
-  </div>
+  <div class="divider"></div>
   <form name="timeout"
 	action="./action.php"
 	method="post"
@@ -168,24 +206,23 @@
     <p>
       Tid per bild (sekunder):
     </p>
-    <input class="inline smallbox"
+    <input class="inline w30"
 	   type="text"
 	   name="timeout"
 	   placeholder="¤otime"
 	   value="¤stime"
 	   title="Väntetid innan nästa bild automatiskt visas. Är värdet 0 sker inget automatiskt byte." />
-    <img class="smallbutton inline"
-	 src="../images/revert.svg"
-	 onclick="revert_time(event)"
-	 draggable="false"
-	 title="Avbryt" />
-    <img class="smallbutton inline"
+    <img class="smallbutton inline right"
 	 src="../images/commit.svg"
 	 onclick="submit_form(event)"
 	 draggable="false"
 	 title="Spara" />
+    <img class="smallbutton inline right"
+	 src="../images/revert.svg"
+	 onclick="revert_time(event)"
+	 draggable="false"
+	 title="Avbryt" />
   </form>
-  <div class="divider">
-  </div>
+  <div class="divider"></div>
   ¤slides
 </div>

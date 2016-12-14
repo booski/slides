@@ -15,11 +15,15 @@ if(isset($_COOKIE['error'])) {
     $error = $_COOKIE['error'];
 }
 
+$time = time();
+
 $visibility = 'hidden';
 if($error) {
     $visibility = 'visible';
-    setcookie('error', '', time() - 3600);
+    setcookie('error', '', $time - 3600);
 }
+
+$db->query("delete from `show_image` where `endtime`<$time");
 
 $replacements = array(
     '¤title' => $title,
