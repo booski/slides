@@ -38,7 +38,11 @@ body {
 }
 
 .fade {
-    opacity: 0.3;
+    opacity: 0.8;
+}
+
+.fade:hover {
+    opacity: 1.0;
 }
 
 .w30 {
@@ -69,7 +73,7 @@ body {
     margin: 1.5pt;
 }
 
-:not(.show) > .slide > .relative > .tinybox {
+:not(.show) > .slide > .relative > .onlyshow {
     display: none;
 }
 
@@ -94,17 +98,24 @@ body {
     z-index: 1;
 }
 
-.schedule {
-    position: absolute;
-    bottom: -3pt;
-    right: -3pt;
+.slidesettings {
     z-index: 2;
 }
 
-.scheduleform {
+.settingsactive {
+    z-index: 3;
+}
+
+.onlyshow {
+    position: absolute;
+    top: -3pt;
+    right: -3pt;
+}
+
+.slidesettingsform {
     position: absolute;
     left: 100%;
-    top: 50%;
+    top: -10%;
     min-width: 200pt;
     z-index: 5;
 }

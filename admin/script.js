@@ -33,7 +33,7 @@ function add_drop(event) {
     var origin = event.dataTransfer.getData("fromId")
 
     if(origin != "slides") {
-	return false;
+	return false
     }
 
     var form = event.currentTarget.children.add
@@ -48,7 +48,7 @@ function remove_drop(event) {
     var origin = event.dataTransfer.getData("fromId")
 
     if(!confirm_removal(item, origin)) {
-	return;
+	return
     }
 
     var form = event.currentTarget
@@ -74,11 +74,15 @@ function confirm_removal(itemid, originid) {
 
 function toggle_settings(event) {
     var form = event.currentTarget.parentNode.querySelector('form')
-    if(form.classList.contains('hidden')) {
-	form.classList.remove('hidden')
-    } else {
-	revert_endform(form)
+    var forms = document.querySelectorAll('.slidesettingsform')
+    for(var i = 0; i < forms.length; i++) {
+	var oform = forms[i]
+	if(oform != form && !oform.classList.contains('hidden')) {
+	    toggle_endform(oform)
+	}
     }
+    
+    toggle_endform(form)
 }
 
 function revert_size(event) {
@@ -93,13 +97,30 @@ function revert_time(event) {
 }
 
 function revert_endtime(event) {
-    var form = event.currentTarget.parentNode
-    revert_endform(form)
+    toggle_endform(event.currentTarget.parentNode)
 }
 
-function revert_endform(form) {
-    form.endtime.value = form.start_endtime.value
-    form.classList.add('hidden');
+function toggle_endform(form) {
+    if(form.classList.contains('hidden')) {
+	var input = form.endtime
+
+	if(!input.date) {
+	    var date = new Date()
+	    var id = date.getTime()
+	    input.id = id
+	    input.date = new JsDatePick(
+		{
+		    useMode:2,
+		    target:id,
+		    dateFormat:"%Y-%m-%d"
+		})
+	}
+	form.classList.remove('hidden')
+    } else {
+	form.endtime.value = form.start_endtime.value
+	form.classList.add('hidden')
+    }
+    return
 }
 
 function hide_error(event) {

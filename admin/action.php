@@ -4,49 +4,69 @@ $uldir = '../'.$uldir.'/';
 
 header('Content-Type: text/html; charset=UTF-8');
 
-if(isset($_POST['new_show']) && $_POST['name']) {
-
-    $esc_name = $db->escape_string($_POST['name']);
-    $db->query("insert into `show` set `name`='$esc_name'");
-
-} else if(isset($_POST['size'])) {
-
-    set_size($_POST['id'], $_POST['width'], $_POST['height']);
-    
-} else if(isset($_POST['remove'])) {
-    
-    $item = $_POST['remove'];
-    $from = $_POST['from'];
-
-    if($from === 'slides') {
-        delete_slide($item);
+if(isset($_POST['action'])) {
+    switch($_POST['action']) {
         
-    } else if($from === 'shows') {
-        delete_show($item);
+    case 'create_show':
+        create_show($_POST['name']);
+        break;
         
-    } else {
-        delete_from_show($from, $item);
+    case 'set_show_size':
+        set_size($_POST['id'], $_POST['width'], $_POST['height']);
+        break;
+        
+    case 'remove':
+        $item = $_POST['remove'];
+        $from = $_POST['from'];
+        
+        if($from === 'slides') {
+            delete_slide($item);
+            
+        } else if($from === 'shows') {
+            delete_show($item);
+        
+        } else {
+            delete_from_show($from, $item);
+        }
+        break;
+        
+    case 'upload_file':
+        save_upload($_FILES['uploadfile']);
+        break;
+        
+    case 'add_slide_to_show':
+        add_slide_to_show($_POST['add'], $_POST['to']);
+        break;
+        
+    case 'set_show_timeout':
+        set_timeout($_POST['id'], $_POST['timeout']);
+        break;
+
+    case 'set_slide_autoremoval':
+        set_autoremoval($_POST['show'], $_POST['slide'], $_POST['endtime']);
+        break;
+        
+    default:
+        break;
     }
-
-} else if(isset($_FILES['uploadfile'])) {
-
-    save_upload($_FILES['uploadfile']);
-
-} else if(isset($_POST['add'])) {
-
-    add_slide_to_show($_POST['add'], $_POST['to']);
-    
-} else if(isset($_POST['timeout'])) {
-
-    set_timeout($_POST['id'], $_POST['timeout']);
-    
 }
 
 header('Location: '.$_SERVER['HTTP_REFERER']);
 
 
-
 ####### FUNCTIONS #######
+
+function create_show($showname) {
+    global $db;
+    
+    if(!$showname) {
+        error('Ytan måste ha ett namn.');
+        return;
+    }            
+    
+    $esc_name = $db->escape_string($showname);
+    $db->query("insert into `show` set `name`='$esc_name'");
+}
 
 function set_size($show, $width, $height) {
     global $db;
@@ -103,6 +123,23 @@ function set_timeout($show, $timeout) {
     }
 }
 
+function set_autoremoval($showid, $slide, $endtime) {
+    global $db;
+
+    $time = 'NULL';
+    if($endtime) {
+        $time = date_format(date_create_from_format("Y-m-d H:i", "$endtime 23:59"), 'U');
+        if(!$time) {
+            error("Ogiltigt datum.");
+            return;
+        }
+    }
+
+    $esc_show = $db->escape_string($showid);
+    $esc_slide = $db->escape_string($slide);
+    $db->query("update show_image set `endtime`=$time where `show`=$esc_show and `image`='$esc_slide'");
+}
+
 function delete_slide($slide) {
     global $uldir, $db;
     
@@ -144,8 +181,8 @@ function delete_show($show) {
     $esc_show = $db->escape_string($show);
 
     $db->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
-    $db->query("delete from `show` where `id`=$esc_show");
     $db->query("delete from `show_image` where `show`=$esc_show");
+    $db->query("delete from `show` where `id`=$esc_show");
     $db->commit();
 }
 

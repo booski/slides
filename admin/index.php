@@ -89,14 +89,23 @@ function build_show($id) {
     global $db, $html_slide;
 
     $esc_id = $db->escape_string($id);
-    $slideresult = $db->query("select `image` from `show_image` where `show`='$esc_id' order by `seq`");
+    $slideresult = $db->query("select `image`,`endtime` from `show_image` where `show`='$esc_id' order by `seq`");
     
     $show_slides = '';
     while($show_slide = $slideresult->fetch_assoc()) {
 
+        $endtime = $show_slide['endtime'];
+        $active = 'hidden';
+        if($endtime) {
+            $endtime = gmdate("Y-m-d", $endtime);
+            $active = '';
+        }
+        
         $replacements = array(
             '¤slide' => $show_slide['image'],
-            '¤group' => $id
+            '¤showid' => $id,
+            '¤sendtime' => $endtime,
+            '¤active' => $active,
         );
 
         $show_slides .= replace($replacements, $html_slide);
