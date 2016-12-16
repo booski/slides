@@ -102,20 +102,16 @@ function revert_endtime(event) {
 
 function toggle_endform(form) {
     if(form.classList.contains('hidden')) {
+	form.classList.remove('hidden')
 	var input = form.endtime
-
 	if(!input.date) {
 	    var date = new Date()
-	    var id = date.getTime()
-	    input.id = id
-	    input.date = new JsDatePick(
-		{
-		    useMode:2,
-		    target:id,
-		    dateFormat:"%Y-%m-%d"
-		})
+	    input.id = date.getTime()
+	    var cal = new dhtmlXCalendarObject(input.id)
+	    cal.hideTime()
+	    cal.setSensitiveRange(date, null) 
+	    input.date = cal
 	}
-	form.classList.remove('hidden')
     } else {
 	form.endtime.value = form.start_endtime.value
 	form.classList.add('hidden')
