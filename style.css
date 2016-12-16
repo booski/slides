@@ -1,60 +1,24 @@
 body {
     background-color: #ddd;
-    padding-right: 70px;
-}
-
-.title {
-    font-weight: bold;
-    font-size: 20pt;
-    margin: 5pt;
-}
-
-.slide {
-    padding: 8px;
-    float: left;
-    margin: 10px;
-    box-sizing: border-box;
-    border: 1px solid #000;
-}
-
-.slide:hover {
-    background-color: #EEE;
+    padding-right: 52.5pt;
 }
 
 .block {
     display: block;
 }
 
-.show {
-    float: left;
-    z-index: 10;
+.inline {
+    display: inline;
+    vertical-align: middle;
 }
 
-.show:hover {
-    background-color: #EEE;
+.hidden {
+    display: none;
 }
 
 .center {
     margin-left: auto;
     margin-right: auto;
-}
-
-.fade {
-    opacity: 0.3;
-}
-
-.box {
-    background-color: #fff;
-    box-sizing: border-box;
-    border-radius: 8pt;
-    border: 2pt solid #ccc;
-    box-shadow: 0px 1pt 3pt rgba(0, 0, 0, 0.1);
-    padding: 8pt;
-    margin: 5pt;
-}
-
-.end {
-    clear: both;
 }
 
 .left {
@@ -65,8 +29,104 @@ body {
     float: right;
 }
 
-.inline {
-    display: inline;
+.end {
+    clear: both;
+}
+
+.relative {
+    position: relative;
+}
+
+.fade {
+    opacity: 0.8;
+}
+
+.fade:hover {
+    opacity: 1.0;
+}
+
+.w30 {
+    width: 30pt;
+}
+
+.w75 {
+    width: 75pt;
+}
+
+.box {
+    background-color: #fff;
+    box-sizing: border-box;
+    border-radius: 8pt;
+    border: 2pt solid #ccc;
+    box-shadow: 0pt 1pt 3pt rgba(0, 0, 0, 0.1);
+    padding: 7.5pt;
+    margin: 4.5pt;
+}
+
+.tinybox {
+    background-color: #efefef;
+    box-sizing: border-box;
+    border-radius: 3pt;
+    border: 1pt solid #aaa;
+    box-shadow: 0pt 1pt 3pt rgba(0, 0, 0, 0.1);
+    padding: 1.5pt;
+    margin: 1.5pt;
+}
+
+:not(.show) > .slide > .relative > .onlyshow {
+    display: none;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 20pt;
+    margin: 5pt;
+}
+
+.slide {
+    padding: 1.5pt;
+    margin: 7.5pt;
+    box-sizing: border-box;
+    border: 1pt solid #000;
+}
+
+.slide:hover {
+    background-color: #EEE;
+}
+
+.slideimg {
+    z-index: 1;
+}
+
+.slidesettings {
+    z-index: 2;
+}
+
+.settingsactive {
+    z-index: 3;
+}
+
+.onlyshow {
+    position: absolute;
+    top: -3pt;
+    right: -3pt;
+}
+
+.slidesettingsform {
+    position: absolute;
+    left: 100%;
+    top: -10%;
+    min-width: 200pt;
+    z-index: 5;
+}
+
+.show {
+    float: left;
+    z-index: 10;
+}
+
+.show:hover {
+    background-color: #EEE;
 }
 
 #remove {
@@ -80,44 +140,30 @@ body {
 
 .error {
     position: fixed;
-    top: 8px;
+    top: 8pt;
     background-color: #EE9999;
-    border: 2px solid #CC4444;
+    border: 2pt solid #CC4444;
     left: 50%;
     transform: translate(-50%);
     z-index: 100;
 }
 
-.hidden {
-    display: none;
-}
-
 .sidebar {
     position: fixed;
-    bottom: 0px;
-    right: 0px;
+    bottom: 0pt;
+    right: 0pt;
     z-index: 100;
 }
 
-.button {
-    height: 30px;
-}
-
-.smallbox {
-    vertical-align: middle;
-    width: 20%;
-}
-
 .smallbutton {
-    vertical-align: middle;
-    height: 22px;
+    height: 18pt;
     cursor: pointer;
 }
 
 .divider {
     background-color: #ccc;
-    height: 1px;
+    height: 0.75pt;
     width: 100%;
-    margin:10px 0 0 0;
-    padding: 0px;
+    margin:7.5pt 0 0 0;
+    padding: 0pt;
 }

@@ -27,13 +27,28 @@ function dragend(event) {
     event.dataTransfer.clearData()
 }
 
+function add_drop(event) {
+    event.preventDefault()
+    var item = event.dataTransfer.getData("draggedId")
+    var origin = event.dataTransfer.getData("fromId")
+
+    if(origin != "slides") {
+	return false
+    }
+
+    var form = event.currentTarget.children.add
+    form.add.value = item
+    save_scroll()
+    form.submit()
+}
+
 function remove_drop(event) {
     event.preventDefault()
     var item = event.dataTransfer.getData("draggedId")
     var origin = event.dataTransfer.getData("fromId")
 
     if(!confirm_removal(item, origin)) {
-	return;
+	return
     }
 
     var form = event.currentTarget
@@ -44,35 +59,30 @@ function remove_drop(event) {
     form.submit()
 }
 
-function add_drop(event) {
-    event.preventDefault()
-    var item = event.dataTransfer.getData("draggedId")
-    var origin = event.dataTransfer.getData("fromId")
-
-    if(origin != "slides") {
-	return false;
-    }
-
-    var form = event.currentTarget.children.add
-    form.add.value = item
-    save_scroll()
-    form.submit()
-}
-
 function confirm_removal(itemid, originid) {
 
     if(originid == "shows") {
-	
 	return window.confirm("Är du säker på att du vill ta bort den här visningsytan (id: "+itemid+")?")
 	
     } else if(originid == "slides") {
-
 	return window.confirm("Är du säker på att du vill ta bort den här bilden?")
 	
     } else {
-	
 	return true
     }
+}
+
+function toggle_settings(event) {
+    var form = event.currentTarget.parentNode.querySelector('form')
+    var forms = document.querySelectorAll('.slidesettingsform')
+    for(var i = 0; i < forms.length; i++) {
+	var oform = forms[i]
+	if(oform != form && !oform.classList.contains('hidden')) {
+	    toggle_endform(oform)
+	}
+    }
+    
+    toggle_endform(form)
 }
 
 function revert_size(event) {
@@ -84,6 +94,29 @@ function revert_size(event) {
 function revert_time(event) {
     var form = event.currentTarget.parentNode
     form.timeout.value = form.start_timeout.value
+}
+
+function revert_endtime(event) {
+    toggle_endform(event.currentTarget.parentNode)
+}
+
+function toggle_endform(form) {
+    if(form.classList.contains('hidden')) {
+	form.classList.remove('hidden')
+	var input = form.endtime
+	if(!input.date) {
+	    var date = new Date()
+	    input.id = date.getTime()
+	    var cal = new dhtmlXCalendarObject(input.id)
+	    cal.hideTime()
+	    cal.setSensitiveRange(date, null) 
+	    input.date = cal
+	}
+    } else {
+	form.endtime.value = form.start_endtime.value
+	form.classList.add('hidden')
+    }
+    return
 }
 
 function hide_error(event) {
