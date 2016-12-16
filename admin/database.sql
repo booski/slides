@@ -43,7 +43,8 @@ CREATE TABLE `show_image` (
   `image` varchar(64) NOT NULL,
   `show` bigint(20) NOT NULL,
   `seq` bigint(20) NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`image`,`show`),
+  `endtime` bigint(20) DEFAULT NULL,
+PRIMARY KEY (`image`,`show`),
   UNIQUE KEY `seq` (`seq`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
