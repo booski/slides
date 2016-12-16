@@ -116,11 +116,6 @@ function toggle_settings(event) {
 function show_form(form) {
     if(form.classList.contains('hidden')) {
 	form.classList.remove('hidden')
-
-	form.addEventListener("click", stop)
-	
-	document.querySelector('body').addEventListener("click", close)
-	close.form = form
     }
 }
 
@@ -133,6 +128,10 @@ function hide_forms() {
 	    form.classList.add('hidden')
 	}
     }
+}
+
+function halt(event) {
+    event.stopPropagation()
 }
 
 function hide_error(event) {
