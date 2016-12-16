@@ -66,17 +66,27 @@ function build_showlist() {
     while($show = $showresult->fetch_assoc()) {
         $id = $show['id'];
 
+        $swidth = $show['width'];
+        $sheight = $show['height'];
+        $stime = $show['timeout'];
+        
+        $active = 'hidden';
+        if($swidth || $sheight || $stime) {
+            $active = '';
+        }
+
         $replacements = array(
             '¤showid' => $id,
             '¤name' => $show['name'],
             '¤slides' => build_show($id),
-            '¤bwidth' => max($thumb_width + 64, 192),
+            '¤bwidth' => max($thumb_width + 50, 100),
             '¤owidth' => $screen_width,
             '¤oheight' => $screen_height,
-            '¤swidth' => $show['width'],
-            '¤sheight' => $show['height'],
+            '¤swidth' => $swidth,
+            '¤sheight' => $sheight,
             '¤otime' => $timeout,
-            '¤stime' => $show['timeout']
+            '¤stime' => $stime,
+            '¤active' => $active,
         );
         
         $shows .= replace($replacements, $html_show);
@@ -95,6 +105,7 @@ function build_show($id) {
     while($show_slide = $slideresult->fetch_assoc()) {
 
         $endtime = $show_slide['endtime'];
+
         $active = 'hidden';
         if($endtime) {
             $endtime = gmdate("Y-m-d", $endtime);

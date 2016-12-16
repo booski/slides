@@ -18,6 +18,16 @@ function submit_form(event) {
     form.submit()
 }
 
+function select_file(event) {
+    var fileinput = document.getElementById("uploadfile")
+    fileinput.click()
+}
+
+function show_file(event) {
+    var filefield = document.getElementById("filename")
+    filefield.value = event.currentTarget.files[0].name
+}
+
 function dragstart(event) {
     event.dataTransfer.setData("draggedId", event.target.id)
     event.dataTransfer.setData("fromId", event.target.parentNode.id)
@@ -72,51 +82,57 @@ function confirm_removal(itemid, originid) {
     }
 }
 
+function toggle_showsettings(event) {
+    event.stopPropagation()
+    toggle_settings(event)
+}
+
+function toggle_slidesettings(event) {
+    event.stopPropagation()
+    toggle_settings(event)
+
+    var form = event.currentTarget.parentNode.querySelector('form')
+    var input = form.endtime
+    if(!input.date) {
+	var date = new Date()
+	input.id = date.getTime()
+	var cal = new dhtmlXCalendarObject(input.id)
+	cal.hideTime()
+	cal.setSensitiveRange(date, null)
+	input.date = cal
+    }
+}
+
 function toggle_settings(event) {
     var form = event.currentTarget.parentNode.querySelector('form')
-    var forms = document.querySelectorAll('.slidesettingsform')
-    for(var i = 0; i < forms.length; i++) {
-	var oform = forms[i]
-	if(oform != form && !oform.classList.contains('hidden')) {
-	    toggle_endform(oform)
-	}
+    var hidden = form.classList.contains('hidden')
+    hide_forms()
+
+    if(hidden) {
+	show_form(form)
     }
-    
-    toggle_endform(form)
 }
 
-function revert_size(event) {
-    var form = event.currentTarget.parentNode
-    form.width.value = form.start_width.value
-    form.height.value = form.start_height.value
-}
-
-function revert_time(event) {
-    var form = event.currentTarget.parentNode
-    form.timeout.value = form.start_timeout.value
-}
-
-function revert_endtime(event) {
-    toggle_endform(event.currentTarget.parentNode)
-}
-
-function toggle_endform(form) {
+function show_form(form) {
     if(form.classList.contains('hidden')) {
 	form.classList.remove('hidden')
-	var input = form.endtime
-	if(!input.date) {
-	    var date = new Date()
-	    input.id = date.getTime()
-	    var cal = new dhtmlXCalendarObject(input.id)
-	    cal.hideTime()
-	    cal.setSensitiveRange(date, null) 
-	    input.date = cal
-	}
-    } else {
-	form.endtime.value = form.start_endtime.value
-	form.classList.add('hidden')
+
+	form.addEventListener("click", stop)
+	
+	document.querySelector('body').addEventListener("click", close)
+	close.form = form
     }
-    return
+}
+
+function hide_forms() {
+    var forms = document.querySelectorAll('form')
+    for(var i=0; i < forms.length; i++) {
+	var form = forms[i]
+	if(form.classList.contains('hideable') && !form.classList.contains('hidden')) {
+	    form.reset()
+	    form.classList.add('hidden')
+	}
+    }
 }
 
 function hide_error(event) {

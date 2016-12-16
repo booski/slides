@@ -1,6 +1,19 @@
 body {
     background-color: #ddd;
     padding-right: 52.5pt;
+    font-size: larger;
+    font-family: sans-serif;
+}
+
+p {
+    margin-top: 7pt;
+    margin-bottom: 4.5pt;
+}
+
+input[type="text"] {
+    background-color: #eee;
+    border: 0pt solid #aaa;
+    padding: 3pt;
 }
 
 .block {
@@ -12,7 +25,7 @@ body {
     vertical-align: middle;
 }
 
-.hidden {
+.hidden, input[type="file"], :not(.show) > .slide > .relative > .slidesettings {
     display: none;
 }
 
@@ -45,6 +58,18 @@ body {
     opacity: 1.0;
 }
 
+.slideimg {
+    z-index: 1;
+}
+
+.inactive {
+    z-index: 2;
+}
+
+.active {
+    z-index: 3;
+}
+
 .w30 {
     width: 30pt;
 }
@@ -63,6 +88,20 @@ body {
     margin: 4.5pt;
 }
 
+.smallbox {
+    background-color: #efefef;
+    box-sizing: border-box;
+    border-radius: 4.5pt;
+    border: 1pt solid #aaa;
+    box-shadow: 0pt 1pt 3pt rgba(0, 0, 0, 0.1);
+    padding: 3pt;
+    margin: 3pt;
+}
+
+.smallbox:active {
+    background-color: #afafaf;
+}
+
 .tinybox {
     background-color: #efefef;
     box-sizing: border-box;
@@ -73,8 +112,18 @@ body {
     margin: 1.5pt;
 }
 
-:not(.show) > .slide > .relative > .onlyshow {
-    display: none;
+.tinybox:active {
+    background-color: #afafaf;
+}
+
+.smallbutton {
+    height: 24pt;
+    cursor: pointer;
+}
+
+.tinybutton {
+    height: 18pt;
+    cursor: pointer;
 }
 
 .title {
@@ -88,54 +137,40 @@ body {
     margin: 7.5pt;
     box-sizing: border-box;
     border: 1pt solid #000;
+    border-radius: 3pt;
 }
 
 .slide:hover {
     background-color: #EEE;
 }
 
-.slideimg {
-    z-index: 1;
-}
-
 .slidesettings {
-    z-index: 2;
-}
-
-.settingsactive {
-    z-index: 3;
-}
-
-.onlyshow {
     position: absolute;
-    top: -3pt;
-    right: -3pt;
+    top: -2pt;
+    right: -2pt;
 }
 
-.slidesettingsform {
+.showsettings {
     position: absolute;
-    left: 100%;
+    top: 0pt;
+    right: 0pt;
+}
+
+.settingsform {
+    position: absolute;
+    left: 10%;
     top: -10%;
     min-width: 200pt;
-    z-index: 5;
+    z-index: 50;
 }
 
 .show {
-    float: left;
-    z-index: 10;
+    display: inline-block;
+    vertical-align: top;
 }
 
 .show:hover {
     background-color: #EEE;
-}
-
-#remove {
-    background-color: #d00;
-}
-
-#settings {
-    background-color: #00d;
-    display: none;
 }
 
 .error {
@@ -145,25 +180,32 @@ body {
     border: 2pt solid #CC4444;
     left: 50%;
     transform: translate(-50%);
-    z-index: 100;
+}
+
+.calendar {
+    background: url(./images/calendar.svg) no-repeat right center;
+    background-size: 16pt;
 }
 
 .sidebar {
     position: fixed;
     bottom: 0pt;
     right: 0pt;
-    z-index: 100;
-}
-
-.smallbutton {
-    height: 18pt;
-    cursor: pointer;
 }
 
 .divider {
     background-color: #ccc;
     height: 0.75pt;
     width: 100%;
-    margin:7.5pt 0 0 0;
+    margin: 3pt 0 4.5pt 0;
     padding: 0pt;
+}
+
+#remove {
+    background-color: #d00;
+}
+
+#settings {
+    background-color: #00d;
+    display: none;
 }

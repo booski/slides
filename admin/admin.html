@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="./dhtmlxcalendar.css" />
     <title>¤title (admin)</title>
   </head>
-  <body>
+  <body onclick="hide_forms()">
     <script type="text/javascript" src="script.js"></script>
     <script type="text/javascript">
       window.onload = restore_scroll
@@ -33,9 +33,6 @@
 	<input type="hidden" name="from" />
       </form>
     </div>
-    <div class="error box ¤visibility" onclick="hide_error(event)">
-      ¤error
-    </div>
     <div class="box">
       <div class="title left">
 	Tillgängliga bilder
@@ -48,8 +45,18 @@
 	<input type="hidden" name="action" value="upload_file" />
 	<input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
 	Ladda upp ny bild:
-	<input name="uploadfile" type="file" />
-	<button onclick="submit_form(event)">
+	<input id="uploadfile"
+	       name="uploadfile"
+	       type="file"
+	       onchange="show_file(event)"/>
+	<input id="filename"
+	       class="inline"
+	       name="filename"
+	       type="text"
+	       placeholder="Välj en bild..."
+	       onclick="select_file(event)"
+	       readonly/>
+	<button class="tinybox" onclick="submit_form(event)">
 	  Ladda upp
 	</button>
       </form>
@@ -76,15 +83,17 @@
 	       class="inline"
 	       type="text"
 	       placeholder="Ange ett namn..." />
-	<button onclick="submit_form(event)">
+	<button class="tinybox" onclick="submit_form(event)">
 	  Lägg till
 	</button>
       </form>
       <div class="end"></div>
       <div class="shows" id="shows">
 	¤shows
-	<div class="end"></div>
       </div>
+    </div>
+    <div class="error box ¤visibility" onclick="hide_error(event)">
+      ¤error
     </div>
   </body>
 </html>
@@ -101,44 +110,45 @@
 	 src="../slide.php?show=thumb&name=¤slide"
 	 draggable="false" />
     
-    <img class="slidesettings tinybox smallbutton onlyshow fade"
+    <img class="slidesettings inactive tinybox tinybutton fade"
 	 src="../images/settings_inactive.svg"
 	 draggable="false"
-	 onclick="toggle_settings(event)"/>
+	 title="Visa bildinställningar"
+	 onclick="toggle_slidesettings(event)"/>
 
-    <img class="settingsactive tinybox smallbutton onlyshow ¤active"
+    <img class="slidesettings active tinybox tinybutton ¤active"
 	 src="../images/settings_active.svg"
 	 draggable="false"
-	 onclick="toggle_settings(event)"/>
+	 title="Visa bildinställningar"
+	 onclick="toggle_slidesettings(event)"/>
 
-    <form name="autoremove"
-	  class="slidesettingsform box hidden"
+    <form name="slidesettings"
+	  class="settingsform box hideable hidden"
 	  action="./action.php"
 	  method="post"
 	  enctype="multipart/form-data">
-      <input type="hidden" name="action" value="set_slide_autoremoval" />
+      <input type="hidden" name="action" value="configure_slide" />
       <input type="hidden" name="show" value="¤showid" />
       <input type="hidden" name="slide" value="¤slide" />
       <p>
 	Sista visningsdag:
-	<input class="inline w75"
+	<input class="inline w75 calendar"
 	       type="text"
 	       name="endtime"
 	       value="¤sendtime"
 	       title="Sista dagen innan bilden automatiskt tas bort från den här visningsytan. Är fältet tomt så tas den inte bort automatiskt." />
-	<input type="hidden" name="start_endtime" value="¤sendtime" />
       </p>
-
-      <img class="smallbutton right"
+      <div class="divider end"></div>
+      <img class="tinybutton tinybox right"
 	   style="vertical-align:bottom;"
 	   src="../images/commit.svg"
 	   onclick="submit_form(event)"
 	   draggable="false"
 	   title="Spara" />
-      <img class="smallbutton right"
+      <img class="tinybutton tinybox right"
 	   style="vertical-align:bottom;"
 	   src="../images/revert.svg"
-	   onclick="revert_endtime(event)"
+	   onclick="hide_forms()"
 	   draggable="false"
 	   title="Avbryt" />
     </form>
@@ -146,7 +156,7 @@
 </div>
 ¤¤
 <div id="¤showid"
-     class="show box"
+     class="show box relative"
      
      ondragover="return false"
      ondrop="add_drop(event)"
@@ -156,32 +166,28 @@
      ondragend="dragend(event)"
      
      style="width: ¤bwidthpx;">
-  
-  <form name="add"
-	action="./action.php"
-	method="post"
-	enctype="multipart/form-data">
 
-    <input type="hidden" name="action" value="add_slide_to_show" />
-    <input type="hidden" name="add" />
-    <input type="hidden" name="to" value="¤showid" />
-  </form>
-  <div class="title">
-    <a href="../?id=¤showid">¤name</a><br />
-    id: ¤showid<br/>
-  </div>
-  <div class="divider"></div>
-  <form name="size"
+  <img class="showsettings inactive smallbox smallbutton fade"
+       src="../images/settings_inactive.svg"
+       draggable="false"
+       title="Visa ytinställningar"
+       onclick="toggle_showsettings(event)"/>
+  
+  <img class="showsettings active smallbox smallbutton ¤active"
+       src="../images/settings_active.svg"
+       draggable="false"
+       title="Visa ytinställningar"
+       onclick="toggle_showsettings(event)"/>
+
+  <form name="showsettings"
+	class="settingsform box hideable hidden"
 	action="./action.php"
 	method="post"
 	enctype="multipart/form-data">
-    <input type="hidden" name="action" value="set_show_size" />
+    
+    <input type="hidden" name="action" value="configure_show" />
     <input type="hidden" name="id" value="¤showid" />
-    <input type="hidden" name="start_width" value="¤swidth" />
-    <input type="hidden" name="start_height" value="¤sheight" />
-    <p>
-      Upplösning:
-    </p>
+    Upplösning:
     <input class="inline w30"
 	   type="text"
 	   name="width"
@@ -195,45 +201,42 @@
 	   placeholder="¤oheight"
 	   value="¤sheight"
 	   title="Höjd" />
-    <img class="smallbutton inline right"
-	 src="../images/commit.svg"
-	 onclick="submit_form(event)"
-	 draggable="false"
-	 title="Spara" />
-    <img class="smallbutton inline right"
-	 src="../images/revert.svg"
-	 onclick="revert_size(event)"
-	 draggable="false"
-	 title="Avbryt" />
-  </form>
-  <div class="divider"></div>
-  <form name="timeout"
-	action="./action.php"
-	method="post"
-	enctype="multipart/form-data">
-    <input type="hidden" name="action" value="set_show_timeout" />
-    <input type="hidden" name="id" value="¤showid" />
-    <input type="hidden" name="start_timeout" value="¤stime" />
-    <p>
-      Tid per bild (sekunder):
-    </p>
+    <div class="divider"></div>
+    Tid per bild (sekunder):
     <input class="inline w30"
 	   type="text"
 	   name="timeout"
 	   placeholder="¤otime"
 	   value="¤stime"
 	   title="Väntetid innan nästa bild automatiskt visas. Är värdet 0 sker inget automatiskt byte." />
-    <img class="smallbutton inline right"
+    <div class="divider"></div>
+    <img class="tinybutton tinybox right"
+	 style="vertical-align:bottom;"
 	 src="../images/commit.svg"
 	 onclick="submit_form(event)"
 	 draggable="false"
 	 title="Spara" />
-    <img class="smallbutton inline right"
+    <img class="tinybutton tinybox right"
+	 style="vertical-align:bottom;"
 	 src="../images/revert.svg"
-	 onclick="revert_time(event)"
+	 onclick="hide_forms()"
 	 draggable="false"
 	 title="Avbryt" />
+    <div class="end"></div>
   </form>
+  <form name="add"
+	action="./action.php"
+	method="post"
+	enctype="multipart/form-data">
+
+    <input type="hidden" name="action" value="add_slide_to_show" />
+    <input type="hidden" name="add" />
+    <input type="hidden" name="to" value="¤showid" />
+  </form>
+  <div class="title">
+    <a href="../?id=¤showid" draggable="false">¤name</a><br />
+    id: ¤showid<br/>
+  </div>
   <div class="divider"></div>
   ¤slides
 </div>
