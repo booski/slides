@@ -103,6 +103,11 @@ function toggle_slidesettings(event) {
     }
 }
 
+function clear_date(event) {
+    var form = event.currentTarget.parentNode.parentNode
+    form.endtime.value = ''
+}
+
 function toggle_settings(event) {
     var form = event.currentTarget.parentNode.querySelector('form')
     var hidden = form.classList.contains('hidden')

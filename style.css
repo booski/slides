@@ -12,7 +12,7 @@ p {
 
 input[type="text"] {
     background-color: #eee;
-    border: 0pt solid #aaa;
+    border: 0;
     padding: 3pt;
 }
 
@@ -76,6 +76,10 @@ input[type="text"] {
 
 .w75 {
     width: 75pt;
+}
+
+.nowrap {
+    white-space: nowrap;
 }
 
 .box {
@@ -185,6 +189,11 @@ input[type="text"] {
 .calendar {
     background: url(./images/calendar.svg) no-repeat right center;
     background-size: 16pt;
+}
+
+.clearbutton {
+    background: #eee;
+    margin-left: -3.5pt;
 }
 
 .sidebar {

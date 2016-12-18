@@ -55,7 +55,7 @@
 	       type="text"
 	       placeholder="Välj en bild..."
 	       onclick="select_file(event)"
-	       readonly/>
+	       readonly />
 	<button class="tinybox" onclick="submit_form(event)">
 	  Ladda upp
 	</button>
@@ -131,13 +131,19 @@
       <input type="hidden" name="action" value="configure_slide" />
       <input type="hidden" name="show" value="¤showid" />
       <input type="hidden" name="slide" value="¤slide" />
-      <p>
+      <p class="nowrap">
 	Sista visningsdag:
 	<input class="inline w75 calendar"
 	       type="text"
 	       name="endtime"
 	       value="¤sendtime"
-	       title="Sista dagen innan bilden automatiskt tas bort från den här visningsytan. Är fältet tomt så tas den inte bort automatiskt." />
+	       title="Sista dagen innan bilden automatiskt tas bort från den här visningsytan. Är fältet tomt så tas den inte bort automatiskt."
+	       readonly />
+	<img class="clearbutton tinybutton inline"
+	     src="../images/clear.svg"
+	     onclick="clear_date(event)"
+	     draggable="false"
+	     title="Radera datum" />
       </p>
       <div class="divider end"></div>
       <img class="tinybutton tinybox right"
@@ -189,28 +195,32 @@
     
     <input type="hidden" name="action" value="configure_show" />
     <input type="hidden" name="id" value="¤showid" />
-    Upplösning:
-    <input class="inline w30"
-	   type="text"
-	   name="width"
-	   placeholder="¤owidth"
-	   value="¤swidth"
-	   title="Bredd" />
-    x
-    <input class="inline w30"
-	   type="text"
-	   name="height"
-	   placeholder="¤oheight"
-	   value="¤sheight"
-	   title="Höjd" />
+    <p class="nowrap">
+      Upplösning:
+      <input class="inline w30"
+	     type="text"
+	     name="width"
+	     placeholder="¤owidth"
+	     value="¤swidth"
+	     title="Bredd" />
+      x
+      <input class="inline w30"
+	     type="text"
+	     name="height"
+	     placeholder="¤oheight"
+	     value="¤sheight"
+	     title="Höjd" />
+    </p>
     <div class="divider"></div>
-    Tid per bild (sekunder):
-    <input class="inline w30"
-	   type="text"
-	   name="timeout"
-	   placeholder="¤otime"
-	   value="¤stime"
-	   title="Väntetid innan nästa bild automatiskt visas. Är värdet 0 sker inget automatiskt byte." />
+    <p class="nowrap">
+      Tid per bild (sekunder):
+      <input class="inline w30"
+	     type="text"
+	     name="timeout"
+	     placeholder="¤otime"
+	     value="¤stime"
+	     title="Väntetid innan nästa bild automatiskt visas. Är värdet 0 sker inget automatiskt byte." />
+    </p>
     <div class="divider"></div>
     <img class="tinybutton tinybox right"
 	 style="vertical-align:bottom;"
