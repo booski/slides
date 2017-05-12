@@ -85,17 +85,15 @@ input[type="text"] {
 .box {
     background-color: #fff;
     box-sizing: border-box;
-    border-radius: 8pt;
-    border: 2pt solid #ccc;
+    border: 1pt solid #ccc;
     box-shadow: 0pt 1pt 3pt rgba(0, 0, 0, 0.1);
     padding: 7.5pt;
     margin: 4.5pt;
 }
 
 .smallbox {
-    background-color: #efefef;
+    background-color: #eee;
     box-sizing: border-box;
-    border-radius: 4.5pt;
     border: 1pt solid #aaa;
     box-shadow: 0pt 1pt 3pt rgba(0, 0, 0, 0.1);
     padding: 3pt;
@@ -103,13 +101,12 @@ input[type="text"] {
 }
 
 .smallbox:active {
-    background-color: #afafaf;
+    background-color: #aaa;
 }
 
 .tinybox {
-    background-color: #efefef;
+    background-color: #eee;
     box-sizing: border-box;
-    border-radius: 3pt;
     border: 1pt solid #aaa;
     box-shadow: 0pt 1pt 3pt rgba(0, 0, 0, 0.1);
     padding: 1.5pt;
@@ -117,7 +114,7 @@ input[type="text"] {
 }
 
 .tinybox:active {
-    background-color: #afafaf;
+    background-color: #aaa;
 }
 
 .smallbutton {
@@ -141,11 +138,12 @@ input[type="text"] {
     margin: 7.5pt;
     box-sizing: border-box;
     border: 1pt solid #000;
-    border-radius: 3pt;
+    display: inline-block;
+    vertical-align: top;
 }
 
 .slide:hover {
-    background-color: #EEE;
+    background-color: #eee;
 }
 
 .slidesettings {
@@ -174,14 +172,14 @@ input[type="text"] {
 }
 
 .show:hover {
-    background-color: #EEE;
+    background-color: #eee;
 }
 
 .error {
     position: fixed;
     top: 8pt;
     background-color: #EE9999;
-    border: 2pt solid #CC4444;
+    border: 1pt solid #CC4444;
     left: 50%;
     transform: translate(-50%);
 }
@@ -196,10 +194,16 @@ input[type="text"] {
     margin-left: -3.5pt;
 }
 
-.sidebar {
+.sidebar-top {
     position: fixed;
-    bottom: 0pt;
-    right: 0pt;
+    top: 1.5pt;
+    right: 1.5pt;
+}
+
+.sidebar-bottom {
+    position: fixed;
+    bottom: 1.5pt;
+    right: 1.5pt;
 }
 
 .divider {
@@ -210,11 +214,11 @@ input[type="text"] {
     padding: 0pt;
 }
 
-#remove {
+.red {
     background-color: #d00;
+    
 }
 
-#settings {
-    background-color: #00d;
-    display: none;
+.gray {
+    background-color: #eee;
 }

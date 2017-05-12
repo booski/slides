@@ -1,19 +1,19 @@
 <?php
-require_once('./admin/config.php'); //provides $screen_*, $thumb_*
 
-$uldir = './'.$uldir.'/';
+require_once './include/functions.php';
+
+$show = '';
+if(!isset($_GET['show'])) {
+    return false;
+}
+
+$show = $_GET['show'];
+$dim = get_dimensions($show);
 
 $file = '';
 if(isset($_GET['name'])) {
     $file = $_GET['name'];
 }
-
-$show = '';
-if(isset($_GET['show'])) {
-    $show = $_GET['show'];
-}
-
-$dim = get_dimensions($show);
 
 $im = '';
 if(!$file) {
@@ -42,62 +42,6 @@ if(!$file) {
 
 header('Content-type:', $im->getImageMimeType());
 echo $im;
-return 0;
-
-######## FUNCTIONS ########
-
-function get_dimensions($show) {
-
-    global $screen_width, $screen_height;
-    $dim = array(
-        'x' => $screen_width,
-        'y' => $screen_height
-    );
-    
-    if($show == 'thumb') {
-
-        global $thumb_width, $thumb_height;
-        
-        $dim['x'] = $thumb_width;
-        $dim['y'] = $thumb_height;
-
-        return $dim;
-    }
-
-    global $db_host, $db_user, $db_pass, $db_name;
-    $db = new mysqli($db_host, $db_user, $db_pass, $db_name);
-
-    $esc_show = $db->escape_string($show);
-    $result = $db->query("select `width`, `height` from `show` where `id`=$esc_show");
-
-    if($result->num_rows == 1) {
-
-        $show_dim = $result->fetch_assoc();
-
-        if ($show_dim['width'] && $show_dim['height']) {
-            
-            $dim['x'] = $show_dim['width'];
-            $dim['y'] = $show_dim['height'];
-        }
-    }
-    
-    return $dim;
-}
-
-function create_image($width, $height, $bgcolor, $textcolor, $text) {
-
-    $draw = new ImagickDraw();
-    $draw->setFontSize(min($width, $height)/5);
-    $draw->setFillColor(new ImagickPixel($textcolor));
-    $draw->setTextAntialias(true);
-    $draw->setGravity(Imagick::GRAVITY_CENTER);
-    
-    $im = new Imagick();
-    $im->newImage($width, $height, $bgcolor, 'png');
-    $im->annotateImage($draw, 0, 0, 0, $text);
-    $im->borderImage($textcolor, 3, 3);
-    
-    return $im;
-}
+exit(0);
 
 ?>

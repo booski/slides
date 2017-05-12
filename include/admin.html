@@ -1,25 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html onclick="hide_forms()">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="../style.css" />
     <link rel="stylesheet" type="text/css" href="./dhtmlxcalendar.css" />
-    <title>¤title (admin)</title>
-  </head>
-  <body onclick="hide_forms()">
     <script type="text/javascript" src="script.js"></script>
     <script type="text/javascript">
       window.onload = restore_scroll
     </script>
     <script type="text/javascript" src="./dhtmlxcalendar.js"></script>
-    <div class="sidebar">
-      <div class="box" id="settings">
-	<img class="center block" src="../images/settings.svg" />
+    <title>¤title (admin)</title>
+  </head>
+  <body>
+    <div class="sidebar-top">
+      <div class="gray box">
+	<a href=".."><img class="center block" src="../images/back.svg" /></a>
       </div>
+    </div>
+    <div class="sidebar-bottom">
       <form name="remove"
-	    id="remove"
-	    class="box"
+	    class="red box"
 	    
 	    action="./action.php"
 	    method="post"
@@ -98,7 +99,7 @@
   </body>
 </html>
 ¤¤
-<div class="slide left"
+<div class="slide"
      id="¤slide"
      
      draggable="true"
