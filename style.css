@@ -20,6 +20,14 @@ input[type="text"], textarea {
     display: block;
 }
 
+.smaller {
+    font-size: 90%;
+}
+
+.serif {
+    font-family: monospace;
+}
+
 .inline {
     display: inline;
     vertical-align: middle;
@@ -177,6 +185,7 @@ input[type="text"], textarea {
     min-height: 250pt;
     margin: 0;
     padding: 0;
+    font-size: 12pt;
 }
 
 .show {
