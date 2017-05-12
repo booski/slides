@@ -11,13 +11,13 @@ if(!execute($get_allowed_users)) {
 
 $allowed_users = result($get_allowed_users);
 
-if(empty($allowed_users)) {
-    return true;
-}
-
 $user = '';
 if(isset($_SERVER['REMOTE_USER'])) {
     $user = $_SERVER['REMOTE_USER'];
+}
+
+if(empty($allowed_users)) {
+    return true;
 }
 
 if($user && in_array(array('user' => $user), $allowed_users)) {

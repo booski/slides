@@ -173,8 +173,10 @@ input[type="text"], textarea {
 }
 
 .securityform textarea {
-    min-width: 150pt;
-    min-height: 400pt;
+    width: 100%;
+    min-height: 250pt;
+    margin: 0;
+    padding: 0;
 }
 
 .show {

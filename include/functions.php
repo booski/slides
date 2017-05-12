@@ -261,7 +261,7 @@ function create_image($width, $height, $bgcolor, $textcolor, $text) {
 ##### ADMIN #####
 
 function build_admin_page() {
-    global $html_admin, $title;
+    global $html_admin, $user, $title;
 
     $html = explode('¤¤', file_get_contents($html_admin));
     $html_body = $html[0];
@@ -287,6 +287,7 @@ function build_admin_page() {
         '¤title'        => $title,
         '¤slides'       => build_slidelist($html_slide),
         '¤shows'        => build_showlist($html_show, $html_slide),
+        '¤username'     => $user,
         '¤allowedusers' => get_allowed_users(),
         '¤error'        => $error,
         '¤visibility'   => $visibility,
