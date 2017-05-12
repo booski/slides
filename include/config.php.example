@@ -3,14 +3,6 @@
 // site name
 $title = 'Slides';
 
-// users allowed to use the admin interface
-// checked vs the $_SERVER['REMOTE_USER'] variable
-// if empty, anyone will be allowed
-$allowed_users = array(
-    'user1',
-    'user2',
-);
-
 // mysql database credentials
 $db_name = 'name';
 $db_user = 'user';
@@ -18,15 +10,15 @@ $db_pass = 'pass';
 $db_host = 'host.net.tld';
 $db_port = 3306;
 
-// height and width to scale the slideshow images to
+// default height and width of a slideshow
 $screen_width = 1920;
 $screen_height = 1080;
+
+// default time between switching images
+$timeout = 300;
 
 // height and width to scale the admin page thumbnails to
 $thumb_width = 192;
 $thumb_height = 108;
-
-// time between switching images
-$timeout = 300;
 
 ?>

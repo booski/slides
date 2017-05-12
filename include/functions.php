@@ -33,6 +33,10 @@ $set_show_timeout          = prepare('update `show` set `timeout`=? where `id`=?
 $set_show_slide_autoremove = prepare('update `show_image` set `endtime`=? where `show`=? and `image`=?');
 $do_show_slide_autoremove  = prepare('delete from `show_image` where `endtime`<?');
 
+$get_allowed_users         = prepare('select * from `allowed_users`');
+$add_allowed_user          = prepare('insert into `allowed_users`(`user`) values (?)');
+$del_allowed_user          = prepare('delete from `allowed_users` where `user`=?');
+
 
 ########## UTILITIES ##########
 
@@ -51,7 +55,7 @@ function prepare($statement) {
 
 function execute($statement) {
     if(!$statement->execute()) {
-        return error('Databasfel: '.$statement->error());
+        return error('Databasfel: '.$statement->error);
     }
     return true;
 }
@@ -280,11 +284,12 @@ function build_admin_page() {
     }
 
     $replacements = array(
-        '¤title' => $title,
-        '¤slides' => build_slidelist($html_slide),
-        '¤shows' => build_showlist($html_show, $html_slide),
-        '¤error' => $error,
-        '¤visibility' => $visibility,
+        '¤title'        => $title,
+        '¤slides'       => build_slidelist($html_slide),
+        '¤shows'        => build_showlist($html_show, $html_slide),
+        '¤allowedusers' => get_allowed_users(),
+        '¤error'        => $error,
+        '¤visibility'   => $visibility,
     );
 
     return replace($replacements, $html_body);
@@ -383,8 +388,73 @@ function build_show($id, $html_slide) {
     return $show;
 }
 
+function get_allowed_users() {
+    global $get_allowed_users;
+
+    if(!execute($get_allowed_users)) {
+        return false;
+    }
+
+    $userlist = '';
+    foreach(result($get_allowed_users) as $line) {
+        $userlist .= $line['user'] . "\n";
+    }
+
+    return $userlist;
+}
+
 
 ########## ACTIONS ##########
+
+function set_allowed_users($users) {
+    global $user, $get_allowed_users, $del_allowed_user, $add_allowed_user;
+
+    $newlist = preg_split('/[\s,;]+/', $users);
+
+    if(!in_array($user, $newlist)) {
+        $newlist[] = $user;
+    }
+
+    if(!execute($get_allowed_users)) {
+        return false;
+    }
+
+    $oldlist = result($get_allowed_users);
+
+    $dellist = array();
+    foreach($oldlist as $line) {
+        $u = $line['user'];
+        if(!in_array($u, $newlist)) {
+            $dellist[] = $u;
+        }
+    }
+    
+    $addlist = array();
+    foreach($newlist as $u) {
+        if(!in_array(array('user' => $u), $oldlist)) {
+            $addlist[] = $u;
+        }
+    }
+
+    begin_trans();
+    
+    $add_allowed_user->bind_param('s', $adduser);
+    foreach($addlist as $adduser) {
+        
+        if($adduser && !execute($add_allowed_user)) {
+            return revert_trans();
+        }
+    }
+
+    $del_allowed_user->bind_param('s', $deluser);
+    foreach($dellist as $deluser) {
+        if(!execute($del_allowed_user)) {
+            return revert_trans();
+        }
+    }
+
+    return commit_trans();
+}
 
 function create_show($showname) {
     global $add_show;

@@ -82,6 +82,11 @@ function confirm_removal(itemid, originid) {
     }
 }
 
+function toggle_securitysettings(event) {
+    event.stopPropagation()
+    toggle_settings(event)
+}
+
 function toggle_showsettings(event) {
     event.stopPropagation()
     toggle_settings(event)
@@ -116,6 +121,11 @@ function toggle_settings(event) {
     if(hidden) {
 	show_form(form)
     }
+
+    var lightbox = document.querySelector('.lightbox')
+    if(lightbox.classList.contains('hidden')) {
+	lightbox.classList.remove('hidden');
+    }
 }
 
 function show_form(form) {
@@ -132,6 +142,11 @@ function hide_forms() {
 	    form.reset()
 	    form.classList.add('hidden')
 	}
+    }
+
+    var lightbox = document.querySelector('.lightbox')
+    if(!lightbox.classList.contains('hidden')) {
+	lightbox.classList.add('hidden');
     }
 }
 

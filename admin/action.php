@@ -42,6 +42,10 @@ if(isset($_POST['action'])) {
         set_size($_POST['id'], $_POST['width'], $_POST['height']);
         set_timeout($_POST['id'], $_POST['timeout']);
         break;
+
+    case 'configure_security':
+        set_allowed_users($_POST['userlist']);
+        break;
         
     default:
         break;

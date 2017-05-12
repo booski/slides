@@ -3,16 +3,29 @@
 $basedir = dirname(__FILE__);
 require_once $basedir.'/functions.php';
 
+if(!execute($get_allowed_users)) {
+    header('Content-Type: text/plain; charset=UTF-8');
+    echo 'Databasfel: '.$get_allowed_users->error;
+    exit(1);
+}
+
+$allowed_users = result($get_allowed_users);
+
+if(empty($allowed_users)) {
+    return true;
+}
+
 $user = '';
 if(isset($_SERVER['REMOTE_USER'])) {
     $user = $_SERVER['REMOTE_USER'];
 }
 
-if($user && (empty($allowed_users) || in_array($user, $allowed_users))) {
+if($user && in_array(array('user' => $user), $allowed_users)) {
     return true;
 }
 
-echo 'Permission denied.';
+header('Content-Type: text/plain; charset=UTF-8');
+echo 'Åtkomst nekad.';
 if($user) {
     echo " ($user)";
 }

@@ -13,27 +13,7 @@
     <title>¤title (admin)</title>
   </head>
   <body>
-    <div class="sidebar-top">
-      <div class="gray box">
-	<a href=".."><img class="center block" src="../images/back.svg" /></a>
-      </div>
-    </div>
-    <div class="sidebar-bottom">
-      <form name="remove"
-	    class="red box"
-	    
-	    action="./action.php"
-	    method="post"
-	    enctype="multipart/form-data"
-	    
-	    ondragover="return false"
-	    ondrop="remove_drop(event)">
-	<img class="center block" src="../images/delete.svg" />
-	<input type="hidden" name="action" value="remove" />
-	<input type="hidden" name="remove" />
-	<input type="hidden" name="from" />
-      </form>
-    </div>
+    <div class="lightbox hidden"></div>
     <div class="box">
       <div class="title left">
 	Tillgängliga bilder
@@ -74,7 +54,6 @@
       <form name="new_show"
 	    id="new_show"
 	    class="box right"
-	    
 	    action="./action.php"
 	    method="post"
 	    enctype="multipart/form-data">
@@ -93,6 +72,61 @@
 	¤shows
       </div>
     </div>
+    <div class="sidebar-top">
+      <div class="gray box">
+	<a href="..">
+	  <img class="center block"
+	       src="../images/back.svg"
+	       title="Tillbaka" />
+	</a>
+      </div>
+      <div class="relative">
+	<img class="gray box"
+	     src="../images/security.svg"
+	     title="Visa säkerhetsinställningar"
+	     onclick="toggle_securitysettings(event)"/>
+	<form name="securitysettings"
+	      class="securityform box hideable hidden"
+	      action="./action.php"
+	      method="post"
+	      onclick="halt(event)"
+	      enctype="multipart/form-data">
+	  <input type="hidden" name="action" value="configure_security" />
+	  <p class="nowrap">
+	    Tillåtna användare:
+	  </p>
+	  <p>
+	    <textarea title="Om du försöker ta bort dig själv kommer du automatiskt att läggas till igen."
+		      name="userlist">¤allowedusers</textarea>
+	  </p>
+	  <div class="divider end"></div>
+	  <img class="tinybutton tinybox right"
+	       src="../images/commit.svg"
+	       onclick="submit_form(event)"
+	       draggable="false"
+	       title="Spara" />
+	  <img class="tinybutton tinybox right"
+	       src="../images/revert.svg"
+	       onclick="hide_forms()"
+	       draggable="false"
+	       title="Avbryt" />
+	</form>
+      </div>
+    </div>
+    <div class="sidebar-bottom">
+      <form name="remove"
+	    class="red box"
+	    action="./action.php"
+	    method="post"
+	    enctype="multipart/form-data"
+	    ondragover="return false"
+	    ondrop="remove_drop(event)">
+	<img class="center block" src="../images/delete.svg" />
+	<input type="hidden" name="action" value="remove" />
+	<input type="hidden" name="remove" />
+	<input type="hidden" name="from" />
+      </form>
+    </div>
     <div class="error box ¤visibility" onclick="hide_error(event)">
       ¤error
     </div>
@@ -101,28 +135,23 @@
 ¤¤
 <div class="slide"
      id="¤slide"
-     
      draggable="true"
      ondragstart="dragstart(event)"
      ondragend="dragend(event)">
-  
   <div class="relative">
     <img class="slideimg relative center block"
 	 src="../slide.php?show=thumb&name=¤slide"
 	 draggable="false" />
-    
     <img class="slidesettings inactive tinybox tinybutton fade"
 	 src="../images/settings_inactive.svg"
 	 draggable="false"
 	 title="Visa bildinställningar"
 	 onclick="toggle_slidesettings(event)"/>
-
     <img class="slidesettings active tinybox tinybutton ¤active"
 	 src="../images/settings_active.svg"
 	 draggable="false"
 	 title="Visa bildinställningar"
 	 onclick="toggle_slidesettings(event)"/>
-
     <form name="slidesettings"
 	  class="settingsform box hideable hidden"
 	  action="./action.php"
@@ -134,7 +163,7 @@
       <input type="hidden" name="slide" value="¤slide" />
       <p class="nowrap">
 	Sista visningsdag:
-	<input class="inline w75 calendar"
+	<input class="inline calendar"
 	       type="text"
 	       name="endtime"
 	       value="¤sendtime"
@@ -148,13 +177,11 @@
       </p>
       <div class="divider end"></div>
       <img class="tinybutton tinybox right"
-	   style="vertical-align:bottom;"
 	   src="../images/commit.svg"
 	   onclick="submit_form(event)"
 	   draggable="false"
 	   title="Spara" />
       <img class="tinybutton tinybox right"
-	   style="vertical-align:bottom;"
 	   src="../images/revert.svg"
 	   onclick="hide_forms()"
 	   draggable="false"
@@ -165,47 +192,40 @@
 ¤¤
 <div id="¤showid"
      class="show box relative"
-     
      ondragover="return false"
      ondrop="add_drop(event)"
-     
      draggable="true"
      ondragstart="dragstart(event)"
      ondragend="dragend(event)"
-     
      style="width: ¤bwidthpx;">
-
   <img class="showsettings inactive smallbox smallbutton fade"
        src="../images/settings_inactive.svg"
        draggable="false"
        title="Visa ytinställningar"
        onclick="toggle_showsettings(event)"/>
-  
   <img class="showsettings active smallbox smallbutton ¤active"
        src="../images/settings_active.svg"
        draggable="false"
        title="Visa ytinställningar"
        onclick="toggle_showsettings(event)"/>
-
   <form name="showsettings"
 	class="settingsform box hideable hidden"
 	action="./action.php"
 	method="post"
 	onclick="halt(event)"
 	enctype="multipart/form-data">
-    
     <input type="hidden" name="action" value="configure_show" />
     <input type="hidden" name="id" value="¤showid" />
     <p class="nowrap">
       Upplösning:
-      <input class="inline w30"
+      <input class="inline"
 	     type="text"
 	     name="width"
 	     placeholder="¤owidth"
 	     value="¤swidth"
 	     title="Bredd" />
       x
-      <input class="inline w30"
+      <input class="inline"
 	     type="text"
 	     name="height"
 	     placeholder="¤oheight"
@@ -215,7 +235,7 @@
     <div class="divider"></div>
     <p class="nowrap">
       Tid per bild (sekunder):
-      <input class="inline w30"
+      <input class="inline"
 	     type="text"
 	     name="timeout"
 	     placeholder="¤otime"
@@ -224,13 +244,11 @@
     </p>
     <div class="divider"></div>
     <img class="tinybutton tinybox right"
-	 style="vertical-align:bottom;"
 	 src="../images/commit.svg"
 	 onclick="submit_form(event)"
 	 draggable="false"
 	 title="Spara" />
     <img class="tinybutton tinybox right"
-	 style="vertical-align:bottom;"
 	 src="../images/revert.svg"
 	 onclick="hide_forms()"
 	 draggable="false"
@@ -241,7 +259,6 @@
 	action="./action.php"
 	method="post"
 	enctype="multipart/form-data">
-
     <input type="hidden" name="action" value="add_slide_to_show" />
     <input type="hidden" name="add" />
     <input type="hidden" name="to" value="¤showid" />
