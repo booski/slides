@@ -82,3 +82,4 @@ $values = array($show, $picture, $timeout);
 echo str_replace($keys, $values, file_get_contents($html));
 
 ?>
+
