@@ -114,7 +114,8 @@ function clear_date(event) {
 }
 
 function toggle_settings(event) {
-    var form = event.currentTarget.parentNode.querySelector('form')
+    var parent = event.currentTarget.parentNode
+    var form = parent.querySelector('form')
     var hidden = form.classList.contains('hidden')
     hide_forms()
 
@@ -122,7 +123,7 @@ function toggle_settings(event) {
 	show_form(form)
     }
 
-    var lightbox = document.querySelector('.lightbox')
+    var lightbox = parent.querySelector('.lightbox')
     if(lightbox.classList.contains('hidden')) {
 	lightbox.classList.remove('hidden');
     }
@@ -144,9 +145,13 @@ function hide_forms() {
 	}
     }
 
-    var lightbox = document.querySelector('.lightbox')
-    if(!lightbox.classList.contains('hidden')) {
-	lightbox.classList.add('hidden');
+    var lightboxes = document.querySelectorAll('.lightbox');
+    
+    for(var i=0; i < lightboxes.length; i++) {
+	var lightbox = lightboxes[i];
+	if(!lightbox.classList.contains('hidden')) {
+	    lightbox.classList.add('hidden')
+	}
     }
 }
 

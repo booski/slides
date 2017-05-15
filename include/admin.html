@@ -13,7 +13,6 @@
     <title>¤title (admin)</title>
   </head>
   <body>
-    <div class="lightbox hidden"></div>
     <div class="box">
       <div class="title left">
 	Tillgängliga bilder
@@ -85,6 +84,7 @@
 	     src="../images/security.svg"
 	     title="Visa säkerhetsinställningar"
 	     onclick="toggle_securitysettings(event)"/>
+	<div class="lightbox hidden"></div>
 	<form name="securitysettings"
 	      class="securityform box hideable hidden"
 	      action="./action.php"
@@ -156,6 +156,7 @@
 	 draggable="false"
 	 title="Visa bildinställningar"
 	 onclick="toggle_slidesettings(event)"/>
+    <div class="lightbox hidden"></div>
     <form name="slidesettings"
 	  class="settingsform box hideable hidden"
 	  action="./action.php"
@@ -212,6 +213,7 @@
        draggable="false"
        title="Visa ytinställningar"
        onclick="toggle_showsettings(event)"/>
+  <div class="lightbox hidden"></div>
   <form name="showsettings"
 	class="settingsform box hideable hidden"
 	action="./action.php"
