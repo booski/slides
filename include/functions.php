@@ -552,6 +552,7 @@ function delete_slide($slide) {
     }
 
     begin_trans();
+    $get_slide_usage->bind_param('s', $slide);
     if(!execute($get_slide_usage)) {
         return revert_trans();
     }
