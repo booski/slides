@@ -6,6 +6,7 @@ require_once $basedir.'/config.php';
 $html_admin  = $basedir.'/admin.html';
 $html_public = $basedir.'/list.html';
 $html_slide  = $basedir.'/picture.html';
+$html_video  = $basedir.'/video.html';
 
 $uldir = $basedir.'/../uploads/';
 
@@ -18,6 +19,7 @@ if($db->connect_errno) {
 $add_slide                 = prepare('insert into `slide`(`name`) values (?)');
 $del_slide                 = prepare('delete from slide where `name`=?');
 $get_slides                = prepare('select * from `slide`');
+$get_slide                 = prepare('select * from `slide` where `name`=?');
 $get_slide_usage           = prepare('select * from `show_image` where `image`=?');
 
 $add_show                  = prepare('insert into `show`(`name`) values (?)');
@@ -143,7 +145,7 @@ function build_public_page() {
 }
 
 function build_public_slide($showid) {
-    global $get_show, $get_show_slides, $html_slide;
+    global $get_show, $get_show_slides, $get_slide;
 
     $get_show->bind_param('i', $showid);
     if(!execute($get_show)) {
@@ -153,53 +155,96 @@ function build_public_slide($showid) {
     $show = result($get_show);
     
     if(count($show) != 1) {
-
-        $picture = 'invalid';
-        
-    } else {
-        $show = $show[0];
-        
-        $index = 0;
-        if(isset($_COOKIE['index'])) {
-            $index = $_COOKIE['index'];
-        }
-
-        $timeout_temp = $show['timeout'];
-        if($timeout_temp) {
-            $timeout = $timeout_temp;
-        }
-
-        if(!do_autoremoval()) {
-            return false;
-        }
-
-        $get_show_slides->bind_param('i', $showid);
-        if(!execute($get_show_slides)) {
-            return false;
-        }
-
-        $slides = result($get_show_slides);
-        $lines = count($slides);
-
-        if($lines == 0) {
-            $picture = '';
-        } else {
-            if($index >= $lines) {
-                $index = 0;
-            }
-
-            setcookie('index', $index+1);
-            $picture = $slides[$index]['image'];
-        }
+        return false;
     }
 
+    $show = $show[0];
+    
+    $index = 0;
+    if(isset($_COOKIE['index'])) {
+        $index = $_COOKIE['index'];
+    }
+    
+    $timeout_temp = $show['timeout'];
+    if($timeout_temp) {
+        $timeout = $timeout_temp;
+    }
+
+    if(!do_autoremoval()) {
+        return false;
+    }
+
+    $get_show_slides->bind_param('i', $showid);
+    if(!execute($get_show_slides)) {
+        return false;
+    }
+
+    $slides = result($get_show_slides);
+    $lines = count($slides);
+
+    if($lines == 0) {
+        return build_slide($showid, '', 0);
+    } else {
+        if($index >= $lines) {
+            $index = 0;
+        }
+
+        setcookie('index', $index+1);
+    }
+
+    $slideid = $slides[$index]['image'];
+
+    $get_slide->bind_param('s', $slideid);
+    if(!execute($get_slide)) {
+        return false;
+    }
+    
+    $slide = result($get_slide);
+    if(count($slide) != 1) {
+        return false;
+    }
+
+    $slide = $slide[0];
+    $content = $slide['name'];
+    $type = $slide['type'];
+
+    switch($type) {
+    case 'video':
+        return build_video($showid, $content);
+        break;
+    case 'image':
+        return build_slide($showid, $content, $timeout);
+        break;
+    default:
+        return build_slide($showid, 'invalid', 0);
+        break;
+    }
+}
+
+function build_slide($showid, $image, $timeout) {
+    global $html_slide;
+    
     $replacements = array(
         '¤show'    => $showid,
-        '¤picture' => $picture,
+        '¤picture' => $image,
         '¤timeout' => $timeout,
     );
 
     return replace($replacements, file_get_contents($html_slide));
+}
+
+function build_video($video) {
+    global $uldir, $html_video;
+
+    $timeout = 20; // needs to be read from the video
+    
+    $replacements = array(
+        '¤video'   => $video,
+        '¤timeout' => $timeout,
+    );
+
+    return replace($replacements, file_get_contents($html_video));
+    
 }
 
 function get_dimensions($showid) {
