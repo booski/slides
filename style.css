@@ -167,8 +167,8 @@ input[type="text"], textarea {
 
 .settingsform {
     position: absolute;
-    left: 10%;
-    top: -10%;
+    left: 5pt;
+    top: 5pt;
     min-width: 200pt;
     z-index: 50;
 }
