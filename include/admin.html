@@ -15,7 +15,7 @@
   <body>
     <div class="box">
       <div class="title left">
-	Tillgängliga bilder
+	Tillgängligt innehåll
       </div>
       <form name="upload"
 	    class="box right"
@@ -23,8 +23,8 @@
 	    method="post"
 	    enctype="multipart/form-data">
 	<input type="hidden" name="action" value="upload_file" />
-	<input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
-	Ladda upp ny bild:
+	<input type="hidden" name="MAX_FILE_SIZE" value="200000000" />
+	Ladda upp nytt innehåll:
 	<input id="uploadfile"
 	       name="uploadfile"
 	       type="file"
@@ -33,7 +33,7 @@
 	       class="inline"
 	       name="filename"
 	       type="text"
-	       placeholder="Välj en bild..."
+	       placeholder="Välj en fil..."
 	       onclick="select_file(event)"
 	       readonly />
 	<button class="tinybox" onclick="submit_form(event)">
