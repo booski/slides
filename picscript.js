@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function init() {
 
     if(timeout > 0) {
 	window.setTimeout(function sleep() {
-            window.location.reload(true);
-	}, timeout*1000);
+            window.location.reload(true)
+	}, timeout*1000)
     }
 })
