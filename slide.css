@@ -1,0 +1,25 @@
+body {
+    background-color: #000000;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+    font-size: 0;
+}
+.container {
+    height: 100%;
+    text-align: center;
+    white-space: nowrap;
+}
+.container:before {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+}
+#content {
+    display: inline-block;
+    vertical-align: middle;
+}
+.nocursor {
+    cursor: none;
+}
