@@ -1,32 +1,6 @@
 <html>
   <head>
-    <style type="text/css">
-      body {
-      background-color: #000000;
-      padding: 0px;
-      margin: 0px;
-      overflow: hidden;
-      font-size: 0;
-      }
-      .container {
-      height: 100%;
-      text-align: center;
-      white-space: nowrap;
-      }
-      .container:before {
-      content: '';
-      display: inline-block;
-      vertical-align: middle;
-      height: 100%;
-      }
-      img {
-      display: inline-block;
-      vertical-align: middle;
-      }
-      .nocursor {
-      cursor: none;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="./slide.css" />
   </head>
   <body>
     <script type="text/javascript">
@@ -35,7 +9,8 @@
     <script type="text/javascript" src="picscript.js">
     </script>
     <div class="container">
-      <img src="./slide.php?show=¤show&name=¤picture">
+      <img id="content"
+	   src="./slide.php?show=¤show&name=¤picture" />
     </div>
   </body>
 </html>
