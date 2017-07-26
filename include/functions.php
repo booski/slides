@@ -205,20 +205,44 @@ function build_public_slide($showid) {
     }
 
     $slide = $slide[0];
-    $content = $slide['id'];
     $type = $slide['type'];
 
     switch($type) {
     case 'video':
-        return build_video($showid, $content);
+        return build_video($slide['name'], get_dimensions($showid));
         break;
     case 'image':
-        return build_slide($showid, $content, $timeout);
+        return build_slide($showid, $slide['id'], $timeout);
         break;
     default:
         return build_slide($showid, 'invalid', 0);
         break;
     }
+}
+
+function build_slide($showid, $slideid, $timeout) {
+    global $html_slide;
+    
+    $replacements = array(
+        '¤showid'  => $showid,
+        '¤slideid' => $slideid,
+        '¤timeout' => $timeout,
+    );
+
+    return replace($replacements, file_get_contents($html_slide));
+}
+
+function build_video($videosrc, $showdim) {
+    global $html_video, $uldir;
+
+    $replacements = array(
+        '¤video'  => $videosrc,
+        '¤thumb'  => $videosrc.'.png',
+        '¤width'  => $showdim['x'],
+        '¤height' => $showdim['y'],
+    );
+
+    return replace($replacements, file_get_contents($html_video));
 }
 
 function build_show_slide($showid, $slideid) {
@@ -266,28 +290,6 @@ function build_show_slide($showid, $slideid) {
     
 }
     
-function build_slide($showid, $slideid, $timeout) {
-    global $html_slide;
-    
-    $replacements = array(
-        '¤showid'  => $showid,
-        '¤slideid' => $slideid,
-        '¤timeout' => $timeout,
-    );
-
-    return replace($replacements, file_get_contents($html_slide));
-}
-
-function build_video($video) {
-    global $html_video;
-
-    $replacements = array(
-        '¤video' => $video,
-    );
-
-    return replace($replacements, file_get_contents($html_video));
-}
-
 function get_dimensions($showid) {
     global $screen_width, $screen_height;
     global $thumb_width, $thumb_height;
