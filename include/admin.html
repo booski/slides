@@ -138,20 +138,20 @@
 </html>
 ¤¤
 <div class="slide"
-     id="¤slide"
+     id="¤slideid"
      draggable="true"
      ondragstart="dragstart(event)"
      ondragend="dragend(event)">
   <div class="relative">
     <img class="slideimg relative center block"
-	 src="../slide.php?show=thumb&name=¤slide"
+	 src="../slide.php?showid=thumb&slideid=¤slideid"
 	 draggable="false" />
-    <img class="slidesettings inactive tinybox tinybutton fade"
+    <img class="slidesettings inactive tinybox tinybutton fade ¤hidden"
 	 src="../images/settings_inactive.svg"
 	 draggable="false"
 	 title="Visa bildinställningar"
 	 onclick="toggle_slidesettings(event)"/>
-    <img class="slidesettings active tinybox tinybutton ¤active"
+    <img class="slidesettings active tinybox tinybutton ¤active ¤hidden"
 	 src="../images/settings_active.svg"
 	 draggable="false"
 	 title="Visa bildinställningar"
@@ -164,8 +164,8 @@
 	  onclick="halt(event)"
 	  enctype="multipart/form-data">
       <input type="hidden" name="action" value="configure_slide" />
-      <input type="hidden" name="show" value="¤showid" />
-      <input type="hidden" name="slide" value="¤slide" />
+      <input type="hidden" name="showid" value="¤showid" />
+      <input type="hidden" name="slideid" value="¤slideid" />
       <p class="nowrap">
 	Sista visningsdag:
 	<input class="inline calendar"
@@ -221,7 +221,7 @@
 	onclick="halt(event)"
 	enctype="multipart/form-data">
     <input type="hidden" name="action" value="configure_show" />
-    <input type="hidden" name="id" value="¤showid" />
+    <input type="hidden" name="showid" value="¤showid" />
     <p class="nowrap">
       Upplösning:
       <input class="inline"
