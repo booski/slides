@@ -16,24 +16,24 @@ if($db->connect_errno) {
     exit(1);
 }
 
-$add_slide                 = prepare('insert into `slide`(`name`) values (?)');
-$del_slide                 = prepare('delete from slide where `name`=?');
+$add_slide                 = prepare('insert into `slide`(`name`, `type`) values (?, ?)');
+$del_slide                 = prepare('delete from slide where `id`=?');
 $get_slides                = prepare('select * from `slide`');
-$get_slide                 = prepare('select * from `slide` where `name`=?');
-$get_slide_usage           = prepare('select * from `show_image` where `image`=?');
+$get_slide                 = prepare('select * from `slide` where `id`=?');
+$get_slide_usage           = prepare('select * from `show_slide` where `slide`=?');
 
 $add_show                  = prepare('insert into `show`(`name`) values (?)');
 $del_show                  = prepare('delete from `show` where `id`=?');
 $get_shows                 = prepare('select * from `show`');
 $get_show                  = prepare('select * from `show` where `id`=?');
-$get_show_slides           = prepare('select * from `show_image` where `show`=? order by `seq`');
-$add_show_slide            = prepare('insert into `show_image`(`show`, `image`) values (?, ?)');
-$del_show_slide            = prepare('delete from `show_image` where `show`=? and `image`=?');
-$del_show_slides           = prepare('delete from `show_image` where `show`=?');
+$get_show_slides           = prepare('select * from `show_slide` where `show`=? order by `seq`');
+$add_show_slide            = prepare('insert into `show_slide`(`show`, `slide`) values (?, ?)');
+$del_show_slide            = prepare('delete from `show_slide` where `show`=? and `slide`=?');
+$del_show_slides           = prepare('delete from `show_slide` where `show`=?');
 $set_show_size             = prepare('update `show` set `width`=?, `height`=? where `id`=?');
 $set_show_timeout          = prepare('update `show` set `timeout`=? where `id`=?');
-$set_show_slide_autoremove = prepare('update `show_image` set `endtime`=? where `show`=? and `image`=?');
-$do_show_slide_autoremove  = prepare('delete from `show_image` where `endtime`<?');
+$set_show_slide_autoremove = prepare('update `show_slide` set `endtime`=? where `show`=? and `slide`=?');
+$do_show_slide_autoremove  = prepare('delete from `show_slide` where `endtime`<?');
 
 $get_allowed_users         = prepare('select * from `allowed_users`');
 $add_allowed_user          = prepare('insert into `allowed_users`(`user`) values (?)');
@@ -145,7 +145,7 @@ function build_public_page() {
 }
 
 function build_public_slide($showid) {
-    global $get_show, $get_show_slides, $get_slide;
+    global $get_show, $get_show_slides, $get_slide, $timeout;
 
     $get_show->bind_param('i', $showid);
     if(!execute($get_show)) {
@@ -192,9 +192,9 @@ function build_public_slide($showid) {
         setcookie('index', $index+1);
     }
 
-    $slideid = $slides[$index]['image'];
+    $slideid = $slides[$index]['slide'];
 
-    $get_slide->bind_param('s', $slideid);
+    $get_slide->bind_param('i', $slideid);
     if(!execute($get_slide)) {
         return false;
     }
@@ -205,7 +205,7 @@ function build_public_slide($showid) {
     }
 
     $slide = $slide[0];
-    $content = $slide['name'];
+    $content = $slide['id'];
     $type = $slide['type'];
 
     switch($type) {
@@ -221,12 +221,51 @@ function build_public_slide($showid) {
     }
 }
 
-function build_slide($showid, $image, $timeout) {
+function build_show_slide($showid, $slideid) {
+    global $uldir, $get_slide;
+    
+    $dim = get_dimensions($showid);
+    
+    if(!$slideid) {
+        return create_image($dim['x'], $dim['y'], 'black', 'gray', $dim['x'].' x '.$dim['y']);
+    }
+    
+    $get_slide->bind_param('i', $slideid);
+    if(!execute($get_slide)) {
+        return create_image($dim['x'], $dim['y'], 'darkred', 'white', ":(\nDatabasfel");
+    }
+    
+    $slide = result($get_slide);
+    if(count($slide) != 1) {
+        return create_image($dim['x'], $dim['y'], 'darkred', 'white', ":(\nDatabasfel");
+    }
+    $slide = $slide[0];
+    
+    $file = $slide['name'];
+    if(!file_exists($uldir.$file)) {
+        return create_image($dim['x'], $dim['y'], 'darkred', 'white', ":(\nNot found");
+    }
+    
+    $file_scaled = $uldir.$dim['x'].'_'.$dim['y'].'_'.$file;
+    
+    if(!file_exists($file_scaled)) {
+
+        $im = new Imagick($uldir.$file);
+        $im->scaleImage($dim['x'], $dim['y'], true);
+        $im->writeImage($file_scaled);
+        return $im;
+    }
+    
+    return new Imagick($file_scaled);
+    
+}
+    
+function build_slide($showid, $slideid, $timeout) {
     global $html_slide;
     
     $replacements = array(
-        '¤show'    => $showid,
-        '¤picture' => $image,
+        '¤showid'  => $showid,
+        '¤slideid' => $slideid,
         '¤timeout' => $timeout,
     );
 
@@ -234,17 +273,13 @@ function build_slide($showid, $image, $timeout) {
 }
 
 function build_video($video) {
-    global $uldir, $html_video;
+    global $html_video;
 
-    $timeout = 20; // needs to be read from the video
-    
     $replacements = array(
-        '¤video'   => $video,
-        '¤timeout' => $timeout,
+        '¤video' => $video,
     );
 
     return replace($replacements, file_get_contents($html_video));
-    
 }
 
 function get_dimensions($showid) {
@@ -350,10 +385,13 @@ function build_slidelist($html_slide) {
 
     $slides = '';
     foreach(result($get_slides) as $slide) {
+
+        $type = $slide['type'];
+        $slideid = $slide['id'];
         
         $replacements = array(
-            '¤slide' => $slide['name'],
-            '¤group' => 'slides'
+            '¤slideid'  => $slideid,
+            '¤hidden' => 'hidden',
         );
 
         $slides .= replace($replacements, $html_slide);
@@ -404,7 +442,7 @@ function build_showlist($html_show, $html_slide) {
 }
 
 function build_show($id, $html_slide) {
-    global $get_show_slides;
+    global $get_show_slides, $get_slide;
 
     $get_show_slides->bind_param('i', $id);
     if(!execute($get_show_slides)) {
@@ -420,12 +458,28 @@ function build_show($id, $html_slide) {
             $endtime = gmdate("Y-m-d", $endtime);
             $active = '';
         }
+
+        $get_slide->bind_param('i', $slide['slide']);
+        if(!execute($get_slide)) {
+            return false;
+        }
+
+        $slide = result($get_slide);
+        if(count($slide) != 1) {
+            return false;
+        }
+        $slide = $slide[0];
+        
+        $slideid = $slide['id'];
+        $type = $slide['type'];
         
         $replacements = array(
-            '¤slide'    => $slide['image'],
+            '¤slideid'  => $slideid,
             '¤showid'   => $id,
             '¤sendtime' => $endtime,
             '¤active'   => $active,
+            '¤type'     => $type,
+            '¤hidden'   => '',
         );
         
         $show .= replace($replacements, $html_slide);
@@ -514,7 +568,7 @@ function create_show($showname) {
     return execute($add_show);
 }
 
-function set_size($show, $width, $height) {
+function set_size($showid, $width, $height) {
     global $set_show_size;
 
     if($width xor $height) {
@@ -541,11 +595,11 @@ function set_size($show, $width, $height) {
         $height = NULL;
     }
 
-    $set_show_size->bind_param('iii', $width, $height, $show);
+    $set_show_size->bind_param('iii', $width, $height, $showid);
     return execute($set_show_size);
 }
 
-function set_timeout($show, $timeout) {
+function set_timeout($showid, $timeout) {
     global $set_show_timeout;
 
     if($timeout === '') {
@@ -555,11 +609,11 @@ function set_timeout($show, $timeout) {
         return false;
     }
 
-    $set_show_timeout->bind_param('ii', $timeout, $show);
+    $set_show_timeout->bind_param('ii', $timeout, $showid);
     return execute($set_show_timeout);
 }
 
-function set_autoremoval($show, $slide, $endtime) {
+function set_autoremoval($showid, $slideid, $endtime) {
     global $set_show_slide_autoremove;
 
     $time = NULL;
@@ -571,7 +625,7 @@ function set_autoremoval($show, $slide, $endtime) {
         }
     }
 
-    $set_show_slide_autoremove->bind_param('iis', $time, $show, $slide);
+    $set_show_slide_autoremove->bind_param('iii', $time, $showid, $slideid);
     return execute($set_show_slide_autoremove);
 }
 
@@ -584,17 +638,9 @@ function do_autoremoval() {
     return execute($do_show_slide_autoremove);
 }
 
-function delete_slide($slide) {
-    global $get_slide_usage, $del_slide;
+function delete_slide($slideid) {
+    global $get_slide_usage, $del_slide, $get_slide;
     global $uldir;
-
-    if(!preg_match('/^[0-9-]+\.[a-z]+$/', $slide)) {
-        return error('Filnamnet är ogiltigt.');
-    }
-    
-    if(!file_exists($uldir.$slide)) {
-        return error("Filen '$slide' finns inte.");
-    }
 
     begin_trans();
     $get_slide_usage->bind_param('s', $slide);
@@ -606,81 +652,161 @@ function delete_slide($slide) {
         return error("Bilden används på en eller flera ytor.");
     }
 
-    $del_slide->bind_param('s', $slide);
+    $del_slide->bind_param('i', $slideid);
     if(!execute($del_slide)) {
         return revert_trans();
     }
+
+    $get_slide->bind_param('i', $slideid);
+    if(!execute($get_slide)) {
+        return revert_trans();
+    }
     
-    unlink($uldir.$slide);
-    array_map('unlink', glob($uldir.'*_'.$slide));
+    $slide = result($get_slide);
+    if(count($slide) != 1) {
+        return revert_trans();
+    }
+    $slide = $slide[0];
+
+    $slidename = $slide['name'];
+    
+    unlink($uldir.$slidename);
+    array_map('unlink', glob($uldir.'*_'.$slidename));
+    unlink($uldir.$slidename.'.png');
     return commit_trans();
 }
 
-function delete_show($show) {
+function delete_show($showid) {
     global $del_show, $del_show_slides;
 
     begin_trans();
-    $del_show_slides->bind_param('i', $show);
+    $del_show_slides->bind_param('i', $showid);
     if(!execute($del_show_slides)) {
         return revert_trans();
     }
 
-    $del_show->bind_param('i', $show);
+    $del_show->bind_param('i', $showid);
     if(!execute($del_show)) {
         return revert_trans();
     }
     return commit_trans();
 }
 
-function add_slide_to_show($slide, $show) {
+function add_slide_to_show($slideid, $showid) {
     global $add_show_slide;
 
-    $add_show_slide->bind_param('is', $show, $slide);
+    error_log("$slideid, $showid");
+    $add_show_slide->bind_param('ii', $showid, $slideid);
     return execute($add_show_slide);
 }
 
-function delete_from_show($show, $slide) {
+function delete_from_show($showid, $slideid) {
     global $del_show_slide;
 
-    $del_show_slide->bind_param('is', $show, $slide);
+    $del_show_slide->bind_param('ii', $showid, $slideid);
     return execute($del_show_slide);
 }
 
 function save_upload($file) {
-    global $uldir, $thumb_width, $thumb_height;
-    global $add_slide;
-
-    $exts = array(
-        'image/gif' => 'gif',
-        'image/jpeg' => 'jpg',
-        'image/png' => 'png',
-    );
-
     if($file['error'] != 0) {
         return error('Filen kunde inte laddas upp. (Felkod: '.$file['error'].')');
-    }    
-    try {
-        $im = new Imagick($file['tmp_name']);
-
-    } catch(Exception $e) {
-        return error('Filen kunde inte läsas. Är det en bild? (Felmeddelande: '.$e->getMessage().')');
     }
     
-    $mime = $im->getImageMimeType();
+    $filepath = $file['tmp_name'];
+    $finfo = new finfo();
+    $mime = $finfo->file($filepath, FILEINFO_MIME_TYPE);
+    
+    $halfmime = explode('/', $mime)[0];
+    
+    if($halfmime == 'image') {
+        return save_image($filepath, $mime);
+    }
+
+    if($halfmime == 'video') {
+        return save_video($filepath, $mime);
+    }
+    
+    return error('Ogiltig filtyp ('.$mime.'). Du kan bara ladda upp bilder och video här.');
+}
+
+function save_image($image, $mime) {
+    global $uldir, $add_slide;
+    
+    $exts = array(
+        'image/gif'  => 'gif',
+        'image/jpeg' => 'jpg',
+        'image/png'  => 'png',
+    );
     
     if(!array_key_exists($mime, $exts)) {
-        return error("Ogiltigt format ($mime). Tillåtna format är gif, jpg och png.");
+        $out = join(', ', $exts);
+        $out = preg_replace('/, ([^,]+)$/', ' och \1', $out);
+        return error('Ogiltigt format ('.$mime.'). Tillåtna format är '.$out.'.');
     }
 
+    try {
+        $im = new Imagick($image);
+        
+    } catch(Exception $e) {
+        return error('Bilden kunde inte läsas. (Felmeddelande: '.$e->getMessage().')');
+    }
+    
     $filename = date('ymd-His').'.'.$exts[$mime];
 
-    $add_slide->bind_param('s', $filename);
+    $type = 'image';
+    $add_slide->bind_param('ss', $filename, $type);
     begin_trans();
     if(!execute($add_slide)) {
         return revert_trans();
     }
-
+    
     $im->writeImage($uldir.$filename);
+    return commit_trans();
+}
+
+function save_video($video, $mime) {
+    global $uldir, $add_slide;
+
+    $time = date('ymd-His');
+
+    $filename = $time.'.mp4';
+    $filepath = $uldir.$filename;
+    $cmdstring = 'ffmpeg -n -xerror -loglevel error -i '.$video.' -vcodec h264 -an '.$filepath;
+
+    $out = array();
+    $result = null;
+    exec($cmdstring, $out, $result);
+
+    if(count($out) != 0) {
+        unlink($filepath);
+        $out = join('<br/>', $out);
+        return error('Videon kunde inte sparas.<br/>Felmeddelande: '.$out.'<br/>Felkod: '.$result);
+    }
+
+    $thumbname = $filename.'png';
+    $thumbpath = $uldir.$thumbname;
+    $thumbstring = 'ffmpeg -n -xerror -loglevel error -i '.$filepath.' -vframes 1 '.$thumbpath;
+
+    $out = array();
+    $result = null;
+    exec($thumbstring, $out, $result);
+
+    if(count($out) != 0) {
+        unlink($filepath);
+        unlink($thumbpath);
+        $out = join('<br/>', $out);
+        return error('Filen kunde inte sparas.<br/>Felmeddelande: '.$out.'<br/>Felkod: '.$result);
+    }
+    
+    $type = 'video';
+    $add_slide->bind_param('ss', $filename, $type);
+    begin_trans();
+    if(!execute($add_slide)) {
+        unlink($filepath);
+        unlink($thumbpath);
+        return revert_trans();
+    }
+
     return commit_trans();
 }
 
