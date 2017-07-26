@@ -241,7 +241,13 @@ function build_show_slide($showid, $slideid) {
     }
     $slide = $slide[0];
     
+    $type = $slide['type'];
     $file = $slide['name'];
+    
+    if($type == 'video') {
+        $file = $file.'.png';
+    }
+    
     if(!file_exists($uldir.$file)) {
         return create_image($dim['x'], $dim['y'], 'darkred', 'white', ":(\nNot found");
     }
@@ -639,22 +645,16 @@ function do_autoremoval() {
 }
 
 function delete_slide($slideid) {
-    global $get_slide_usage, $del_slide, $get_slide;
-    global $uldir;
+    global $get_slide_usage, $del_slide, $get_slide, $uldir;
 
     begin_trans();
-    $get_slide_usage->bind_param('s', $slide);
+    $get_slide_usage->bind_param('i', $slideid);
     if(!execute($get_slide_usage)) {
         return revert_trans();
     }
 
     if(count(result($get_slide_usage)) != 0) {
         return error("Bilden används på en eller flera ytor.");
-    }
-
-    $del_slide->bind_param('i', $slideid);
-    if(!execute($del_slide)) {
-        return revert_trans();
     }
 
     $get_slide->bind_param('i', $slideid);
@@ -669,10 +669,20 @@ function delete_slide($slideid) {
     $slide = $slide[0];
 
     $slidename = $slide['name'];
+    $slidetype = $slide['type'];
+
+    $del_slide->bind_param('i', $slideid);
+    if(!execute($del_slide)) {
+        return revert_trans();
+    }
     
     unlink($uldir.$slidename);
+    if($slidetype == 'video') {
+        $slidename .= '.png';
+        unlink($uldir.$slidename);
+    }
+    
     array_map('unlink', glob($uldir.'*_'.$slidename));
-    unlink($uldir.$slidename.'.png');
     return commit_trans();
 }
 
@@ -695,7 +705,6 @@ function delete_show($showid) {
 function add_slide_to_show($slideid, $showid) {
     global $add_show_slide;
 
-    error_log("$slideid, $showid");
     $add_show_slide->bind_param('ii', $showid, $slideid);
     return execute($add_show_slide);
 }
@@ -783,7 +792,7 @@ function save_video($video, $mime) {
         return error('Videon kunde inte sparas.<br/>Felmeddelande: '.$out.'<br/>Felkod: '.$result);
     }
 
-    $thumbname = $filename.'png';
+    $thumbname = $filename.'.png';
     $thumbpath = $uldir.$thumbname;
     $thumbstring = 'ffmpeg -n -xerror -loglevel error -i '.$filepath.' -vframes 1 '.$thumbpath;
 
@@ -797,6 +806,19 @@ function save_video($video, $mime) {
         $out = join('<br/>', $out);
         return error('Filen kunde inte sparas.<br/>Felmeddelande: '.$out.'<br/>Felkod: '.$result);
     }
+    
+    $im = new Imagick($thumbpath);
+    $width = $im->getImageWidth();
+    $height = $im->getImageHeight();
+    
+    $draw = new ImagickDraw();
+    $draw->setFontSize(min($width, $height)/5);
+    $draw->setFillColor(new ImagickPixel('white'));
+    $draw->setTextAntialias(true);
+    $draw->setGravity(Imagick::GRAVITY_CENTER);
+    
+    $im->annotateImage($draw, 0, 0, 0, 'Video');
+    $im->writeImage();
     
     $type = 'video';
     $add_slide->bind_param('ss', $filename, $type);
