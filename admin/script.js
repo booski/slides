@@ -75,7 +75,7 @@ function confirm_removal(itemid, originid) {
 	return window.confirm("Är du säker på att du vill ta bort den här visningsytan (id: "+itemid+")?")
 	
     } else if(originid == "slides") {
-	return window.confirm("Är du säker på att du vill ta bort den här bilden?")
+	return window.confirm("Är du säker på att du vill ta bort det här innehållet?")
 	
     } else {
 	return true
@@ -145,10 +145,10 @@ function hide_forms() {
 	}
     }
 
-    var lightboxes = document.querySelectorAll('.lightbox');
+    var lightboxes = document.querySelectorAll('.lightbox')
     
     for(var i=0; i < lightboxes.length; i++) {
-	var lightbox = lightboxes[i];
+	var lightbox = lightboxes[i]
 	if(!lightbox.classList.contains('hidden')) {
 	    lightbox.classList.add('hidden')
 	}
