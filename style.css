@@ -33,7 +33,7 @@ input[type="text"], textarea {
     vertical-align: middle;
 }
 
-.hidden, input[type="file"], :not(.show) > .slide > .relative > .slidesettings {
+.hidden, input[type="file"] {
     display: none;
 }
 
