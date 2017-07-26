@@ -126,11 +126,13 @@ input[type="text"], textarea {
 
 .smallbutton {
     height: 24pt;
-    cursor: pointer;
 }
 
 .tinybutton {
     height: 18pt;
+}
+
+.link {
     cursor: pointer;
 }
 

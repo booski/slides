@@ -36,7 +36,7 @@
 	       placeholder="Välj en fil..."
 	       onclick="select_file(event)"
 	       readonly />
-	<button class="tinybox" onclick="submit_form(event)">
+	<button class="tinybox link" onclick="submit_form(event)">
 	  Ladda upp
 	</button>
       </form>
@@ -62,7 +62,7 @@
 	       class="inline"
 	       type="text"
 	       placeholder="Ange ett namn..." />
-	<button class="tinybox" onclick="submit_form(event)">
+	<button class="tinybox link" onclick="submit_form(event)">
 	  Lägg till
 	</button>
       </form>
@@ -79,22 +79,22 @@
 	    enctype="multipart/form-data"
 	    ondragover="return false"
 	    ondrop="remove_drop(event)">
-	<img class="center block" src="../images/delete.svg" />
+	<img class="center block" src="../images/delete.svg" draggable="false" />
 	<input type="hidden" name="action" value="remove" />
 	<input type="hidden" name="remove" />
 	<input type="hidden" name="from" />
       </form>
     </div>
     <div class="sidebar-top">
-      <div class="gray box">
-	<a href="..">
-	  <img class="center block"
-	       src="../images/back.svg"
-	       title="Tillbaka" />
-	</a>
-      </div>
-      <div class="relative">
+      <a href=".."
+	 class="gray box block"
+	 title="Tillbaka">
+	<img class="center block"
+	     src="../images/back.svg" />
+      </a>
+      <div class="relative link">
 	<img class="gray box"
+	     draggable="false"
 	     src="../images/security.svg"
 	     title="Visa säkerhetsinställningar"
 	     onclick="toggle_securitysettings(event)"/>
@@ -118,12 +118,12 @@
 	    <span class="serif">¤username</span>
 	  </p>
 	  <div class="divider end"></div>
-	  <img class="tinybutton tinybox right"
+	  <img class="tinybutton tinybox link right"
 	       src="../images/commit.svg"
 	       onclick="submit_form(event)"
 	       draggable="false"
 	       title="Spara" />
-	  <img class="tinybutton tinybox right"
+	  <img class="tinybutton tinybox link right"
 	       src="../images/revert.svg"
 	       onclick="hide_forms()"
 	       draggable="false"
@@ -146,12 +146,12 @@
     <img class="slideimg relative center block"
 	 src="../slide.php?showid=thumb&slideid=¤slideid"
 	 draggable="false" />
-    <img class="slidesettings inactive tinybox tinybutton fade ¤hidden"
+    <img class="slidesettings inactive tinybox tinybutton link fade ¤hidden"
 	 src="../images/settings_inactive.svg"
 	 draggable="false"
 	 title="Visa bildinställningar"
 	 onclick="toggle_slidesettings(event)"/>
-    <img class="slidesettings active tinybox tinybutton ¤active ¤hidden"
+    <img class="slidesettings active tinybox tinybutton link ¤active ¤hidden"
 	 src="../images/settings_active.svg"
 	 draggable="false"
 	 title="Visa bildinställningar"
@@ -174,19 +174,19 @@
 	       value="¤sendtime"
 	       title="Sista dagen innan bilden automatiskt tas bort från den här visningsytan. Är fältet tomt så tas den inte bort automatiskt."
 	       readonly />
-	<img class="clearbutton tinybutton inline"
+	<img class="clearbutton tinybutton link inline"
 	     src="../images/clear.svg"
 	     onclick="clear_date(event)"
 	     draggable="false"
 	     title="Radera datum" />
       </p>
       <div class="divider end"></div>
-      <img class="tinybutton tinybox right"
+      <img class="tinybutton tinybox link right"
 	   src="../images/commit.svg"
 	   onclick="submit_form(event)"
 	   draggable="false"
 	   title="Spara" />
-      <img class="tinybutton tinybox right"
+      <img class="tinybutton tinybox link right"
 	   src="../images/revert.svg"
 	   onclick="hide_forms()"
 	   draggable="false"
@@ -203,12 +203,12 @@
      ondragstart="dragstart(event)"
      ondragend="dragend(event)"
      style="width: ¤bwidthpx;">
-  <img class="showsettings inactive smallbox smallbutton fade"
+  <img class="showsettings inactive smallbox smallbutton link fade"
        src="../images/settings_inactive.svg"
        draggable="false"
        title="Visa ytinställningar"
        onclick="toggle_showsettings(event)"/>
-  <img class="showsettings active smallbox smallbutton ¤active"
+  <img class="showsettings active smallbox smallbutton link ¤active"
        src="../images/settings_active.svg"
        draggable="false"
        title="Visa ytinställningar"
@@ -249,12 +249,12 @@
 	     title="Väntetid innan nästa bild automatiskt visas. Är värdet 0 sker inget automatiskt byte." />
     </p>
     <div class="divider"></div>
-    <img class="tinybutton tinybox right"
+    <img class="tinybutton tinybox link right"
 	 src="../images/commit.svg"
 	 onclick="submit_form(event)"
 	 draggable="false"
 	 title="Spara" />
-    <img class="tinybutton tinybox right"
+    <img class="tinybutton tinybox link right"
 	 src="../images/revert.svg"
 	 onclick="hide_forms()"
 	 draggable="false"
