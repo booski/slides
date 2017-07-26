@@ -35,12 +35,12 @@ if(isset($_POST['action'])) {
         break;
         
     case 'configure_slide':
-        set_autoremoval($_POST['show'], $_POST['slide'], $_POST['endtime']);
+        set_autoremoval($_POST['showid'], $_POST['slideid'], $_POST['endtime']);
         break;
 
     case 'configure_show':
-        set_size($_POST['id'], $_POST['width'], $_POST['height']);
-        set_timeout($_POST['id'], $_POST['timeout']);
+        set_size($_POST['showid'], $_POST['width'], $_POST['height']);
+        set_timeout($_POST['showid'], $_POST['timeout']);
         break;
 
     case 'configure_security':
