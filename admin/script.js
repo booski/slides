@@ -125,7 +125,7 @@ function toggle_settings(event) {
 
     var lightbox = parent.querySelector('.lightbox')
     if(lightbox.classList.contains('hidden')) {
-	lightbox.classList.remove('hidden');
+	lightbox.classList.remove('hidden')
     }
 }
 
