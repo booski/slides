@@ -71,6 +71,20 @@
 	¤shows
       </div>
     </div>
+    <div class="sidebar-bottom">
+      <form name="remove"
+	    class="red box"
+	    action="./action.php"
+	    method="post"
+	    enctype="multipart/form-data"
+	    ondragover="return false"
+	    ondrop="remove_drop(event)">
+	<img class="center block" src="../images/delete.svg" />
+	<input type="hidden" name="action" value="remove" />
+	<input type="hidden" name="remove" />
+	<input type="hidden" name="from" />
+      </form>
+    </div>
     <div class="sidebar-top">
       <div class="gray box">
 	<a href="..">
@@ -116,20 +130,6 @@
 	       title="Avbryt" />
 	</form>
       </div>
-    </div>
-    <div class="sidebar-bottom">
-      <form name="remove"
-	    class="red box"
-	    action="./action.php"
-	    method="post"
-	    enctype="multipart/form-data"
-	    ondragover="return false"
-	    ondrop="remove_drop(event)">
-	<img class="center block" src="../images/delete.svg" />
-	<input type="hidden" name="action" value="remove" />
-	<input type="hidden" name="remove" />
-	<input type="hidden" name="from" />
-      </form>
     </div>
     <div class="error box ¤visibility" onclick="hide_error(event)">
       ¤error
