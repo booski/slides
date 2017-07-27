@@ -20,5 +20,10 @@ Drop a slide on a show to add it, drop a slide or a show on the trash icon to re
 1. Copy `config.php.example` to `config.php`
 1. Change settings in `config.php` to fit your needs
 1. Make sure the web server can write to the `uploads` directory
-1. Make sure the web server accepts image uploads of the size you want
+1. Make sure the web server accepts image and video uploads of the size you want
 1. Done!
+
+## Upgrading to a new version
+
+1. Check out the appropriate version, e.g. 'git fetch; git checkout v2.0'
+1. Run the appropriate database upgrade script, e.g. 'mysql [dbname] < include/dbupdate-v1-to-v2.sql'
