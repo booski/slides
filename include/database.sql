@@ -40,18 +40,18 @@ CREATE TABLE `show` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `show_image`
+-- Table structure for table `show_slide`
 --
 
-DROP TABLE IF EXISTS `show_image`;
+DROP TABLE IF EXISTS `show_slide`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `show_image` (
-  `image` varchar(64) NOT NULL,
+CREATE TABLE `show_slide` (
+  `slide` bigint(20) NOT NULL,
   `show` bigint(20) NOT NULL,
   `seq` bigint(20) NOT NULL AUTO_INCREMENT,
   `endtime` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`image`,`show`),
+  PRIMARY KEY (`slide`,`show`),
   UNIQUE KEY `seq` (`seq`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -65,8 +65,10 @@ DROP TABLE IF EXISTS `slide`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `slide` (
   `name` varchar(64) NOT NULL,
-  PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `type` varchar(64) DEFAULT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -77,3 +79,4 @@ CREATE TABLE `slide` (
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
