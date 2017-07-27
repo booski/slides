@@ -25,5 +25,5 @@ Drop a slide on a show to add it, drop a slide or a show on the trash icon to re
 
 ## Upgrading to a new version
 
-1. Check out the appropriate version, e.g. 'git fetch; git checkout v2.0'
-1. Run the appropriate database upgrade script, e.g. 'mysql [dbname] < include/dbupdate-v1-to-v2.sql'
+1. Check out the appropriate version, e.g. `git fetch; git checkout v2.0`
+1. Run the appropriate database upgrade script, e.g. `mysql [dbname] < include/dbupdate-v1-to-v2.sql`
