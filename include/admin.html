@@ -36,7 +36,7 @@
 	       placeholder="Välj en fil..."
 	       onclick="select_file(event)"
 	       readonly />
-	<button class="tinybox link" onclick="submit_form(event)">
+	<button class="tinybox link" onclick="upload_progress(event)">
 	  Ladda upp
 	</button>
       </form>
@@ -133,6 +133,14 @@
     </div>
     <div class="error box ¤visibility" onclick="hide_error(event)">
       ¤error
+    </div>
+    <div class="feedback hidden">
+      <div class="feedbox center box">
+	<img src="../images/spinner.svg" class="feedspin"/>
+	<p>
+	  Laddar upp, v.g. vänta...
+	</p>
+      </div>
     </div>
   </body>
 </html>

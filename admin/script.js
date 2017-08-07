@@ -18,6 +18,17 @@ function submit_form(event) {
     form.submit()
 }
 
+function upload_progress(event) {
+    event.preventDefault()
+    var feedback = document.querySelector('.feedback')
+    
+    if(feedback.classList.contains('hidden')) {
+	feedback.classList.remove('hidden')
+    }
+
+    submit_form(event)
+}
+
 function select_file(event) {
     var fileinput = document.getElementById("uploadfile")
     fileinput.click()
