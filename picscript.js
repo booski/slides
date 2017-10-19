@@ -19,17 +19,17 @@ document.addEventListener('DOMContentLoaded', function init() {
 	    }
 	}, 1500)
     })
-    
-    waitForNext()
-})
 
-function waitForNext() {
     // timeout is defined externally
     if(timeout > 0) {
-	window.setTimeout(function sleep() {
-            getNext()
-	}, timeout*1000)
+	waitForNext(timeout)
     }
+})
+
+function waitForNext(wait) {
+    window.setTimeout(function sleep() {
+        getNext()
+    }, wait*1000)
 }
 
 function getNext() {
@@ -43,13 +43,20 @@ function getNext() {
 	document.close()
     }
     
-    request.onreadystatechange = function() {
-	if (request.readyState == 4) {
+    function getSlide() {
+	if(request.readyState == 4) {
 	    if(request.status == 200) {
 		updateSlide(request.responseText)
 	    } else {
-		waitForNext()
+		// timeout is defined externally
+		var wait = 30
+		if(timeout > 0) {
+		    wait = timeout
+		}
+		waitForNext(wait)
 	    }
 	}
-    };
+    }
+    
+    request.onreadystatechange = getSlide
 }
