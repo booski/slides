@@ -3,15 +3,18 @@
     <link rel="stylesheet" type="text/css" href="./slide.css" />
   </head>
   <body>
-    <script type="text/javascript" src="videoscript.js">
+    <script type="text/javascript">
+      var timeout = 0
     </script>
-    <div class="container">
+    <script type="text/javascript" src="picscript.js">
+    </script>
+    <div class="container nocursor">
       <video id="content"
 	     src="./uploads/¤video"
 	     poster="./uploads/¤thumb"
 	     width="¤width"
 	     height="¤height"
-	     onended="window.location.reload(true)"
+	     onended="getNext()"
 	     autoplay>
 	This browser does not support HTML5 video.
       </video>
