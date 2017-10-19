@@ -19,10 +19,37 @@ document.addEventListener('DOMContentLoaded', function init() {
 	    }
 	}, 1500)
     })
+    
+    waitForNext()
+})
 
+function waitForNext() {
+    // timeout is defined externally
     if(timeout > 0) {
 	window.setTimeout(function sleep() {
-            window.location.reload(true)
+            getNext()
 	}, timeout*1000)
     }
-})
+}
+
+function getNext() {
+    var request = new XMLHttpRequest()
+    request.open('GET', window.location.href, true)
+    request.send()
+
+    function updateSlide(newpage) {
+	document.open()
+	document.write(newpage)
+	document.close()
+    }
+    
+    request.onreadystatechange = function() {
+	if (request.readyState == 4) {
+	    if(request.status == 200) {
+		updateSlide(request.responseText)
+	    } else {
+		waitForNext()
+	    }
+	}
+    };
+}
