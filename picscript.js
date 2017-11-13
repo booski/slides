@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function init() {
 	    list.remove(selector)
 	}
 	
-	timer = window.setTimeout(function hidecursor() {
+	var timer = window.setTimeout(function hidecursor() {
 	    if(!list.contains(selector)) {
 		list.add(selector)
 	    }
