@@ -3,10 +3,9 @@
 $basedir = dirname(__FILE__);
 require_once $basedir.'/config.php';
 
-$html_admin  = $basedir.'/admin.html';
-$html_public = $basedir.'/list.html';
-$html_slide  = $basedir.'/picture.html';
-$html_video  = $basedir.'/video.html';
+$html_admin  = get_fragments($basedir.'/admin.html');
+$html_public = get_fragments($basedir.'/list.html');
+$html_slide  = get_fragments($basedir.'/slide.html');
 
 $uldir = $basedir.'/../uploads/';
 
@@ -103,13 +102,64 @@ function error($message) {
     return false;
 }
 
+/*
+   Takes an html file containing named fragments.
+   Returns an associative array on the format array[name]=>fragment.
+   
+   Fragments are delimited like this:
+   
+   ¤¤ name 1
+   fragment 1
+   ¤¤ name 2
+   fragment 2
+   ¤¤ name 3
+   fragment 3
+
+   The first delimiter and name ('¤¤ name 1' in the aboce example) can
+   be omitted, in which case the first fragment will be assigned the
+   name 'base'. All other fragments must be named.
+
+   Throws an exception if:
+   - any fragment except the first is missing a name
+   - two (or more) fragments share a name
+ */
+function get_fragments($infile) {
+    $out = array();
+
+    $name = 'base';
+    $current_fragment = '';
+    foreach(file($infile) as $line) {
+        if(strpos($line, '¤¤') === 0) {
+            $out = try_adding($name, $current_fragment, $out, $infile);
+            $current_fragment = '';
+            $name = trim($line, "\t\n\r ¤");
+        } else {
+            $current_fragment .= $line;
+        }
+    }
+
+    return try_adding($name, $current_fragment, $out, $infile);
+}
+
+function try_adding($key, $value, $array, $filename) {
+    if(array_key_exists($key, $array)) {
+        throw new Exception('There is already a fragment with that name in '.$filename);
+    } else if($key === '') {
+        throw new Exception('There is an unnamed fragment in '.$filename);
+    }
+    
+    $array[$key] = $value;
+
+    return $array;
+}
+
 
 ########## PRESENTATION ##########
 
 ##### PUBLIC #####
 
-function build_public_showlist($html_show) {
-    global $get_shows;
+function build_public_showlist() {
+    global $html_public, $get_shows;
 
     if(!execute($get_shows)) {
         return false;
@@ -124,7 +174,7 @@ function build_public_showlist($html_show) {
             '¤name'   => $show['name'],
         );
         
-        $shows .= replace($replacements, $html_show);
+        $shows .= replace($replacements, $html_public['show']);
     }
     return $shows;
 }
@@ -132,19 +182,24 @@ function build_public_showlist($html_show) {
 function build_public_page() {
     global $html_public, $title;
     
-    $html = explode('¤¤', file_get_contents($html_public));
-    $html_body = $html[0];
-    $html_show = $html[1];
-
     $replacements = array(
         '¤title' => $title,
-        '¤shows' => build_public_showlist($html_show),
+        '¤shows' => build_public_showlist(),
     );
 
-    return replace($replacements, $html_body);
+    return replace($replacements, $html_public['base']);
 }
 
 function build_public_slide($showid) {
+    global $html_slide;
+    
+    return replace(array(
+        '¤content' => build_slide($showid)
+    ), $html_slide['base']);
+    
+}
+
+function build_slide($showid) {
     global $get_show, $get_show_slides, $get_slide, $timeout;
 
     $get_show->bind_param('i', $showid);
@@ -183,7 +238,7 @@ function build_public_slide($showid) {
     $lines = count($slides);
 
     if($lines == 0) {
-        return build_slide($showid, '', 0);
+        return build_image($showid, '', 0);
     } else {
         if($index >= $lines) {
             $index = 0;
@@ -212,15 +267,15 @@ function build_public_slide($showid) {
         return build_video($slide['name'], get_dimensions($showid));
         break;
     case 'image':
-        return build_slide($showid, $slide['id'], $timeout);
+        return build_image($showid, $slide['id'], $timeout);
         break;
     default:
-        return build_slide($showid, 'invalid', 0);
+        return build_image($showid, 'invalid', 0);
         break;
     }
 }
 
-function build_slide($showid, $slideid, $timeout) {
+function build_image($showid, $slideid, $timeout) {
     global $html_slide;
     
     $replacements = array(
@@ -229,11 +284,11 @@ function build_slide($showid, $slideid, $timeout) {
         '¤timeout' => $timeout,
     );
 
-    return replace($replacements, file_get_contents($html_slide));
+    return replace($replacements, $html_slide['image']);
 }
 
 function build_video($videosrc, $showdim) {
-    global $html_video, $uldir;
+    global $html_slide, $uldir;
 
     $replacements = array(
         '¤video'  => $videosrc,
@@ -242,7 +297,7 @@ function build_video($videosrc, $showdim) {
         '¤height' => $showdim['y'],
     );
 
-    return replace($replacements, file_get_contents($html_video));
+    return replace($replacements, $html_slide['video']);
 }
 
 function build_show_slide($showid, $slideid) {
@@ -351,11 +406,6 @@ function create_image($width, $height, $bgcolor, $textcolor, $text) {
 function build_admin_page() {
     global $html_admin, $user, $title;
 
-    $html = explode('¤¤', file_get_contents($html_admin));
-    $html_body = $html[0];
-    $html_slide = $html[1];
-    $html_show = $html[2];
-
     $error = '';
     if(isset($_COOKIE['error'])) {
         $error = $_COOKIE['error'];
@@ -373,19 +423,19 @@ function build_admin_page() {
 
     $replacements = array(
         '¤title'        => $title,
-        '¤slides'       => build_slidelist($html_slide),
-        '¤shows'        => build_showlist($html_show, $html_slide),
+        '¤slides'       => build_slidelist(),
+        '¤shows'        => build_showlist(),
         '¤username'     => $user,
         '¤allowedusers' => get_allowed_users(),
         '¤error'        => $error,
         '¤visibility'   => $visibility,
     );
 
-    return replace($replacements, $html_body);
+    return replace($replacements, $html_admin['base']);
 }
 
-function build_slidelist($html_slide) {
-    global $get_slides;
+function build_slidelist() {
+    global $html_admin, $get_slides;
 
     if(!execute($get_slides)) {
         return false;
@@ -402,14 +452,14 @@ function build_slidelist($html_slide) {
             '¤hidden' => 'hidden',
         );
 
-        $slides .= replace($replacements, $html_slide);
+        $slides .= replace($replacements, $html_admin['slide']);
     }
     
     return $slides;
 }
 
-function build_showlist($html_show, $html_slide) {
-    global $thumb_width, $screen_width, $screen_height, $timeout;
+function build_showlist() {
+    global $html_admin, $thumb_width, $screen_width, $screen_height, $timeout;
     global $get_shows;
     
     if(!execute($get_shows)) {
@@ -432,7 +482,7 @@ function build_showlist($html_show, $html_slide) {
         $replacements = array(
             '¤showid'  => $id,
             '¤name'    => $show['name'],
-            '¤slides'  => build_show($id, $html_slide),
+            '¤slides'  => build_show($id),
             '¤bwidth'  => max($thumb_width + 50, 100),
             '¤owidth'  => $screen_width,
             '¤oheight' => $screen_height,
@@ -443,14 +493,14 @@ function build_showlist($html_show, $html_slide) {
             '¤active'  => $active,
         );
         
-        $shows .= replace($replacements, $html_show);
+        $shows .= replace($replacements, $html_admin['show']);
     }
 
     return $shows;
 }
 
-function build_show($id, $html_slide) {
-    global $get_show_slides, $get_slide;
+function build_show($id) {
+    global $html_admin, $get_show_slides, $get_slide;
 
     $get_show_slides->bind_param('i', $id);
     if(!execute($get_show_slides)) {
@@ -490,7 +540,7 @@ function build_show($id, $html_slide) {
             '¤hidden'   => '',
         );
         
-        $show .= replace($replacements, $html_slide);
+        $show .= replace($replacements, $html_admin['slide']);
     }
     
     return $show;
