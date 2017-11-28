@@ -1,10 +1,16 @@
-document.addEventListener('DOMContentLoaded', function init() {
+function init() {
     var container = document.querySelector('.container')
     var list = container.classList
     var selector = 'nocursor'
     var timer = null
+
+    function hideCursor() {
+	if(!list.contains(selector)) {
+	    list.add(selector)
+	}
+    }
     
-    container.addEventListener('mousemove', function mousemove(event) {
+    function mouseMove(event) {
 	if(timer) {
 	    window.clearTimeout(timer)
 	}
@@ -13,50 +19,45 @@ document.addEventListener('DOMContentLoaded', function init() {
 	    list.remove(selector)
 	}
 	
-	var timer = window.setTimeout(function hidecursor() {
-	    if(!list.contains(selector)) {
-		list.add(selector)
+	timer = window.setTimeout(hideCursor, 1500)
+    }
+
+    function waitForNext(wait) {
+	window.setTimeout(getNext, wait*1000)
+    }
+
+    function getNext() {
+	var request = new XMLHttpRequest()
+	var showid = window.location.href.split('?')[1].split('=')[1]
+	request.open('GET', 'get.php?id=' + showid, true)
+	request.onreadystatechange = function getSlide() {
+	    if(request.readyState == 4) {
+		if(request.status == 200) {
+		    updateSlide(request.responseText)
+		} else {
+		    var wait = 30
+		    waitForNext(wait)
+		}
 	    }
-	}, 1500)
-    })
+	}
+	request.send()
+    }
+
+    function updateSlide(newpage) {
+	container.removeChild(container.querySelector('#content'))
+	container.removeChild(container.querySelector('script'))
+	container.innerHTML = newpage
+	eval(container.querySelector('script').innerHTML)
+	waitForNext(timeout)
+    }
+
+
+    container.addEventListener('mousemove', mouseMove)
 
     // timeout is defined externally
     if(timeout > 0) {
 	waitForNext(timeout)
     }
-})
-
-function waitForNext(wait) {
-    window.setTimeout(function sleep() {
-        getNext()
-    }, wait*1000)
 }
 
-function getNext() {
-    var request = new XMLHttpRequest()
-    request.open('GET', window.location.href, true)
-    request.send()
-
-    function updateSlide(newpage) {
-	document.open()
-	document.write(newpage)
-	document.close()
-    }
-    
-    function getSlide() {
-	if(request.readyState == 4) {
-	    if(request.status == 200) {
-		updateSlide(request.responseText)
-	    } else {
-		// timeout is defined externally
-		var wait = 30
-		if(timeout > 0) {
-		    wait = timeout
-		}
-		waitForNext(wait)
-	    }
-	}
-    }
-    
-    request.onreadystatechange = getSlide
-}
+document.addEventListener('DOMContentLoaded', init)
