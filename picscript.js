@@ -23,7 +23,9 @@ function init() {
     }
 
     function waitForNext(wait) {
-	window.setTimeout(getNext, wait*1000)
+	if(wait) {
+	    window.setTimeout(getNext, wait*1000)
+	}
     }
 
     function getNext() {
@@ -58,6 +60,8 @@ function init() {
     if(timeout > 0) {
 	waitForNext(timeout)
     }
+    
+    document.getNext = getNext
 }
 
 document.addEventListener('DOMContentLoaded', init)
