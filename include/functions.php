@@ -238,7 +238,7 @@ function build_slide($showid) {
     $lines = count($slides);
 
     if($lines == 0) {
-        return build_image($showid, '', 0);
+        return build_image($showid, '', $timeout);
     } else {
         if($index >= $lines) {
             $index = 0;
@@ -270,7 +270,7 @@ function build_slide($showid) {
         return build_image($showid, $slide['id'], $timeout);
         break;
     default:
-        return build_image($showid, 'invalid', 0);
+        return build_image($showid, 'invalid', $timeout);
         break;
     }
 }
