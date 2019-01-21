@@ -13,7 +13,7 @@ if(isset($_GET['slideid'])) {
 }
 
 $im = build_show_slide($showid, $slideid);
-header('Content-type:', $im->getImageMimeType());
+header('Content-type: '. $im->getImageMimeType());
 echo $im;
 exit(0);
 
