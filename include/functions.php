@@ -38,6 +38,10 @@ $get_allowed_users         = prepare('select * from `allowed_users`');
 $add_allowed_user          = prepare('insert into `allowed_users`(`user`) values (?)');
 $del_allowed_user          = prepare('delete from `allowed_users` where `user`=?');
 
+if(!do_autoremoval()) {
+    echo 'Autoremoval failed.';
+    exit(2);
+}
 
 ########## UTILITIES ##########
 
@@ -159,7 +163,8 @@ function try_adding($key, $value, $array, $filename) {
 ##### PUBLIC #####
 
 function build_public_showlist() {
-    global $html_public, $get_shows;
+    global $html_public, $get_shows, $get_show_slides;
+    global $screen_width, $screen_height, $timeout;
 
     if(!execute($get_shows)) {
         return false;
@@ -168,10 +173,37 @@ function build_public_showlist() {
     $shows = '';
     foreach(result($get_shows) as $show) {
         $id = $show['id'];
+
+        $get_show_slides->bind_param('i', $id);
+        if(!execute($get_show_slides)) {
+            return false;
+        }
+        
+        $slides = result($get_show_slides);
+        $lines = count($slides);
+        $slideid = 0;
+        if($lines != 0) {
+            $slideid = $slides[0]['slide'];
+        }
+
+        $width = $screen_width;
+        $height = $screen_height;
+        if($show['width']) {
+            $width = $show['width'];
+            $height = $show['height'];
+        }
+
+        if(show['timeout']) {
+            $timeout = $show['timeout'];
+        }
         
         $replacements = array(
-            '¤showid' => $show['id'],
-            '¤name'   => $show['name'],
+            '¤showid'  => $show['id'],
+            '¤slide'   => $slideid,
+            '¤name'    => $show['name'],
+            '¤width'   => $width,
+            '¤height'  => $height,
+            '¤timeout' => $timeout,
         );
         
         $shows .= replace($replacements, $html_public['show']);
@@ -223,10 +255,6 @@ function build_slide($showid) {
     $timeout_temp = $show['timeout'];
     if($timeout_temp) {
         $timeout = $timeout_temp;
-    }
-
-    if(!do_autoremoval()) {
-        return false;
     }
 
     $get_show_slides->bind_param('i', $showid);
@@ -415,10 +443,6 @@ function build_admin_page() {
     if($error) {
         $visibility = 'visible';
         setcookie('error', '', time() - 3600);
-    }
-
-    if(!do_autoremoval()) {
-        return false;
     }
 
     $replacements = array(
