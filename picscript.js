@@ -34,11 +34,10 @@ function init() {
 	request.open('GET', 'get.php?id=' + showid, true)
 	request.onreadystatechange = function getSlide() {
 	    if(request.readyState == 4) {
-		if(request.status == 200) {
+		if(request.status == 200 && request.responseText) {
 		    updateSlide(request.responseText)
 		} else {
-		    var wait = 30
-		    waitForNext(wait)
+		    waitForNext(30)
 		}
 	    }
 	}
@@ -49,7 +48,7 @@ function init() {
 	container.removeChild(container.querySelector('#content'))
 	container.removeChild(container.querySelector('script'))
 	container.innerHTML = newpage
-	eval(container.querySelector('script').innerHTML)
+	eval(container.querySelector('script').innerHTML) // set new timeout
 	waitForNext(timeout)
     }
 
