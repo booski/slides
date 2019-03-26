@@ -37,6 +37,7 @@ function init() {
 		if(request.status == 200 && request.responseText) {
 		    updateSlide(request.responseText)
 		} else {
+		    console.log("request failed, retrying")
 		    waitForNext(30)
 		}
 	    }

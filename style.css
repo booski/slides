@@ -167,6 +167,12 @@ input[type="text"], textarea {
     right: 0pt;
 }
 
+.showcopy {
+    position: absolute;
+    top: 0pt;
+    right: 27pt;
+}
+
 .settingsform {
     position: absolute;
     left: 5pt;
@@ -193,6 +199,7 @@ input[type="text"], textarea {
 .show {
     display: inline-block;
     vertical-align: top;
+    padding: 1pt;
 }
 
 .show:hover {

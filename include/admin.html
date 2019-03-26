@@ -154,12 +154,12 @@
     <img class="slideimg relative center block"
 	 src="../slide.php?showid=thumb&slideid=¤slideid"
 	 draggable="false" />
-    <img class="slidesettings inactive tinybox tinybutton link fade ¤hidden"
+    <img class="slidesettings tinybox tinybutton link fade ¤hidden"
 	 src="../images/settings_inactive.svg"
 	 draggable="false"
 	 title="Visa bildinställningar"
 	 onclick="toggle_slidesettings(event)"/>
-    <img class="slidesettings active tinybox tinybutton link ¤active ¤hidden"
+    <img class="slidesettings tinybox tinybutton link ¤active ¤hidden"
 	 src="../images/settings_active.svg"
 	 draggable="false"
 	 title="Visa bildinställningar"
@@ -211,16 +211,21 @@
      ondragstart="dragstart(event)"
      ondragend="dragend(event)"
      style="width: ¤bwidthpx;">
-  <img class="showsettings inactive smallbox smallbutton link fade"
+  <img class="showsettings smallbox smallbutton link fade"
        src="../images/settings_inactive.svg"
        draggable="false"
        title="Visa ytinställningar"
        onclick="toggle_showsettings(event)"/>
-  <img class="showsettings active smallbox smallbutton link ¤active"
+  <img class="showsettings smallbox smallbutton link ¤active"
        src="../images/settings_active.svg"
        draggable="false"
        title="Visa ytinställningar"
        onclick="toggle_showsettings(event)"/>
+  <img class="showcopy smallbox smallbutton link"
+       src="../images/copy.svg"
+       draggable="false"
+       title="Kopiera yta"
+       onclick="toggle_copysettings(event)"/>
   <div class="lightbox hidden"></div>
   <form name="showsettings"
 	class="settingsform box hideable hidden"
@@ -278,8 +283,8 @@
     <input type="hidden" name="to" value="¤showid" />
   </form>
   <div class="title">
-    <a href="../?id=¤showid" draggable="false">¤name</a><br />
     id: ¤showid<br/>
+    <a href="../?id=¤showid" draggable="false">¤name</a><br />
   </div>
   <div class="divider"></div>
   ¤slides
