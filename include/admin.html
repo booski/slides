@@ -211,21 +211,11 @@
      ondragstart="dragstart(event)"
      ondragend="dragend(event)"
      style="width: ¤bwidthpx;">
-  <img class="showsettings smallbox smallbutton link fade"
-       src="../images/settings_inactive.svg"
+  <img class="right smallbox smallbutton link"
+       src="../images/¤image"
        draggable="false"
        title="Visa ytinställningar"
        onclick="toggle_showsettings(event)"/>
-  <img class="showsettings smallbox smallbutton link ¤active"
-       src="../images/settings_active.svg"
-       draggable="false"
-       title="Visa ytinställningar"
-       onclick="toggle_showsettings(event)"/>
-  <img class="showcopy smallbox smallbutton link"
-       src="../images/copy.svg"
-       draggable="false"
-       title="Kopiera yta"
-       onclick="toggle_copysettings(event)"/>
   <div class="lightbox hidden"></div>
   <form name="showsettings"
 	class="settingsform box hideable hidden"
@@ -262,6 +252,15 @@
 	     title="Väntetid innan nästa bild automatiskt visas. Är värdet 0 sker inget automatiskt byte." />
     </p>
     <div class="divider"></div>
+    <p class="nowrap">
+      Kopiera yta:
+      <input class="inline wide"
+             type="text"
+             name="copy"
+             placeholder="Kopians namn"
+             title="Skriv ett namn här för att kopiera ytan till en ny yta med det namnet." />
+    </p>
+    <div class="divider"></div>
     <img class="tinybutton tinybox link right"
 	 src="../images/commit.svg"
 	 onclick="submit_form(event)"
@@ -282,10 +281,12 @@
     <input type="hidden" name="add" />
     <input type="hidden" name="to" value="¤showid" />
   </form>
-  <div class="title">
-    id: ¤showid<br/>
-    <a href="../?id=¤showid" draggable="false">¤name</a><br />
+  <div class="title left">
+    id: ¤showid
   </div>
-  <div class="divider"></div>
+  <div class="end"></div>
+  <a class="title left"
+     href="../?id=¤showid" draggable="false">¤name</a>
+  <div class="end divider"></div>
   ¤slides
 </div>

@@ -58,20 +58,16 @@ input[type="text"], textarea {
     position: relative;
 }
 
-.fade {
-    opacity: 0.8;
-}
-
-.fade:hover {
-    opacity: 1.0;
-}
-
 .settingsform .calendar {
     width: 75pt !important;
 }
 
 .settingsform input[type='text'] {
     width: 30pt;
+}
+
+.settingsform .wide {
+    width: 100pt !important;
 }
 
 .lightbox {
@@ -104,7 +100,7 @@ input[type="text"], textarea {
     border: 1pt solid #aaa;
     box-shadow: 0pt 1pt 3pt rgba(0, 0, 0, 0.1);
     padding: 3pt;
-    margin: 3pt;
+    margin: 2pt;
 }
 
 .smallbox:active {
@@ -139,7 +135,8 @@ input[type="text"], textarea {
 .title {
     font-weight: bold;
     font-size: 20pt;
-    margin: 5pt;
+    margin-left: 3pt;
+    margin-top: 2pt;
 }
 
 .slide {

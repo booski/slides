@@ -708,6 +708,7 @@ function set_size($showid, $width, $height) {
 function set_timeout($showid, $timeout) {
     global $set_show_timeout;
 
+    $timeout = strval($timeout);
     if($timeout === '') {
         $timeout = NULL;
     } else if(!ctype_digit($timeout)) {
@@ -719,20 +720,40 @@ function set_timeout($showid, $timeout) {
     return execute($set_show_timeout);
 }
 
+function copy_show($oldshow_id, $newname) {
+    global $add_show, $get_show, $get_show_slides, $get_slide;
+
+    begin_trans();
+    
+    $add_show->bind_param('s', $newname);
+    execute($add_show);
+    $newshow_id = $add_show->insert_id;
+    
+    $get_show->bind_param('i', $oldshow_id);
+    execute($get_show);
+    $oldshow = result($get_show)[0];
+
+    set_size($newshow_id, $oldshow['width'], $oldshow['height']);
+    set_timeout($newshow_id, $oldshow['timeout']);
+    
+    $get_show_slides->bind_param('i', $oldshow_id);
+    execute($get_show_slides);
+    foreach(result($get_show_slides) as $show_slide) {
+        $get_slide->bind_param('i', $show_slide['slide']);
+        execute($get_slide);
+        $slide = result($get_slide)[0];
+        $id = $slide['id'];
+        $endtime = $show_slide['endtime'];
+        add_slide_to_show($id, $newshow_id);
+        set_autoremoval($newshow_id, $id, $endtime);
+    }
+    return commit_trans();
+}
+
 function set_autoremoval($showid, $slideid, $endtime) {
     global $set_show_slide_autoremove;
 
-    $time = NULL;
-    if($endtime) {
-        $time = date_format(date_create_from_format("Y-m-d H:i",
-                                                    "$endtime 23:59"), 'U');
-        if(!$time) {
-            error("Ogiltigt datum.");
-            return false;
-        }
-    }
-
-    $set_show_slide_autoremove->bind_param('iii', $time, $showid, $slideid);
+    $set_show_slide_autoremove->bind_param('iii', $endtime, $showid, $slideid);
     return execute($set_show_slide_autoremove);
 }
 
