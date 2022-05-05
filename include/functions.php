@@ -201,7 +201,7 @@ function build_public_showlist() {
             $height = $show['height'];
         }
 
-        if(show['timeout']) {
+        if($show['timeout']) {
             $timeout = $show['timeout'];
         }
         
