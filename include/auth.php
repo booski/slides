@@ -5,7 +5,7 @@ require_once $basedir.'/functions.php';
 
 if(!execute($get_allowed_users)) {
     header('Content-Type: text/plain; charset=UTF-8');
-    echo 'Databasfel: '.$get_allowed_users->error;
+    echo i18n('Database error: {error}', $get_allowed_users->error);
     exit(1);
 }
 
@@ -25,7 +25,7 @@ if($user && in_array(array('user' => $user), $allowed_users)) {
 }
 
 header('Content-Type: text/plain; charset=UTF-8');
-echo 'Åtkomst nekad.';
+echo i18n('Access denied.');
 if($user) {
     echo " ($user)";
 }

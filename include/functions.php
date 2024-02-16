@@ -2,16 +2,17 @@
 
 $basedir = dirname(__FILE__);
 require_once $basedir.'/config.php';
+require_once $basedir.'/translations.php';
 
-$html_admin  = get_fragments($basedir.'/admin.html');
-$html_public = get_fragments($basedir.'/list.html');
-$html_slide  = get_fragments($basedir.'/slide.html');
+$html_admin  = get_fragments("$basedir/$language/admin.html");
+$html_public = get_fragments("$basedir/$language/list.html");
+$html_slide  = get_fragments("$basedir/$language/slide.html");
 
 $uldir = $basedir.'/../uploads/';
 
 $db = new mysqli($db_host, $db_user, $db_pass, $db_name);
 if($db->connect_errno) {
-    echo 'Failed to connect to db. The error was: '.$db->connect_error;
+    echo i18n('Failed to connect to db. The error was: {error}', $db->connect_error);
     exit(1);
 }
 
@@ -46,7 +47,7 @@ $add_allowed_user  = prepare('insert into `allowed_users`(`user`) values (?)');
 $del_allowed_user  = prepare('delete from `allowed_users` where `user`=?');
 
 if(!do_autoremoval()) {
-    echo 'Autoremoval failed.';
+    echo i18n('Autoremoval failed.');
     exit(2);
 }
 
@@ -56,10 +57,11 @@ function prepare($statement) {
     global $db;
 
     if(!($s = $db->prepare($statement))) {
-        print 'Failed to prepare the following statement: '.$statement;
-        print '<br/>';
-        print $db->errno.': '.$db->error;
-        exit(1);;
+        echo i18n("Failed to prepare statement: {statement} {errorcode} {error}",
+                  $statement,
+                  $db->errno,
+                  $db->error);
+        exit(1);
     }
 
     return $s;
@@ -67,7 +69,7 @@ function prepare($statement) {
 
 function execute($statement) {
     if(!$statement->execute()) {
-        return error('Databasfel: '.$statement->error);
+        return error(i18n("Database error: {error}", $statement->error));
     }
     return true;
 }
@@ -165,6 +167,10 @@ function try_adding($key, $value, $array, $filename) {
     return $array;
 }
 
+function i18n($string, ...$args) {
+    global $language, $i18n;
+    return $i18n[$string][$language](...$args);
+}
 
 ########## PRESENTATION ##########
 
@@ -364,7 +370,7 @@ function build_show_slide($showid, $slideid) {
                             $dim['y'],
                             'darkred',
                             'white',
-                            ":(\nDatabasfel");
+                            i18n(":(\nDatabase error"));
     }
     $slide = $slide[0];
     
@@ -380,7 +386,7 @@ function build_show_slide($showid, $slideid) {
                             $dim['y'],
                             'darkred',
                             'white',
-                            ":(\nNot found");
+                            i18n(":(\nNot found"));
     }
     
     $file_scaled = $uldir.$dim['x'].'_'.$dim['y'].'_'.$file;
@@ -666,7 +672,7 @@ function create_show($showname) {
     global $add_show;
     
     if(!$showname) {
-        error('Ytan måste ha ett namn.');
+        error(i18n('The slideshow must have a name.'));
         return false;
     }
 
@@ -678,7 +684,7 @@ function set_size($showid, $width, $height) {
     global $set_show_size;
 
     if($width xor $height) {
-        error('Både bredd och höjd måste anges');
+        error(i18n('Both width and height are mandatory.'));
         return false;
     }
 
@@ -688,12 +694,12 @@ function set_size($showid, $width, $height) {
     if($width && $height) {
 
         if(!ctype_digit($width)) {
-            error('Ogiltig bredd.');
+            error(i18n('Invalid width.'));
             return false;
         }
         
         if(!ctype_digit($height)) {
-            error('Ogiltig höjd.');
+            error(i18n('Invalid height.'));
             return false;
         }
     } else {
@@ -712,7 +718,7 @@ function set_timeout($showid, $timeout) {
     if($timeout === '') {
         $timeout = NULL;
     } else if(!ctype_digit($timeout)) {
-        error('Ogiltig tid.');
+        error(i18n('Invalid time.'));
         return false;
     }
 
@@ -776,7 +782,8 @@ function delete_slide($slideid) {
     }
 
     if(count(result($get_slide_usage)) != 0) {
-        return error("Bilden används på en eller flera ytor.");
+        return error(
+            i18n("The picture is in use in one or more slideshows."));
     }
 
     $get_slide->bind_param('i', $slideid);
@@ -840,8 +847,9 @@ function delete_from_show($showid, $slideid) {
 
 function save_upload($file) {
     if($file['error'] != 0) {
-        return error('Filen kunde inte laddas upp. (Felkod: '
-                    .$file['error'].')');
+        return error(
+            i18n('The file could not be uploaded. (Error code: {error})',
+                 $file['error']));
     }
     
     $filepath = $file['tmp_name'];
@@ -858,8 +866,7 @@ function save_upload($file) {
         return save_video($filepath, $mime);
     }
     
-    return error('Ogiltig filtyp ('.$mime
-                .'). Du kan bara ladda upp bilder och video här.');
+    return error(i18n('Invalid file type {mime}', $mime));
 }
 
 function save_image($image, $mime) {
@@ -874,16 +881,18 @@ function save_image($image, $mime) {
     if(!array_key_exists($mime, $exts)) {
         $out = join(', ', $exts);
         $out = preg_replace('/, ([^,]+)$/', ' och \1', $out);
-        return error('Ogiltigt format ('.$mime
-                    .'). Tillåtna format är '.$out.'.');
+        return error(
+            i18n('Invalid format {mime}. Allowed formats are {formats}',
+                 $mime,
+                 $out));
     }
 
     try {
         $im = new Imagick($image);
         
     } catch(Exception $e) {
-        return error('Bilden kunde inte läsas. (Felmeddelande: '
-                    .$e->getMessage().')');
+        return error(i18n('Image could not be read. (Error message: {error})',
+                          $e->getMessage()));
     }
     
     $filename = date('ymd-His').'.'.$exts[$mime];
@@ -916,8 +925,9 @@ function save_video($video, $mime) {
     if(count($out) != 0) {
         unlink($filepath);
         $out = join('<br/>', $out);
-        return error('Videon kunde inte sparas.<br/>Felmeddelande: '
-                    .$out.'<br/>Felkod: '.$result);
+        return error(i18n('Could not save video. {error} {errorcode}',
+                          $out,
+                          $result));
     }
 
     $thumbname = $filename.'.png';
@@ -933,8 +943,9 @@ function save_video($video, $mime) {
         unlink($filepath);
         unlink($thumbpath);
         $out = join('<br/>', $out);
-        return error('Filen kunde inte sparas.<br/>Felmeddelande: '
-                    .$out.'<br/>Felkod: '.$result);
+        return error(i18n('File could not be saved. {error} {errorcode}',
+                          $out,
+                          $result));
     }
     
     $im = new Imagick($thumbpath);

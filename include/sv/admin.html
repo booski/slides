@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html onclick="hide_forms()">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+    <link rel="stylesheet" type="text/css" href="./dhtmlxcalendar.css" />
+    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript">
+      window.onload = restore_scroll
+    </script>
+    <script type="text/javascript" src="./dhtmlxcalendar.js"></script>
+    <title>¤title (admin)</title>
+  </head>
+  <body>
+    <div class="box">
+      <div class="title left">
+	Tillgängligt innehåll
+      </div>
+      <form name="upload"
+	    class="box right"
+	    action="./action.php"
+	    method="post"
+	    enctype="multipart/form-data">
+	<input type="hidden" name="action" value="upload_file" />
+	<input type="hidden" name="MAX_FILE_SIZE" value="200000000" />
+	Ladda upp nytt innehåll:
+	<input id="uploadfile"
+	       name="uploadfile"
+	       type="file"
+	       onchange="show_file(event)"/>
+	<input id="filename"
+	       class="inline"
+	       name="filename"
+	       type="text"
+	       placeholder="Välj en fil..."
+	       onclick="select_file(event)"
+	       readonly />
+	<button class="tinybox link" onclick="upload_progress(event)">
+	  Ladda upp
+	</button>
+      </form>
+      <div class="end"></div>
+      <div class="slides" id="slides">
+	¤slides
+	<div class="end"></div>
+      </div>
+    </div>
+    <div class="box">
+      <div class="title left">
+	Visningsytor
+      </div>
+      <form name="new_show"
+	    id="new_show"
+	    class="box right"
+	    action="./action.php"
+	    method="post"
+	    enctype="multipart/form-data">
+	<input type="hidden" name="action" value="create_show" />
+	Lägg till ny yta:
+	<input name="name"
+	       class="inline"
+	       type="text"
+	       placeholder="Ange ett namn..." />
+	<button class="tinybox link" onclick="submit_form(event)">
+	  Lägg till
+	</button>
+      </form>
+      <div class="end"></div>
+      <div class="shows" id="shows">
+	¤shows
+      </div>
+    </div>
+    <div class="sidebar-bottom">
+      <form name="remove"
+	    class="red box"
+	    action="./action.php"
+	    method="post"
+	    enctype="multipart/form-data"
+	    ondragover="return false"
+	    ondrop="remove_drop(event)">
+	<img class="center block" src="../images/delete.svg" draggable="false" />
+	<input type="hidden" name="action" value="remove" />
+	<input type="hidden" name="remove" />
+	<input type="hidden" name="from" />
+      </form>
+    </div>
+    <div class="sidebar-top">
+      <a href=".."
+	 class="gray box block"
+	 title="Tillbaka">
+	<img class="center block"
+	     src="../images/back.svg" />
+      </a>
+      <div class="relative link">
+	<img class="gray box"
+	     draggable="false"
+	     src="../images/security.svg"
+	     title="Visa säkerhetsinställningar"
+	     onclick="toggle_securitysettings(event)"/>
+	<div class="lightbox hidden"></div>
+	<form name="securitysettings"
+	      class="securityform box hideable hidden"
+	      action="./action.php"
+	      method="post"
+	      onclick="halt(event)"
+	      enctype="multipart/form-data">
+	  <input type="hidden" name="action" value="configure_security" />
+	  <p class="nowrap">
+	    Tillåtna användare:
+	  </p>
+	  <p>
+	    <textarea title="Om du försöker ta bort dig själv kommer du automatiskt att läggas till igen."
+		      name="userlist">¤allowedusers</textarea>
+	  </p>
+	  <p class="nowrap">
+	    <span class="smaller">Inloggad som: </span>
+	    <span class="serif">¤username</span>
+	  </p>
+	  <div class="divider end"></div>
+	  <img class="tinybutton tinybox link right"
+	       src="../images/commit.svg"
+	       onclick="submit_form(event)"
+	       draggable="false"
+	       title="Spara" />
+	  <img class="tinybutton tinybox link right"
+	       src="../images/revert.svg"
+	       onclick="hide_forms()"
+	       draggable="false"
+	       title="Avbryt" />
+	</form>
+      </div>
+    </div>
+    <div class="error box ¤visibility" onclick="hide_error(event)">
+      ¤error
+    </div>
+    <div class="feedback hidden">
+      <div class="feedbox center box">
+	<img src="../images/loading.svg" class="feedspin"/>
+	<p>
+	  Laddar upp, v.g. vänta...
+	</p>
+      </div>
+    </div>
+  </body>
+</html>
+¤¤ slide
+<div class="slide"
+     id="¤slideid"
+     draggable="true"
+     ondragstart="dragstart(event)"
+     ondragend="dragend(event)">
+  <div class="relative">
+    <img class="slideimg relative center block"
+	 src="../slide.php?showid=thumb&slideid=¤slideid"
+	 draggable="false" />
+    <img class="slidesettings tinybox tinybutton link fade ¤hidden"
+	 src="../images/settings_inactive.svg"
+	 draggable="false"
+	 title="Visa bildinställningar"
+	 onclick="toggle_slidesettings(event)"/>
+    <img class="slidesettings tinybox tinybutton link ¤active ¤hidden"
+	 src="../images/settings_active.svg"
+	 draggable="false"
+	 title="Visa bildinställningar"
+	 onclick="toggle_slidesettings(event)"/>
+    <div class="lightbox hidden"></div>
+    <form name="slidesettings"
+	  class="settingsform box hideable hidden"
+	  action="./action.php"
+	  method="post"
+	  onclick="halt(event)"
+	  enctype="multipart/form-data">
+      <input type="hidden" name="action" value="configure_slide" />
+      <input type="hidden" name="showid" value="¤showid" />
+      <input type="hidden" name="slideid" value="¤slideid" />
+      <p class="nowrap">
+	Sista visningsdag:
+	<input class="inline calendar"
+	       type="text"
+	       name="endtime"
+	       value="¤sendtime"
+	       title="Sista dagen innan bilden automatiskt tas bort från den här visningsytan. Är fältet tomt så tas den inte bort automatiskt."
+	       readonly />
+	<img class="clearbutton tinybutton link inline"
+	     src="../images/clear.svg"
+	     onclick="clear_date(event)"
+	     draggable="false"
+	     title="Radera datum" />
+      </p>
+      <div class="divider end"></div>
+      <img class="tinybutton tinybox link right"
+	   src="../images/commit.svg"
+	   onclick="submit_form(event)"
+	   draggable="false"
+	   title="Spara" />
+      <img class="tinybutton tinybox link right"
+	   src="../images/revert.svg"
+	   onclick="hide_forms()"
+	   draggable="false"
+	   title="Avbryt" />
+    </form>
+  </div>
+</div>
+¤¤ show
+<div id="¤showid"
+     class="show box relative"
+     ondragover="return false"
+     ondrop="add_drop(event)"
+     draggable="true"
+     ondragstart="dragstart(event)"
+     ondragend="dragend(event)"
+     style="width: ¤bwidthpx;">
+  <img class="right smallbox smallbutton link"
+       src="../images/¤image"
+       draggable="false"
+       title="Visa ytinställningar"
+       onclick="toggle_showsettings(event)"/>
+  <div class="lightbox hidden"></div>
+  <form name="showsettings"
+	class="settingsform box hideable hidden"
+	action="./action.php"
+	method="post"
+	onclick="halt(event)"
+	enctype="multipart/form-data">
+    <input type="hidden" name="action" value="configure_show" />
+    <input type="hidden" name="showid" value="¤showid" />
+    <p class="nowrap">
+      Upplösning:
+      <input class="inline"
+	     type="text"
+	     name="width"
+	     placeholder="¤owidth"
+	     value="¤swidth"
+	     title="Bredd" />
+      x
+      <input class="inline"
+	     type="text"
+	     name="height"
+	     placeholder="¤oheight"
+	     value="¤sheight"
+	     title="Höjd" />
+    </p>
+    <div class="divider"></div>
+    <p class="nowrap">
+      Tid per bild (sekunder):
+      <input class="inline"
+	     type="text"
+	     name="timeout"
+	     placeholder="¤otime"
+	     value="¤stime"
+	     title="Väntetid innan nästa bild automatiskt visas. Är värdet 0 sker inget automatiskt byte." />
+    </p>
+    <div class="divider"></div>
+    <p class="nowrap">
+      Kopiera yta:
+      <input class="inline wide"
+             type="text"
+             name="copy"
+             placeholder="Kopians namn"
+             title="Skriv ett namn här för att kopiera ytan till en ny yta med det namnet." />
+    </p>
+    <div class="divider"></div>
+    <img class="tinybutton tinybox link right"
+	 src="../images/commit.svg"
+	 onclick="submit_form(event)"
+	 draggable="false"
+	 title="Spara" />
+    <img class="tinybutton tinybox link right"
+	 src="../images/revert.svg"
+	 onclick="hide_forms()"
+	 draggable="false"
+	 title="Avbryt" />
+    <div class="end"></div>
+  </form>
+  <form name="add"
+	action="./action.php"
+	method="post"
+	enctype="multipart/form-data">
+    <input type="hidden" name="action" value="add_slide_to_show" />
+    <input type="hidden" name="add" />
+    <input type="hidden" name="to" value="¤showid" />
+  </form>
+  <div class="title left">
+    id: ¤showid
+  </div>
+  <div class="end"></div>
+  <a class="title left"
+     href="../?id=¤showid" draggable="false">¤name</a>
+  <div class="end divider"></div>
+  ¤slides
+</div>

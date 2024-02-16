@@ -1,5 +1,8 @@
 <?php
 
+// site language
+$language = 'sv';
+
 // site name
 $title = 'Slides';
 
