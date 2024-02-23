@@ -449,12 +449,13 @@ function create_image($width, $height, $bgcolor, $textcolor, $text) {
     $draw->setFillColor(new ImagickPixel($textcolor));
     $draw->setTextAntialias(true);
     $draw->setGravity(Imagick::GRAVITY_CENTER);
-    
+
     $im = new Imagick();
     $im->newImage($width, $height, $bgcolor, 'png');
     $im->annotateImage($draw, 0, 0, 0, $text);
+    $im->shaveImage(3, 3);
     $im->borderImage($textcolor, 3, 3);
-    
+
     return $im;
 }
 
