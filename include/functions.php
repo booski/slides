@@ -111,8 +111,17 @@ function replace($assoc_arr, $subject) {
 }
 
 function error($message) {
-    setcookie('error', $message);
+    set_cookie('error', $message);
     return false;
+}
+
+function set_cookie($name, $value, $expires=null) {
+    $cookieoptions='Secure; SameSite=None; Partitioned';
+    $date = 0;
+    if($expires !== null) {
+        $date = date('D, d M Y H:i:s \G\M\T', $expires);
+    }
+    header("Set-Cookie: $name=$value; Expires=$date; $cookieoptions");
 }
 
 /*
@@ -286,7 +295,7 @@ function build_slide($showid) {
             $index = 0;
         }
 
-        setcookie('index', $index+1);
+        set_cookie('index', $index+1);
     }
 
     $slideid = $slides[$index]['slide'];
@@ -473,7 +482,7 @@ function build_admin_page() {
     $visibility = 'hidden';
     if($error) {
         $visibility = 'visible';
-        setcookie('error', '', time() - 3600);
+        set_cookie('error', '', time() - 3600);
     }
 
     $replacements = array(
