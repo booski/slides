@@ -127,9 +127,9 @@ function set_cookie($name, $value, $expires=null) {
 /*
    Takes an html file containing named fragments.
    Returns an associative array on the format array[name]=>fragment.
-   
+
    Fragments are delimited like this:
-   
+
    ¤¤ name 1
    fragment 1
    ¤¤ name 2
@@ -170,7 +170,7 @@ function try_adding($key, $value, $array, $filename) {
     } else if($key === '') {
         throw new Exception('There is an unnamed fragment in '.$filename);
     }
-    
+
     $array[$key] = $value;
 
     return $array;
@@ -192,7 +192,7 @@ function build_public_showlist() {
     if(!execute($get_shows)) {
         return false;
     }
-    
+
     $shows = '';
     foreach(result($get_shows) as $show) {
         $id = $show['id'];
@@ -201,7 +201,7 @@ function build_public_showlist() {
         if(!execute($get_show_slides)) {
             return false;
         }
-        
+
         $slides = result($get_show_slides);
         $lines = count($slides);
         $slideid = 0;
@@ -219,7 +219,7 @@ function build_public_showlist() {
         if($show['timeout']) {
             $timeout = $show['timeout'];
         }
-        
+
         $replacements = array(
             '¤showid'  => $show['id'],
             '¤slide'   => $slideid,
@@ -228,7 +228,7 @@ function build_public_showlist() {
             '¤height'  => $height,
             '¤timeout' => $timeout,
         );
-        
+
         $shows .= replace($replacements, $html_public['show']);
     }
     return $shows;
@@ -236,7 +236,7 @@ function build_public_showlist() {
 
 function build_public_page() {
     global $html_public, $title;
-    
+
     $replacements = array(
         '¤title' => $title,
         '¤shows' => build_public_showlist(),
@@ -247,11 +247,11 @@ function build_public_page() {
 
 function build_public_slide($showid) {
     global $html_slide;
-    
+
     return replace(array(
         '¤content' => build_slide($showid)
     ), $html_slide['base']);
-    
+
 }
 
 function build_slide($showid) {
@@ -261,20 +261,20 @@ function build_slide($showid) {
     if(!execute($get_show)) {
         return false;
     }
-    
+
     $show = result($get_show);
-    
+
     if(count($show) != 1) {
         return false;
     }
 
     $show = $show[0];
-    
+
     $index = 0;
     if(isset($_COOKIE['index'])) {
         $index = $_COOKIE['index'];
     }
-    
+
     $timeout_temp = $show['timeout'];
     if($timeout_temp) {
         $timeout = $timeout_temp;
@@ -304,7 +304,7 @@ function build_slide($showid) {
     if(!execute($get_slide)) {
         return false;
     }
-    
+
     $slide = result($get_slide);
     if(count($slide) != 1) {
         return false;
@@ -328,7 +328,7 @@ function build_slide($showid) {
 
 function build_image($showid, $slideid, $timeout) {
     global $html_slide;
-    
+
     $replacements = array(
         '¤showid'  => $showid,
         '¤slideid' => $slideid,
@@ -353,9 +353,9 @@ function build_video($videosrc, $showdim) {
 
 function build_show_slide($showid, $slideid) {
     global $uldir, $get_slide;
-    
+
     $dim = get_dimensions($showid);
-    
+
     if(!$slideid) {
         return create_image($dim['x'],
                             $dim['y'],
@@ -363,7 +363,7 @@ function build_show_slide($showid, $slideid) {
                             'gray',
                             $dim['x'].' x '.$dim['y']);
     }
-    
+
     $get_slide->bind_param('i', $slideid);
     if(!execute($get_slide)) {
         return create_image($dim['x'],
@@ -372,7 +372,7 @@ function build_show_slide($showid, $slideid) {
                             'white',
                             ":(\nDatabasfel");
     }
-    
+
     $slide = result($get_slide);
     if(count($slide) != 1) {
         return create_image($dim['x'],
@@ -382,14 +382,14 @@ function build_show_slide($showid, $slideid) {
                             i18n(":(\nDatabase error"));
     }
     $slide = $slide[0];
-    
+
     $type = $slide['type'];
     $file = $slide['name'];
-    
+
     if($type == 'video') {
         $file = $file.'.png';
     }
-    
+
     if(!file_exists($uldir.$file)) {
         return create_image($dim['x'],
                             $dim['y'],
@@ -397,9 +397,9 @@ function build_show_slide($showid, $slideid) {
                             'white',
                             i18n(":(\nNot found"));
     }
-    
+
     $file_scaled = $uldir.$dim['x'].'_'.$dim['y'].'_'.$file;
-    
+
     if(!file_exists($file_scaled)) {
 
         $im = new Imagick($uldir.$file);
@@ -407,9 +407,9 @@ function build_show_slide($showid, $slideid) {
         $im->writeImage($file_scaled);
         return $im;
     }
-    
+
     return new Imagick($file_scaled);
-    
+
 }
 
 function get_dimensions($showid) {
@@ -421,7 +421,7 @@ function get_dimensions($showid) {
         'x' => $screen_width,
         'y' => $screen_height
     );
-    
+
     if($showid == 'thumb') {
 
         $dim['x'] = $thumb_width;
@@ -439,11 +439,11 @@ function get_dimensions($showid) {
     if(count($show) != 1) {
         return false;
     }
-    
+
     $show = $show[0];
-    
+
     if ($show['width'] && $show['height']) {
-        
+
         $dim['x'] = $show['width'];
         $dim['y'] = $show['height'];
     }
@@ -510,7 +510,7 @@ function build_slidelist() {
 
         $type = $slide['type'];
         $slideid = $slide['id'];
-        
+
         $replacements = array(
             '¤slideid'  => $slideid,
             '¤hidden' => 'hidden',
@@ -518,18 +518,18 @@ function build_slidelist() {
 
         $slides .= replace($replacements, $html_admin['slide']);
     }
-    
+
     return $slides;
 }
 
 function build_showlist() {
     global $html_admin, $thumb_width, $screen_width, $screen_height, $timeout;
     global $get_shows;
-    
+
     if(!execute($get_shows)) {
         return false;
     }
-    
+
     $shows = '';
     foreach(result($get_shows) as $show) {
         $id = $show['id'];
@@ -537,7 +537,7 @@ function build_showlist() {
         $swidth = $show['width'];
         $sheight = $show['height'];
         $stime = $show['timeout'];
-        
+
         $image = 'settings_inactive.svg';
         if($swidth || $sheight || $stime) {
             $image = 'settings_active.svg';
@@ -556,7 +556,7 @@ function build_showlist() {
             '¤stime'   => $stime,
             '¤image'   => $image,
         );
-        
+
         $shows .= replace($replacements, $html_admin['show']);
     }
 
@@ -574,7 +574,7 @@ function build_show($id) {
     $show = '';
     foreach(result($get_show_slides) as $slide) {
         $endtime = $slide['endtime'];
-        
+
         $active = 'hidden';
         if($endtime) {
             $endtime = gmdate("Y-m-d", $endtime);
@@ -591,10 +591,10 @@ function build_show($id) {
             return false;
         }
         $slide = $slide[0];
-        
+
         $slideid = $slide['id'];
         $type = $slide['type'];
-        
+
         $replacements = array(
             '¤slideid'  => $slideid,
             '¤showid'   => $id,
@@ -603,10 +603,10 @@ function build_show($id) {
             '¤type'     => $type,
             '¤hidden'   => '',
         );
-        
+
         $show .= replace($replacements, $html_admin['slide']);
     }
-    
+
     return $show;
 }
 
@@ -650,7 +650,7 @@ function set_allowed_users($users) {
             $dellist[] = $u;
         }
     }
-    
+
     $addlist = array();
     foreach($newlist as $u) {
         if(!in_array(array('user' => $u), $oldlist)) {
@@ -659,10 +659,10 @@ function set_allowed_users($users) {
     }
 
     begin_trans();
-    
+
     $add_allowed_user->bind_param('s', $adduser);
     foreach($addlist as $adduser) {
-        
+
         if($adduser && !execute($add_allowed_user)) {
             return revert_trans();
         }
@@ -680,7 +680,7 @@ function set_allowed_users($users) {
 
 function create_show($showname) {
     global $add_show;
-    
+
     if(!$showname) {
         error(i18n('The slideshow must have a name.'));
         return false;
@@ -700,14 +700,14 @@ function set_size($showid, $width, $height) {
 
     $width = ltrim($width, '0');
     $height = ltrim($height, '0');
-    
+
     if($width && $height) {
 
         if(!ctype_digit($width)) {
             error(i18n('Invalid width.'));
             return false;
         }
-        
+
         if(!ctype_digit($height)) {
             error(i18n('Invalid height.'));
             return false;
@@ -740,18 +740,18 @@ function copy_show($oldshow_id, $newname) {
     global $add_show, $get_show, $get_show_slides, $get_slide;
 
     begin_trans();
-    
+
     $add_show->bind_param('s', $newname);
     execute($add_show);
     $newshow_id = $add_show->insert_id;
-    
+
     $get_show->bind_param('i', $oldshow_id);
     execute($get_show);
     $oldshow = result($get_show)[0];
 
     set_size($newshow_id, $oldshow['width'], $oldshow['height']);
     set_timeout($newshow_id, $oldshow['timeout']);
-    
+
     $get_show_slides->bind_param('i', $oldshow_id);
     execute($get_show_slides);
     foreach(result($get_show_slides) as $show_slide) {
@@ -800,7 +800,7 @@ function delete_slide($slideid) {
     if(!execute($get_slide)) {
         return revert_trans();
     }
-    
+
     $slide = result($get_slide);
     if(count($slide) != 1) {
         return revert_trans();
@@ -814,13 +814,13 @@ function delete_slide($slideid) {
     if(!execute($del_slide)) {
         return revert_trans();
     }
-    
+
     unlink($uldir.$slidename);
     if($slidetype == 'video') {
         $slidename .= '.png';
         unlink($uldir.$slidename);
     }
-    
+
     array_map('unlink', glob($uldir.'*_'.$slidename));
     return commit_trans();
 }
@@ -861,13 +861,13 @@ function save_upload($file) {
             i18n('The file could not be uploaded. (Error code: {error})',
                  $file['error']));
     }
-    
+
     $filepath = $file['tmp_name'];
     $finfo = new finfo();
     $mime = $finfo->file($filepath, FILEINFO_MIME_TYPE);
-    
+
     $halfmime = explode('/', $mime)[0];
-    
+
     if($halfmime == 'image') {
         return save_image($filepath, $mime);
     }
@@ -875,19 +875,19 @@ function save_upload($file) {
     if($halfmime == 'video') {
         return save_video($filepath, $mime);
     }
-    
+
     return error(i18n('Invalid file type {mime}', $mime));
 }
 
 function save_image($image, $mime) {
     global $uldir, $add_slide;
-    
+
     $exts = array(
         'image/gif'  => 'gif',
         'image/jpeg' => 'jpg',
         'image/png'  => 'png',
     );
-    
+
     if(!array_key_exists($mime, $exts)) {
         $out = join(', ', $exts);
         $out = preg_replace('/, ([^,]+)$/', ' och \1', $out);
@@ -899,12 +899,12 @@ function save_image($image, $mime) {
 
     try {
         $im = new Imagick($image);
-        
+
     } catch(Exception $e) {
         return error(i18n('Image could not be read. (Error message: {error})',
                           $e->getMessage()));
     }
-    
+
     $filename = date('ymd-His').'.'.$exts[$mime];
 
     $type = 'image';
@@ -913,7 +913,7 @@ function save_image($image, $mime) {
     if(!execute($add_slide)) {
         return revert_trans();
     }
-    
+
     $im->writeImage($uldir.$filename);
     return commit_trans();
 }
@@ -957,20 +957,20 @@ function save_video($video, $mime) {
                           $out,
                           $result));
     }
-    
+
     $im = new Imagick($thumbpath);
     $width = $im->getImageWidth();
     $height = $im->getImageHeight();
-    
+
     $draw = new ImagickDraw();
     $draw->setFontSize(min($width, $height)/5);
     $draw->setFillColor(new ImagickPixel('white'));
     $draw->setTextAntialias(true);
     $draw->setGravity(Imagick::GRAVITY_CENTER);
-    
+
     $im->annotateImage($draw, 0, 0, 0, 'Video');
     $im->writeImage();
-    
+
     $type = 'video';
     $add_slide->bind_param('ss', $filename, $type);
     begin_trans();

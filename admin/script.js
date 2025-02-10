@@ -6,8 +6,8 @@ function save_scroll() {
 function restore_scroll() {
     var scroll = localStorage.getItem("scroll")
     if(scroll) {
-	window.scroll(0, scroll)
-	localStorage.setItem("scroll", "")
+        window.scroll(0, scroll)
+        localStorage.setItem("scroll", "")
     }
 }
 
@@ -21,9 +21,9 @@ function submit_form(event) {
 function upload_progress(event) {
     event.preventDefault()
     var feedback = document.querySelector('.feedback')
-    
+
     if(feedback.classList.contains('hidden')) {
-	feedback.classList.remove('hidden')
+        feedback.classList.remove('hidden')
     }
 
     submit_form(event)
@@ -54,7 +54,7 @@ function add_drop(event) {
     var origin = event.dataTransfer.getData("fromId")
 
     if(origin != "slides") {
-	return false
+        return false
     }
 
     var form = event.currentTarget.children.add
@@ -69,7 +69,7 @@ function remove_drop(event) {
     var origin = event.dataTransfer.getData("fromId")
 
     if(!confirm_removal(item, origin)) {
-	return
+        return
     }
 
     var form = event.currentTarget
@@ -83,13 +83,13 @@ function remove_drop(event) {
 function confirm_removal(itemid, originid) {
 
     if(originid == "shows") {
-	return window.confirm("Är du säker på att du vill ta bort den här visningsytan (id: "+itemid+")?")
-	
+        return window.confirm("Är du säker på att du vill ta bort den här visningsytan (id: "+itemid+")?")
+
     } else if(originid == "slides") {
-	return window.confirm("Är du säker på att du vill ta bort det här innehållet?")
-	
+        return window.confirm("Är du säker på att du vill ta bort det här innehållet?")
+
     } else {
-	return true
+        return true
     }
 }
 
@@ -110,12 +110,12 @@ function toggle_slidesettings(event) {
     var form = event.currentTarget.parentNode.querySelector('form')
     var input = form.endtime
     if(!input.date) {
-	var date = new Date()
-	input.id = date.getTime()
-	var cal = new dhtmlXCalendarObject(input.id)
-	cal.hideTime()
-	cal.setSensitiveRange(date, null)
-	input.date = cal
+        var date = new Date()
+        input.id = date.getTime()
+        var cal = new dhtmlXCalendarObject(input.id)
+        cal.hideTime()
+        cal.setSensitiveRange(date, null)
+        input.date = cal
     }
 }
 
@@ -131,38 +131,38 @@ function toggle_settings(event) {
     hide_forms()
 
     if(hidden) {
-	show_form(form)
+        show_form(form)
     }
 
     var lightbox = parent.querySelector('.lightbox')
     if(lightbox.classList.contains('hidden')) {
-	lightbox.classList.remove('hidden')
+        lightbox.classList.remove('hidden')
     }
 }
 
 function show_form(form) {
     if(form.classList.contains('hidden')) {
-	form.classList.remove('hidden')
+        form.classList.remove('hidden')
     }
 }
 
 function hide_forms() {
     var forms = document.querySelectorAll('form')
     for(var i=0; i < forms.length; i++) {
-	var form = forms[i]
-	if(form.classList.contains('hideable') && !form.classList.contains('hidden')) {
-	    form.reset()
-	    form.classList.add('hidden')
-	}
+        var form = forms[i]
+        if(form.classList.contains('hideable') && !form.classList.contains('hidden')) {
+            form.reset()
+            form.classList.add('hidden')
+        }
     }
 
     var lightboxes = document.querySelectorAll('.lightbox')
-    
+
     for(var i=0; i < lightboxes.length; i++) {
-	var lightbox = lightboxes[i]
-	if(!lightbox.classList.contains('hidden')) {
-	    lightbox.classList.add('hidden')
-	}
+        var lightbox = lightboxes[i]
+        if(!lightbox.classList.contains('hidden')) {
+            lightbox.classList.add('hidden')
+        }
     }
 }
 
