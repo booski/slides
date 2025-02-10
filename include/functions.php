@@ -597,7 +597,7 @@ function build_show($id) {
         }
         $slide = $slide[0];
 
-        $slidetype = $slide['type']
+        $slidetype = $slide['type'];
         $slidepath = '../uploads/'.$slide['name'];
         $thumbpath = $slidepath;
         if($slidetype == 'video') {
