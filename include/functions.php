@@ -508,11 +508,16 @@ function build_slidelist() {
     $slides = '';
     foreach(result($get_slides) as $slide) {
 
-        $type = $slide['type'];
-        $slideid = $slide['id'];
+        $slidepath = '../uploads/'.$slide['name'];
+        $thumbpath = $slidepath;
+        if($slide['type'] == 'video') {
+            $thumbpath .= '.png';
+        }
 
         $replacements = array(
-            '¤slideid'  => $slideid,
+            '¤slideid'  => $slide['id'],
+            '¤thumbpath' => $thumbpath,
+            '¤slidepath' => $slidepath,
             '¤hidden' => 'hidden',
         );
 
@@ -592,15 +597,21 @@ function build_show($id) {
         }
         $slide = $slide[0];
 
-        $slideid = $slide['id'];
-        $type = $slide['type'];
+        $slidetype = $slide['type']
+        $slidepath = '../uploads/'.$slide['name'];
+        $thumbpath = $slidepath;
+        if($slidetype == 'video') {
+            $thumbpath .= '.png';
+        }
 
         $replacements = array(
-            '¤slideid'  => $slideid,
+            '¤slideid'  => $slide['id'],
+            '¤thumbpath' => $thumbpath,
+            '¤slidepath' => $slidepath,
             '¤showid'   => $id,
             '¤sendtime' => $endtime,
             '¤active'   => $active,
-            '¤type'     => $type,
+            '¤type'     => $slidetype,
             '¤hidden'   => '',
         );
 

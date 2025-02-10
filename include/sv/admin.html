@@ -151,9 +151,12 @@
      ondragstart="dragstart(event)"
      ondragend="dragend(event)">
   <div class="relative">
-    <img class="slideimg relative center block"
-         src="../slide.php?showid=thumb&slideid=¤slideid"
-         draggable="false" />
+    <a href="¤slidepath"
+       draggable="false">
+      <img class="slideimg relative center block"
+           src="¤thumbpath"
+           draggable="false" />
+    </a>
     <img class="slidesettings tinybox tinybutton link fade ¤hidden"
          src="../images/settings_inactive.svg"
          draggable="false"

@@ -152,6 +152,11 @@ input[type="text"], textarea {
     background-color: #eee;
 }
 
+.slideimg {
+    max-width: 180px;
+    max-height: 180px;
+}
+
 .slidesettings {
     position: absolute;
     top: -2pt;
