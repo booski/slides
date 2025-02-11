@@ -17,34 +17,15 @@ if($db->connect_errno) {
 }
 
 $add_slide       = prepare('insert into `slide`(`name`, `type`) values (?, ?)');
-$del_slide       = prepare('delete from slide where `id`=?');
-$get_slides      = prepare('select * from `slide`');
 $get_slide       = prepare('select * from `slide` where `id`=?');
-$get_slide_usage = prepare('select * from `show_slide` where `slide`=?');
 
 $add_show                  = prepare('insert into `show`(`name`) values (?)');
-$del_show                  = prepare('delete from `show` where `id`=?');
 $get_shows                 = prepare('select * from `show`');
 $get_show                  = prepare('select * from `show` where `id`=?');
 $get_show_slides           = prepare('select * from `show_slide`
                                       where `show`=? order by `seq`');
-$add_show_slide            = prepare('insert into `show_slide`(`show`, `slide`)
-                                          values (?, ?)');
-$del_show_slide            = prepare('delete from `show_slide`
-                                      where `show`=? and `slide`=?');
-$del_show_slides           = prepare('delete from `show_slide` where `show`=?');
-$set_show_size             = prepare('update `show` set `width`=?, `height`=?
-                                      where `id`=?');
-$set_show_timeout          = prepare('update `show` set `timeout`=?
-                                      where `id`=?');
-$set_show_slide_autoremove = prepare('update `show_slide` set `endtime`=?
-                                      where `show`=? and `slide`=?');
-$do_show_slide_autoremove  = prepare('delete from `show_slide`
-                                      where `endtime`<?');
 
 $get_allowed_users = prepare('select * from `allowed_users`');
-$add_allowed_user  = prepare('insert into `allowed_users`(`user`) values (?)');
-$del_allowed_user  = prepare('delete from `allowed_users` where `user`=?');
 
 if(!do_autoremoval()) {
     echo i18n('Autoremoval failed.');
@@ -499,8 +480,9 @@ function build_admin_page() {
 }
 
 function build_slidelist() {
-    global $html_admin, $get_slides;
+    global $html_admin;
 
+    $get_slides = prepare('select * from `slide`');
     if(!execute($get_slides)) {
         return false;
     }
@@ -640,7 +622,7 @@ function get_allowed_users() {
 ########## ACTIONS ##########
 
 function set_allowed_users($users) {
-    global $user, $get_allowed_users, $del_allowed_user, $add_allowed_user;
+    global $user, $get_allowed_users;
 
     $newlist = preg_split('/[\s,;]+/', $users);
 
@@ -670,7 +652,8 @@ function set_allowed_users($users) {
     }
 
     begin_trans();
-
+    $add_allowed_user = prepare('insert into `allowed_users`(`user`)
+                                     values (?)');
     $add_allowed_user->bind_param('s', $adduser);
     foreach($addlist as $adduser) {
 
@@ -679,6 +662,7 @@ function set_allowed_users($users) {
         }
     }
 
+    $del_allowed_user = prepare('delete from `allowed_users` where `user`=?');
     $del_allowed_user->bind_param('s', $deluser);
     foreach($dellist as $deluser) {
         if(!execute($del_allowed_user)) {
@@ -702,8 +686,6 @@ function create_show($showname) {
 }
 
 function set_size($showid, $width, $height) {
-    global $set_show_size;
-
     if($width xor $height) {
         error(i18n('Both width and height are mandatory.'));
         return false;
@@ -728,13 +710,13 @@ function set_size($showid, $width, $height) {
         $height = NULL;
     }
 
+    $set_show_size = prepare('update `show` set `width`=?, `height`=?
+                              where `id`=?');
     $set_show_size->bind_param('iii', $width, $height, $showid);
     return execute($set_show_size);
 }
 
 function set_timeout($showid, $timeout) {
-    global $set_show_timeout;
-
     $timeout = strval($timeout);
     if($timeout === '') {
         $timeout = NULL;
@@ -743,6 +725,8 @@ function set_timeout($showid, $timeout) {
         return false;
     }
 
+    $set_show_timeout = prepare('update `show` set `timeout`=?
+                                 where `id`=?');
     $set_show_timeout->bind_param('ii', $timeout, $showid);
     return execute($set_show_timeout);
 }
@@ -778,25 +762,25 @@ function copy_show($oldshow_id, $newname) {
 }
 
 function set_autoremoval($showid, $slideid, $endtime) {
-    global $set_show_slide_autoremove;
-
+    $set_show_slide_autoremove = prepare('update `show_slide` set `endtime`=?
+                                          where `show`=? and `slide`=?');
     $set_show_slide_autoremove->bind_param('iii', $endtime, $showid, $slideid);
     return execute($set_show_slide_autoremove);
 }
 
 function do_autoremoval() {
-    global $do_show_slide_autoremove;
-
     $time = time();
+    $do_show_slide_autoremove = prepare('delete from `show_slide`
+                                         where `endtime`<?');
     $do_show_slide_autoremove->bind_param('i', $time);
-
     return execute($do_show_slide_autoremove);
 }
 
 function delete_slide($slideid) {
-    global $get_slide_usage, $del_slide, $get_slide, $uldir;
+    global $get_slide, $uldir;
 
     begin_trans();
+    $get_slide_usage = prepare('select * from `show_slide` where `slide`=?');
     $get_slide_usage->bind_param('i', $slideid);
     if(!execute($get_slide_usage)) {
         return revert_trans();
@@ -821,6 +805,7 @@ function delete_slide($slideid) {
     $slidename = $slide['name'];
     $slidetype = $slide['type'];
 
+    $del_slide = prepare('delete from slide where `id`=?');
     $del_slide->bind_param('i', $slideid);
     if(!execute($del_slide)) {
         return revert_trans();
@@ -837,14 +822,14 @@ function delete_slide($slideid) {
 }
 
 function delete_show($showid) {
-    global $del_show, $del_show_slides;
-
     begin_trans();
+    $del_show_slides = prepare('delete from `show_slide` where `show`=?');
     $del_show_slides->bind_param('i', $showid);
     if(!execute($del_show_slides)) {
         return revert_trans();
     }
 
+    $del_show = prepare('delete from `show` where `id`=?');
     $del_show->bind_param('i', $showid);
     if(!execute($del_show)) {
         return revert_trans();
@@ -853,15 +838,15 @@ function delete_show($showid) {
 }
 
 function add_slide_to_show($slideid, $showid) {
-    global $add_show_slide;
-
+    $add_show_slide = prepare('insert into `show_slide`(`show`, `slide`)
+                                   values (?, ?)');
     $add_show_slide->bind_param('ii', $showid, $slideid);
     return execute($add_show_slide);
 }
 
 function delete_from_show($showid, $slideid) {
-    global $del_show_slide;
-
+    $del_show_slide = prepare('delete from `show_slide`
+                               where `show`=? and `slide`=?');
     $del_show_slide->bind_param('ii', $showid, $slideid);
     return execute($del_show_slide);
 }
