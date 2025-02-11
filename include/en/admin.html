@@ -178,6 +178,20 @@
       <input type="hidden" name="showid" value="¤showid" />
       <input type="hidden" name="slideid" value="¤slideid" />
       <p class="nowrap">
+        First day to display:
+        <input class="inline calendar"
+               type="text"
+               name="starttime"
+               value="¤sstarttime"
+               title="The first day this slide will be shown in this slideshow. If the field is empty it will start being shown immediately."
+               readonly />
+        <img class="clearbutton tinybutton link inline"
+             src="../images/clear.svg"
+             onclick="clear_date(event)"
+             draggable="false"
+             title="Delete data" />
+      </p>
+      <p class="nowrap">
         Last day to display:
         <input class="inline calendar"
                type="text"
@@ -190,6 +204,13 @@
              onclick="clear_date(event)"
              draggable="false"
              title="Delete data" />
+      </p>
+      <p class="nowrap">
+        <input type="checkbox"
+               name="autodelete"
+               title="Whether to delete the slide from available content when it is automatically removed. Has no effect if no last day is set or the slide is present in other slideshows."
+               ¤sautodelete_checked />
+        Delete on removal
       </p>
       <div class="divider end"></div>
       <img class="tinybutton tinybox link right"

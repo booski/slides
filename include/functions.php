@@ -236,7 +236,8 @@ function build_public_slide($showid) {
 }
 
 function build_slide($showid) {
-    global $get_show, $get_show_slides, $get_slide, $timeout;
+    global $get_show, $get_slide, $timeout;
+    $time = time();
 
     $get_show->bind_param('i', $showid);
     if(!execute($get_show)) {
@@ -261,12 +262,16 @@ function build_slide($showid) {
         $timeout = $timeout_temp;
     }
 
-    $get_show_slides->bind_param('i', $showid);
-    if(!execute($get_show_slides)) {
+    $get_active_slides = prepare(
+        'select * from `show_slide` where `show`=? and
+             (`starttime`<? or `starttime` is null)
+             order by `seq`');
+    $get_active_slides->bind_param('ii', $showid, $time);
+    if(!execute($get_active_slides)) {
         return false;
     }
 
-    $slides = result($get_show_slides);
+    $slides = result($get_active_slides);
     $lines = count($slides);
 
     if($lines == 0) {
@@ -560,12 +565,24 @@ function build_show($id) {
 
     $show = '';
     foreach(result($get_show_slides) as $slide) {
-        $endtime = $slide['endtime'];
-
         $active = 'hidden';
+
+        $starttime = $slide['starttime'];
+        if($starttime) {
+            $starttime = gmdate("Y-m-d", $starttime);
+            $active = '';
+        }
+        $endtime = $slide['endtime'];
         if($endtime) {
             $endtime = gmdate("Y-m-d", $endtime);
             $active = '';
+        }
+        $autodelete = $slide['autodelete'];
+        if($autodelete) {
+            $autodelete = checked;
+            $active = '';
+        } else {
+            $autodelete = '';
         }
 
         $get_slide->bind_param('i', $slide['slide']);
@@ -591,7 +608,9 @@ function build_show($id) {
             '¤thumbpath' => $thumbpath,
             '¤slidepath' => $slidepath,
             '¤showid'   => $id,
+            '¤sstarttime' => $starttime,
             '¤sendtime' => $endtime,
+            '¤sautodelete_checked' => $autodelete,
             '¤active'   => $active,
             '¤type'     => $slidetype,
             '¤hidden'   => '',
@@ -755,40 +774,77 @@ function copy_show($oldshow_id, $newname) {
         $slide = result($get_slide)[0];
         $id = $slide['id'];
         $endtime = $show_slide['endtime'];
+        $autodelete = $show_slide['autodelete'];
         add_slide_to_show($id, $newshow_id);
-        set_autoremoval($newshow_id, $id, $endtime);
+        set_autoremoval($newshow_id, $id, $endtime, $autodelete);
     }
     return commit_trans();
 }
 
-function set_autoremoval($showid, $slideid, $endtime) {
-    $set_show_slide_autoremove = prepare('update `show_slide` set `endtime`=?
+function set_starttime($showid, $slideid, $starttime) {
+    $set_show_slide_starttime = prepare('update `show_slide` set `starttime`=?
+                                             where `show`=? and `slide`=?');
+    $set_show_slide_starttime->bind_param('iii',
+                                          $starttime,
+                                          $showid,
+                                          $slideid);
+    return execute($set_show_slide_starttime);
+}
+
+function set_autoremoval($showid, $slideid, $endtime, $autodelete) {
+    $set_show_slide_autoremove = prepare('update `show_slide`
+                                              set `endtime`=?, `autodelete`=?
                                           where `show`=? and `slide`=?');
-    $set_show_slide_autoremove->bind_param('iii', $endtime, $showid, $slideid);
+    $set_show_slide_autoremove->bind_param('iiii',
+                                           $endtime,
+                                           $autodelete,
+                                           $showid,
+                                           $slideid);
     return execute($set_show_slide_autoremove);
 }
 
 function do_autoremoval() {
     $time = time();
+    $get_slides_to_delete = prepare('select `slide` from `show_slide`
+                                     where `endtime`<?
+                                         and `autodelete`=true');
+    $get_slides_to_delete->bind_param('i', $time);
+    execute($get_slides_to_delete);
+    $autodelete_candidates = result($get_slides_to_delete);
+
     $do_show_slide_autoremove = prepare('delete from `show_slide`
                                          where `endtime`<?');
     $do_show_slide_autoremove->bind_param('i', $time);
-    return execute($do_show_slide_autoremove);
+    $result = execute($do_show_slide_autoremove);
+    if(!$result) {
+        return false;
+    }
+
+    foreach($autodelete_candidates as $candidate) {
+        delete_slide($candidate['slide'], true);
+    }
+
+    return true;
 }
 
-function delete_slide($slideid) {
+function delete_slide($slideid, $quiet=false) {
     global $get_slide, $uldir;
 
     begin_trans();
-    $get_slide_usage = prepare('select * from `show_slide` where `slide`=?');
+    $get_slide_usage = prepare('select `show` from `show_slide`
+                                where `slide`=?');
     $get_slide_usage->bind_param('i', $slideid);
     if(!execute($get_slide_usage)) {
         return revert_trans();
     }
 
     if(count(result($get_slide_usage)) != 0) {
-        return error(
-            i18n("The picture is in use in one or more slideshows."));
+        if(!$quiet) {
+            return error(
+                i18n("The picture is in use in one or more slideshows."));
+        } else {
+            return false;
+        }
     }
 
     $get_slide->bind_param('i', $slideid);

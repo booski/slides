@@ -36,20 +36,40 @@ if(isset($_POST['action'])) {
             break;
 
         case 'configure_slide':
-            $endtime = $_POST['endtime'];
-            $time = NULL;
-            if($endtime) {
-                $time = date_format(
+            $showid = $_POST['showid'];
+            $slideid = $_POST['slideid'];
+
+            $starttime_date = $_POST['starttime'];
+            $starttime_ts = NULL;
+            if($starttime_date) {
+                $starttime_ts = date_format(
                     date_create_from_format("Y-m-d H:i",
-                                            "$endtime 23:59"), 'U');
-                if(!$time) {
-                    error("Ogiltigt datum.");
+                                            "$starttime_date 00:00"), 'U');
+                if(!$starttime_ts) {
+                    error("Ogiltigt startdatum.");
                     break;
                 }
             }
-            set_autoremoval($_POST['showid'],
-                            $_POST['slideid'],
-                            $time);
+
+            $endtime_date = $_POST['endtime'];
+            $endtime_ts = NULL;
+            if($endtime_date) {
+                $endtime_ts = date_format(
+                    date_create_from_format("Y-m-d H:i",
+                                            "$endtime_date 23:59"), 'U');
+                if(!$endtime_ts) {
+                    error("Ogiltigt slutdatum.");
+                    break;
+                }
+            }
+
+            $autodelete = false;
+            if(isset($_POST['autodelete'])) {
+                $autodelete = true;
+            }
+
+            set_starttime($showid, $slideid, $starttime_ts);
+            set_autoremoval($showid, $slideid, $endtime_ts, $autodelete);
             break;
 
         case 'configure_show':

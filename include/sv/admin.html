@@ -178,6 +178,20 @@
       <input type="hidden" name="showid" value="¤showid" />
       <input type="hidden" name="slideid" value="¤slideid" />
       <p class="nowrap">
+        Första visningsdag:
+        <input class="inline calendar"
+               type="text"
+               name="starttime"
+               value="¤sstarttime"
+               title="Första dagen den här bilden ska börja visas på den här visningsytan. Är fältet tomt så börjar bilden visas omedelbart."
+               readonly />
+        <img class="clearbutton tinybutton link inline"
+             src="../images/clear.svg"
+             onclick="clear_date(event)"
+             draggable="false"
+             title="Delete data" />
+      </p>
+      <p class="nowrap">
         Sista visningsdag:
         <input class="inline calendar"
                type="text"
@@ -190,6 +204,13 @@
              onclick="clear_date(event)"
              draggable="false"
              title="Radera datum" />
+      </p>
+      <p class="nowrap">
+        <input type="checkbox"
+               name="autodelete"
+               title="Avgör om bilden ska raderas från tillgängligt innehåll när den tas bort från visningsytan. Har ingen effekt om ingen sista visningsdag är satt eller bilden förekommer på andra ytor."
+               ¤sautodelete_checked />
+        Radera vid borttagning
       </p>
       <div class="divider end"></div>
       <img class="tinybutton tinybox link right"

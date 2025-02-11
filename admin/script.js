@@ -108,15 +108,17 @@ function toggle_slidesettings(event) {
     toggle_settings(event)
 
     var form = event.currentTarget.parentNode.querySelector('form')
-    var input = form.endtime
-    if(!input.date) {
-        var date = new Date()
-        input.id = date.getTime()
-        var cal = new dhtmlXCalendarObject(input.id)
-        cal.hideTime()
-        cal.setSensitiveRange(date, null)
-        input.date = cal
-    }
+    var inputs = [form.starttime, form.endtime]
+    inputs.forEach((input) => {
+        if(!input.date) {
+            var date = new Date()
+            input.id = date.getTime()
+            var cal = new dhtmlXCalendarObject(input.id)
+            cal.hideTime()
+            cal.setSensitiveRange(date, null)
+            input.date = cal
+        }
+    })
 }
 
 function clear_date(event) {
