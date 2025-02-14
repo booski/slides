@@ -569,12 +569,12 @@ function build_show($id) {
 
         $starttime = $slide['starttime'];
         if($starttime) {
-            $starttime = gmdate("Y-m-d", $starttime);
+            $starttime = date("Y-m-d", $starttime);
             $active = '';
         }
         $endtime = $slide['endtime'];
         if($endtime) {
-            $endtime = gmdate("Y-m-d", $endtime);
+            $endtime = date("Y-m-d", $endtime);
             $active = '';
         }
         $autodelete = $slide['autodelete'];

@@ -122,8 +122,8 @@ function toggle_slidesettings(event) {
 }
 
 function clear_date(event) {
-    var form = event.currentTarget.parentNode.parentNode
-    form.endtime.value = ''
+    var input = event.currentTarget.parentNode.querySelector('input')
+    input.value = ''
 }
 
 function toggle_settings(event) {
