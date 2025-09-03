@@ -579,7 +579,7 @@ function build_show($id) {
         }
         $autodelete = $slide['autodelete'];
         if($autodelete) {
-            $autodelete = checked;
+            $autodelete = 'checked';
             $active = '';
         } else {
             $autodelete = '';
